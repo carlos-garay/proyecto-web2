@@ -1,6 +1,6 @@
 const express = require('express')
 
-const routes = require('./src/rutas') //carpeta que trae rutas particulares, el router
+const routes = require('./src/routes') //carpeta que trae rutas particulares, el router
 require('dotenv').config()
 const mongoose = require('mongoose');
 

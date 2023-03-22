@@ -8,7 +8,7 @@ const rutasUsers = require('./users')
 
 router.use('/users',rutasUsers)
 router.use('/channels',rutasChannels)
-router.use('/groups',rutasTareas)
-
+router.use('/groups',rutasGroups)
+router.use('/messages',rutasMessages)
 
 module.exports = router;
