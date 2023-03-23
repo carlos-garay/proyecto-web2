@@ -24,7 +24,23 @@ const userSchema = new Schema({
     arrGroups: {
         type: [String],
         required: true
+    },
+
+    arrFriends: {
+        type: [String],
+        required: true
+    },
+
+    arrRequestsSent: {
+        type: [String],
+        required: true
+    },
+
+    arrRequestsReceived: {
+        type: [String],
+        required: true
     }
+
 });
 
 
