@@ -1,5 +1,5 @@
 const Channel = require('../models/channels')
-const Group = requuire('../models/groups')
+const Group = require('../models/groups')
 
 const ChannelController = {
     deleteChannel: (req,res)=>{

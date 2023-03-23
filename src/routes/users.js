@@ -4,16 +4,14 @@ const usersController = require('../controllers/users')
 
 //las rutas de los requests
 const rutasRequests = require('./requests')
-router.use('/:idUser/requests',rutasRequests)
+router.use('/:idUser/requests',rutasRequests);
 
-//post 
+router.post('/register',express.json(),usersController.registerUser);
 
-//put
+router.get('/:idUser',usersController.loadUser);
 
-//get
+router.put('/:idUser/name',express.json(),usersController.updateUserName);
 
-//get:id
-
-//delete:id
+router.put('/:idUser/password',express.json(),usersController.updateUserPassword);
 
 module.exports = router

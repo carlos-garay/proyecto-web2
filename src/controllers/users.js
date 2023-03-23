@@ -8,11 +8,10 @@ const UserController = {
         let idUser = req.body.email;
         let user = User(req.body);
         user.save().then((user) =>{
-            res.status(200).send('Se creó el usuario ',user.email);
+            res.status(200).send('Se creó el usuario '+user.email);
         })
         .catch(err =>{
-            res.status(500);            
-            res.send('Error en el servidor '+err);
+            res.status(500).send('Error en el servidor '+err);
         });
     },
 
@@ -20,7 +19,7 @@ const UserController = {
     updateUserName: (req,res)=>{
         let nameChange = req.body.name;
         let idUser = req.params.idUser;
-        User.findOneAndUpdate({ email: `${idUser}` },{name: nameChange}, { new : true }).then(user => {
+        User.findByIdAndUpdate(idUser, {name: nameChange}, { new : true }).then(user => {
             res.status(200).type('text/plain; charset=utf-8').send(`Se actualizó el usuario ${user.name}`);
         })
         .catch(err => {
@@ -32,7 +31,7 @@ const UserController = {
     updateUserPassword: (req,res)=>{
         let passwordChange = req.body.password;
         let idUser = req.params.idUser;
-        User.findOneAndUpdate({ email: `${idUser}` },{password: passwordChange}, { new : true }).then(user => {
+        User.findByIdAndUpdate(idUser, {password: passwordChange}, { new : true }).then(user => {
             res.status(200).type('text/plain; charset=utf-8').send(`Se cambio la contraseña del usuario ${user.name}`);
         })
         .catch(err => {
@@ -44,19 +43,19 @@ const UserController = {
     //Consulta la colección de grupos para cargar los grupos de los que es miembro
     loadUser: (req,res) => { 
         let idUser = req.params.idUser;
-        User.findOne({email: `${idUser}`})
+        User.findById(idUser)
             .then(usuario => {
                 //Obtenemos por cada id en el arreglo de grupos del usuario el objeto del grupo correspondiente
                 //Para que posteriormente se puedan usar para cargar sus íconos y nombres en la aplicación
                 if(usuario.arrGroups.length >0){
                     let arrRealGroup = [];
                     let counter = 0;
-                    for(let idGroup of usuario.arrExam){
+                    for(let idGroup of usuario.arrGroups){
                         Group.findOne({_id: `${idGroup}`})
                             .then(group => {
                                 counter++;
                                 arrRealGroup.push(group);
-                                if(counter == usuario._arrExam.length){
+                                if(counter == usuario.arrGroups.length){
                                     //Al final concatenamos este arreglo a nuestro objeto de usuario y lo mandamos
                                     let objUser = {}
                                     Object.assign(objUser,usuario.toObject());
@@ -77,7 +76,7 @@ const UserController = {
                 }
             })
             .catch(err => {
-                res.status(404).send("No se encontró el usuario con el id: "+idUser + err);
+                res.status(404).send("No se encontró el usuario con el id: "+idUser +' '+ err);
             })
     } 
 }
