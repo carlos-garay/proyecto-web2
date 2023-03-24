@@ -2,8 +2,8 @@
 const {Schema,model} = require('mongoose')
 
 const groupSchema = new Schema ({
-    titulo: {type: String,required:true},
-    imagen: {type: String,required:true},
+    title: {type: String,required:true},
+    image: {type: String,required:true,default:''},
     arrUsers: {
         type: [{
             type: Schema.ObjectId,
@@ -22,6 +22,13 @@ const groupSchema = new Schema ({
         type: [{
             type: Schema.ObjectId,
             ref: "channels"
+        }],
+        required:true
+    },
+    arrAudioChannels: {
+        type: [{
+            type: Schema.ObjectId,
+            ref: "audioChannels"
         }],
         required:true
     }
