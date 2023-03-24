@@ -1,6 +1,8 @@
 const express = require('express')
-const router = express.Router()
+const router = express.Router({mergeParams: true})
 const groupsController = require('../controllers/groups')
+
+//yo hago estos 
 
 //
 const rutasChannels = require('./channels')

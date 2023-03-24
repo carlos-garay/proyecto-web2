@@ -1,15 +1,11 @@
 const express = require('express')
-const router = express.Router()
+const router = express.Router({mergeParams: true})
 const messagesController = require('../controllers/messages')
 
-//post 
+//para estar aqui ya pase por groups/:idGroup/channels/:idChannel/messages
 
-//put
+//post
+router.post('/',express.json(),messagesController.crearMensaje)
 
-//get
-
-//get:id
-
-//delete:id
 
 module.exports = router
