@@ -3,7 +3,8 @@ const {Schema, model} = require('mongoose')
 const audioChannelSchema = new Schema({
     title: {
         type: String,
-        required: true
+        required: true,
+        default: "nuevo canal de texto"
     },
     arrMembers: {
         type: [{

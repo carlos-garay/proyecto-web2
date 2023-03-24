@@ -1,15 +1,13 @@
 const express = require('express')
-const router = express.Router()
-const channelsController = require('../controllers/channels')
+const router = express.Router({mergeParams: true})
+const audioChannelController = require('../controllers/audioChannels')
 
-//post 
+router.post('/',express.json(),audioChannelController.createAudioChannel);
 
-//put
+router.put('/:idChannel/addMember',express.json(),audioChannelController.addMemberToAudioChannel);
 
-//get
+router.put('/:idChannel/removeMember',express.json(),audioChannelController.removeMemberFromAudioChannel);
 
-//get:id
-
-//delete:id
+router.delete('/:idChannel',audioChannelController.deleteAudioChannel);
 
 module.exports = router
