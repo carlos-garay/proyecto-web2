@@ -22,22 +22,42 @@ const userSchema = new Schema({
     //También contará con foto de perfil ya que se determine como se manejarán las imágenes
     
     arrGroups: {
-        type: [String],
+        type: [{
+            type: Schema.ObjectId,
+            ref: "groups"
+        }],
         required: true
     },
 
     arrFriends: {
-        type: [String],
+        type: [{
+            type: Schema.ObjectId,
+            ref: "users"
+        }],
         required: true
     },
 
     arrRequestsSent: {
-        type: [String],
+        type: [{
+            type: Schema.ObjectId,
+            ref: "requests"
+        }],
         required: true
     },
 
     arrRequestsReceived: {
-        type: [String],
+        type: [{
+            type: Schema.ObjectId,
+            ref: "requests"
+        }],
+        required: true
+    },
+
+    arrDirectMessages: {
+        type: [{
+            type: Schema.ObjectId,
+            ref: "requests"
+        }],
         required: true
     }
 

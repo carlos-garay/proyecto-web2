@@ -3,11 +3,14 @@ const {Schema, model} = require('mongoose')
 const channelSchema = new Schema({
     title: {
         type: String,
-        required: true
+        required: true,
+        default: "Nuevo canal"
     },
     arrMembers: {
-        type: [String],
-        unique: true,
+        type: [{
+            type: Schema.ObjectId,
+            ref: "users"
+        }],
         required: true
     },
     private: { 
@@ -16,7 +19,10 @@ const channelSchema = new Schema({
         default: false
     },
     arrMessages: {
-        type: [String],
+        type: [{
+            type: Schema.ObjectId,
+            ref: "messages"
+        }],
         required: true
     }
 });

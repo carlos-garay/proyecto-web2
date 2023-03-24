@@ -13,7 +13,7 @@ const app = express()
 
 const mongoUrl = process.env.MONGO_URL
 
-mongoose.connect(mongoUrl)
+mongoose.connect(mongoUrl,{autoIndex: false})
   .then( () => {
     console.log('se conecto correctamente a la base de datos ')
     app.listen (port, function () {

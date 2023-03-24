@@ -6,8 +6,10 @@ const audioChannelSchema = new Schema({
         required: true
     },
     arrMembers: {
-        type: [String],
-        unique: true,
+        type: [{
+            type: Schema.ObjectId,
+            ref: "users"
+        }],
         required: true
     },
     private: { 

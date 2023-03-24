@@ -1,5 +1,6 @@
 const User = require('../models/users');
 const Group = require('../models/groups');
+const Request = require('../models/requests');
 
 const UserController = {
 
@@ -31,6 +32,7 @@ const UserController = {
     updateUserPassword: (req,res)=>{
         let passwordChange = req.body.password;
         let idUser = req.params.idUser;
+        console.log(req.params);
         User.findByIdAndUpdate(idUser, {password: passwordChange}, { new : true }).then(user => {
             res.status(200).type('text/plain; charset=utf-8').send(`Se cambio la contraseña del usuario ${user.name}`);
         })
@@ -44,29 +46,16 @@ const UserController = {
     loadUser: (req,res) => { 
         let idUser = req.params.idUser;
         User.findById(idUser)
+            .populate("arrGroups")
+            .populate("arrFriends")
+            .populate("arrRequestsSent")
+            .populate("arrRequestsReceived")
             .then(usuario => {
                 //Obtenemos por cada id en el arreglo de grupos del usuario el objeto del grupo correspondiente
                 //Para que posteriormente se puedan usar para cargar sus íconos y nombres en la aplicación
-                if(usuario.arrGroups.length >0){
-                    let arrRealGroup = [];
-                    let counter = 0;
-                    for(let idGroup of usuario.arrGroups){
-                        Group.findOne({_id: `${idGroup}`})
-                            .then(group => {
-                                counter++;
-                                arrRealGroup.push(group);
-                                if(counter == usuario.arrGroups.length){
-                                    //Al final concatenamos este arreglo a nuestro objeto de usuario y lo mandamos
-                                    let objUser = {}
-                                    Object.assign(objUser,usuario.toObject());
-                                    objUser.allGroups = arrRealGroup; 
-                                    res.status(200).type("application/json").json(objUser);
-                                }    
-                            })
-                            .catch(err => {
-                                throw err
-                            })
-                    }
+                if(usuario.arrGroups.length >0){ 
+                    console.log(usuario);
+                    res.status(200).type("application/json").json(usuario);
                 //Si no contiene ningún grupo
                 }else{
                     let objUser = {}
