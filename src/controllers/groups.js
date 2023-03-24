@@ -1,5 +1,8 @@
 const Group = require('../models/groups')
 const User = require('../models/users');
+const audioChannel = require('../models/audioChannels')
+const Channel = require('../models/channels')
+const Message = require('../models/messages')
 
 const GroupController = {
     createGroup : (req,res) => { //free
@@ -42,12 +45,49 @@ const GroupController = {
             })
     },
     deleteGroup : (req,res)=>{ //monstruosity, borrar el grupo de todos los arreglos de los usuarios, 
-        //borrar todos los canales pertenecientes al grupo
-        //borrar los mensajes pertenecientes a los canales de texto 
+        Group.findByIdAndRemove(req.params.idGroup)
+            .then(grupo =>{
+                //ya quitamos el grupo de los arreglos de los usuarios 
+                for(usuario in grupo.arrUsers){
+                    //de cada usuario que pertenecia al grupo, vamos a eliminar el grupo de su arrGroups
+                    User.findByIdAndUpdate(usuario,{ $pull: { arrGroups: grupo.id}}, { new : true })
+                        .then(user => {
 
-        //
-        //deleteMany $in
+                        })
+                        .catch(error =>{
+                            res.status(400).send('error al encontrar el usuario para eliminar grupo de su ARR')
+                        })
+                }
+                // eliminar canales de audio, se podría hacer tambien con deleteMany
+                for(canalAudio in grupo.arrAudioChannels){
+                    audioChannel.findByIdAndRemove(canalAudio)
+                        .then(canal => {
 
+                        })
+                        .catch(error => {
+                            res.status(400).send(`no se pudo eliminar canal de audio ${canalAudio}`)
+                        })
+                }
+                for(canalTexto in grupo.arrChannels){
+                    Channel.findByIdAndRemove(canalTexto)
+                        .then(removedChannel =>{
+                            //borrar todos los mensajes que estan en el arreglo 
+                            Message.deleteMany({ id: { $in: removedChannel.arrMessages}})
+                                .then(
+                                    res.status(200).send('se borro todo exitosamente')
+                                )
+                                .catch(error => {
+                                    res.status(400).send('error al eliminar los mensajes del canal')
+                                })
+                        })
+                        .catch(error => {
+                            res.status(400).send('error al eliminar los canales de texto')
+                        })
+                }
+            })
+            .catch(error =>{
+                res.status(404).send('No se encontro el grupo a borrar')
+            })
     },
     addUserToGroup : (req,res)=>{ //free, viene del put 
         let idGroup = req.params.idGroup
