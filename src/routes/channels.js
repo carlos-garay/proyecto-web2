@@ -7,6 +7,8 @@ const rutasMessages = require('./messages')
 
 router.use('/:idChannel/messages',rutasMessages);
 
+router.get('/:idChannel',channelsController.getMessages);
+
 router.post('/',express.json(),channelsController.createChannel);
 
 router.put('/:idChannel/addMember',express.json(),channelsController.addMemberToChannel);
