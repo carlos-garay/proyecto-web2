@@ -3,8 +3,8 @@ module.exports = {
     swaggerDefinition : {
         swagger: "2.0",
         info: {
-            "title" : "API de ejemplo",
-            "description" : "api de ejemplo epicness",
+            "title" : "Entra 2, Diseño API",
+            "description" : "Documentación rutas API del proyecto, aplicación tipo slack",
             "version": "1.0.0",
             "servers": ["http://localhost:" + port]
         }
