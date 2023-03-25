@@ -9,7 +9,7 @@ const UserController = {
         let idUser = req.body.email;
         let user = User(req.body);
         user.save().then((user) =>{
-            res.status(200).send('Se creó el usuario '+user.email);
+            res.status(201).send('Se creó el usuario '+user.email);
         })
         .catch(err =>{
             res.status(500).send('Error en el servidor '+err);
@@ -50,6 +50,7 @@ const UserController = {
             .populate("arrFriends")
             .populate("arrRequestsSent")
             .populate("arrRequestsReceived")
+            .populate("arrDirectMessages")
             .then(usuario => {
                 //Obtenemos por cada id en el arreglo de grupos del usuario el objeto del grupo correspondiente
                 //Para que posteriormente se puedan usar para cargar sus íconos y nombres en la aplicación
