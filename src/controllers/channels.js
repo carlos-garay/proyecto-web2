@@ -26,7 +26,7 @@ const ChannelController = {
         channelBD.save().then(channel => {
             //Intentamos asignar el _id del canal al arreglo de canales del grupo
             Group.findByIdAndUpdate(idGroup, {$push:{arrChannels: channel._id}}, { new : true }).then(group => {
-                res.status(200).send(`Se agregó el canal ${channel._id} al grupo  ${group.idGroup}`);
+                res.status(200).send(`Se agregó el canal ${channel._id} al grupo  ${group.title}`);
             })
             .catch(err => {
                 //Si no se puedo guardar al grupo el canal, hay que eliminarlo de la base de datos de canales

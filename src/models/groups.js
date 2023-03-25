@@ -3,7 +3,7 @@ const {Schema,model} = require('mongoose')
 
 const groupSchema = new Schema ({
     title: {type: String,required:true},
-    image: {type: String,required:true,default:''},
+    image: {type: String,required:true,default:'noimage'},
     arrUsers: {
         type: [{
             type: Schema.ObjectId,

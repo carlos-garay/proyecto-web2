@@ -10,9 +10,11 @@ const RequestController = {
         let body = req.body //body va a traer friendEmail con el 
 
         //encontrar al usuario que quiero agregar
-        User.find({email: body.friendEmail})
+        User.findOne({email: body.friendEmail})
             .then(receiver => { //traemos el que va a recibirlo de la base de datos 
-                let idReceiver = receiver.id //id de quien recibe la solicitud
+                console.log(receiver);
+                let idReceiver = receiver._id //id de quien recibe la solicitud
+                console.log(idReceiver);
 
                 let object = {
                     sender : req.params.idUser,
@@ -21,7 +23,7 @@ const RequestController = {
 
                 Request.create(object)
                     .then(newRequest => { //el nuevo request creado 
-                        let newRequestId = newRequest.id //id del request creado
+                        let newRequestId = newRequest._id //id del request creado
                         User.findByIdAndUpdate(req.params.idUser,{$push:{arrRequestsSent:newRequestId}},{new : true}) //agregamos
                             .then(senderUser=>{
                                 User.findByIdAndUpdate(idReceiver,{$push:{arrRequestsReceived:newRequestId}},{new : true}) //agregamos
@@ -37,7 +39,7 @@ const RequestController = {
                             })
                     })
                     .catch(error =>{
-                        res.status(400).send('No se pudo crear este request ')
+                        res.status(400).send('No se pudo crear este request '+ error)
                     })
             })
             .catch(error =>{
@@ -55,12 +57,12 @@ const RequestController = {
                 }
                 Channel.create(object)
                     .then(newChannel => {
-                        User.findByIdAndUpdate(response.sender,{$push:{arrFriends:response.receiver ,arrDirectMessages:newChannel.id}},{new : true})
+                        User.findByIdAndUpdate(response.sender,{$push:{arrFriends:response.receiver ,arrDirectMessages:newChannel._id}},{new : true})
                             .then(senderUser => {
-                                User.findByIdAndUpdate(response.receiver,{$push:{arrFriends:response.sender, arrDirectMessages:newChannel.id}},{new : true})
+                                User.findByIdAndUpdate(response.receiver,{$push:{arrFriends:response.sender, arrDirectMessages:newChannel._id}},{new : true})
                                     .then(receiverUser => {
                                         //mandar respuesta
-                                        res.status(200).send(`Se acepto el request ${response.id} entre ${senderUser.name} y ${receiverUser.name} `)
+                                        res.status(200).send(`Se acepto el request ${response._id} entre ${senderUser.name} y ${receiverUser.name} `)
                                     })
                                     .catch(error =>{
                                         res.status(400).send('No se pudo agregar a la lista de amigos de receiver')
@@ -82,7 +84,7 @@ const RequestController = {
     declineRequest:(req,res)=>{
         Request.findByIdAndUpdate(req.params.reqId,{status:2})
             .then(response => {
-                res.status(200).send(`Se rechazo el request ${response.id}`)
+                res.status(200).send(`Se rechazo el request ${response._id}`)
             })
             .catch(error =>{
                 res.status(400).send('No se pudo rechazar la solicitud')

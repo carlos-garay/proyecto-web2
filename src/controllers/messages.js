@@ -27,7 +27,7 @@ const MessageController = {
         Message.create(temp) //mandamos crear mensaje con el objeto anterior
             .then(response => { //response aqui es el mensaje creado
                 //si ya tengo el mensaje creado
-                let idNewMessage = response.id 
+                let idNewMessage = response._id 
                 
                 //insertarlo al arrMessages del textChannel al que pertenece 
                 //modificar channel al que pertenece 
