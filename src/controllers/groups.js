@@ -48,54 +48,46 @@ const GroupController = {
             })
     },
 
-
-    //TIENE ERROR EN ESTE MOMENTO, VAMOS A HACER UN REFACTOR A USAR PULL ALL PARA ELIMINAR EN LUGAR DE LOS FOR
     
     deleteGroup : (req,res)=>{ // borrar el grupo de todos los arreglos de los usuarios, 
         Group.findByIdAndDelete(req.params.idGroup)
             .then(grupo =>{
                 //ya quitamos el grupo de los arreglos de los usuarios 
-                for(let usuario in grupo.arrUsers){
+                grupo.arrUsers.forEach(usuario =>{
                     //de cada usuario que pertenecia al grupo, vamos a eliminar el grupo de su arrGroups
                     User.findByIdAndUpdate(usuario,{ $pull: { arrGroups: grupo._id}}, { new : true })
-                        .then(user => {
-
-                        })
                         .catch(error =>{
-                            res.status(400).send('error al encontrar el usuario para eliminar grupo de su ARR')
+                            res.status(400).send('error al encontrar el usuario para eliminar grupo de su ARR ' + error);
                         })
-                }
-                // eliminar canales de audio, se podría hacer tambien con deleteMany
-                for(let canalAudio in grupo.arrAudioChannels){
-                    audioChannel.findByIdAndDelete(canalAudio)
-                        .then(canal => {
+                })
 
-                        })
-                        .catch(error => {
-                            res.status(400).send(`no se pudo eliminar canal de audio ${canalAudio}`)
-                        })
-                }
-                for(let canalTexto in grupo.arrChannels){
+                // eliminar canales de audio, se podría hacer tambien con deleteMany
+                audioChannel.deleteMany({_id: { $in: grupo.arrAudioChannels }}, {new: true})
+                    .catch(error =>{
+                        res.status(400).send('no se pudo eliminar los canales de audio ' + error);
+                    })
+                
+                //Eliminar canales de texto y mensajes incluidos
+                grupo.arrChannels.forEach(canalTexto =>{
                     Channel.findByIdAndDelete(canalTexto)
                         .then(removedChannel =>{
                             //borrar todos los mensajes que estan en el arreglo 
                             Message.deleteMany({ _id: { $in: removedChannel.arrMessages}})
-                                .then(
-                                    res.status(200).send('se borro todo exitosamente')
-                                )
                                 .catch(error => {
-                                    res.status(400).send('error al eliminar los mensajes del canal')
+                                    res.status(400).send('error al eliminar los mensajes del canal ' + error)
                                 })
                         })
                         .catch(error => {
-                            res.status(400).send('error al eliminar los canales de texto')
+                            res.status(400).send('error al eliminar los canales de texto ' + error)
                         })
-                }
+                })
+                res.status(200).send('se borro todo exitosamente')
             })
             .catch(error =>{
-                res.status(404).send('No se encontro el grupo a borrar')
+                res.status(404).send('No se encontro el grupo a borrar ' + error)
             })
     },
+
     addUserToGroup : (req,res)=>{ 
         let idGroup = req.params.idGroup
         let idUser = req.body.idUser
@@ -104,7 +96,7 @@ const GroupController = {
                 User.findByIdAndUpdate(idUser,{$push:{arrGroups:grupo._id}}, { new : true })
                     .then(user =>{
                         console.log(user);
-                        res.status(200).send(`el usuario ${user.name} se unio al grupo ${grupo.title}`)
+                        res.status(200).send(`el usuario ${user.name} se unió al grupo ${grupo.title}`)
                     })
                     .catch(error =>{
                         res.status(400).send('No te pudiste unir' + error)
@@ -146,30 +138,22 @@ const GroupController = {
         //verficar si en ese group el usuario es admin
         Group.findById(idGroup)
             .then(group => {
-                Group.findByIdAndUpdate(idGroup,{title:newTitle},{ new : true })
-                    .then(updatedGroup => {
-                        res.status(200).send(`se ha cambiado el nombre del grupo a ${updatedGroup.title}`)
-                    })
-                    .catch(error =>{
-                        res.status(400).send('No pudo modificarse el nombre del grupo')
-                    })
 
-                // FALTA VERIFICAR QUE SEA EL ADMIN, NO FUNCIONA EL IN
-                // console.log(group.arrAdmins)
-                // console.log(idUser);
-                // if (idUser in group.arrAdmins){ //si esta en arreglo de administradores
-                //     //se hace el cambio de nombre 
-                //     Group.findByIdAndUpdate(idGroup,{title:newTitle},{ new : true })
-                //         .then(updatedGroup => {
-                //             res.status(200).send(`se ha cambiado el nombre del grupo a ${updatedGroup.title}`)
-                //         })
-                //         .catch(error =>{
-                //             res.status(400).send('No pudo modificarse el nombre del grupo')
-                //         })
-                // }
-                // else{
-                //     res.status(401).send('No tienes permisos para cambiar el nombre')
-                // }
+                console.log(group.arrAdmins);
+                console.log(idUser);
+                if (group.arrAdmins.includes(idUser)){ //si esta en arreglo de administradores
+                    //se hace el cambio de nombre 
+                    Group.findByIdAndUpdate(idGroup,{title:newTitle},{ new : true })
+                        .then(updatedGroup => {
+                            res.status(200).send(`se ha cambiado el nombre del grupo a ${updatedGroup.title}`)
+                        })
+                        .catch(error =>{
+                            res.status(400).send('No pudo modificarse el nombre del grupo')
+                        })
+                }
+                else{
+                    res.status(401).send('No tienes permisos para cambiar el nombre')
+                }
             })
             .catch(error => {
                 res.status(404).send('No se encontro ese grupo')

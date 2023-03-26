@@ -4,7 +4,7 @@ const audioChannelSchema = new Schema({
     title: {
         type: String,
         required: true,
-        default: "nuevo canal de texto"
+        default: "nuevo canal de audio"
     },
     arrMembers: {
         type: [{
