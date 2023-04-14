@@ -56,7 +56,7 @@ const userSchema = new Schema({
     arrDirectMessages: {
         type: [{
             type: Schema.ObjectId,
-            ref: "requests"
+            ref: "channels"
         }],
         required: true
     }

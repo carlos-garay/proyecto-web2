@@ -13,7 +13,7 @@ router.post('/register',express.json(),usersController.registerUser);
 
 /**
  * @swagger
- * /user:
+ * /users:
  *  post:
  *    tags:
  *      - User
@@ -36,7 +36,7 @@ router.post('/register',express.json(),usersController.registerUser);
 router.get('/:idUser',usersController.loadUser);
 /**
  * @swagger
- * /user/{idUser}:
+ * /users/{idUser}:
  *  get:
  *    tags:
  *      - User
@@ -59,7 +59,7 @@ router.get('/:idUser',usersController.loadUser);
 router.put('/:idUser/name',express.json(),usersController.updateUserName);
 /**
  * @swagger
- * /user/{idUser}/name:
+ * /users/{idUser}/name:
  *  put:
  *    tags:
  *      - User
@@ -88,7 +88,7 @@ router.put('/:idUser/name',express.json(),usersController.updateUserName);
 router.put('/:idUser/password',express.json(),usersController.updateUserPassword);
 /**
  * @swagger
- * /user/{idUser}/password:
+ * /users/{idUser}/password:
  *  put:
  *    tags:
  *      - User
@@ -113,5 +113,33 @@ router.put('/:idUser/password',express.json(),usersController.updateUserPassword
  *        description: No se encontro el usuario con el id idUSer
  */
 
+router.delete('/:idUser/friends/:idFriend/remove',usersController.removeFriend);
+//users/:idUser/friends/:idFriend/remove      
+
+/**
+ * @swagger
+ * /users/{idUser}/friends/{idFriend}/remove:
+ *  delete:
+ *    tags:
+ *      - User
+ *    description: se elimina un amigo 
+ *    parameters:
+ *      - in: path
+ *        name: idUser
+ *        description: id del usuario a obtener
+ *        schema:
+ *          type: string
+ *      - in: path
+ *        name: idFriend
+ *        description: id del amigo que quieres borrar 
+ *        schema:
+ *          type: string
+ * 
+ *    responses:
+ *      200:
+ *        description: se elimino exitosamente el amigo
+ *      404:
+ *        description: error al eliminar el amigo 
+ */
 
 module.exports = router
