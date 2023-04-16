@@ -15,16 +15,20 @@ router.post('/',express.json(),requestsController.crearRequest)
  *      - requests
  *    description: crear una nueva solicitud de amistad 
  *    parameters:
- *      - in: body
- *        name: bodyInfo
- *        description: objeto que contiene correo de la persona a agregar
- *        schema:
- *          type: object
+ * 
  *      - in: path
  *        name: idUser
  *        description: el id del usuario en cuya sesion estamos 
  *        schema:
  *          type: string
+ * 
+ *      - in: body
+ *        name: bodyInfo
+ *        description: objeto que contiene correo de la persona a agregar
+ *        schema:
+ *          type: object
+ *          example:
+ *            {"friendEmail": "otro2@test.com"}
  *    responses:
  *      200:
  *        description: se creo el request

@@ -14,11 +14,7 @@ router.post('/',express.json(),messagesController.crearMensaje)
  *      - messages
  *    description: crear un nuevo mensaje 
  *    parameters:
- *      - in: body
- *        name: bodyInfo
- *        description: objeto información de usuraio e informacion del mensaje
- *        schema:
- *          type: object
+ * 
  *      - in: path
  *        name: idGroup
  *        description: el id del grupo
@@ -29,6 +25,22 @@ router.post('/',express.json(),messagesController.crearMensaje)
  *        description: el id del canal de texto donde se insertara el mensaje
  *        schema:
  *          type: string
+ * 
+ *      - in: body
+ *        name: bodyInfo
+ *        description: objeto información de usuario e informacion del mensaje
+ *        schema:
+ *          type: object
+ *          example: 
+ *            {
+ *                "UserInfo": {
+ *                    "idUser": "6420ab210db1252132a4a328",
+ *                    "token": "Undefined"
+ *                },
+ *                "messageInfo": {
+ *                    "content": "23"
+ *                    }
+ *            }
  *    responses:
  *      200:
  *        description: se creo el mensaje y se agrego al canal

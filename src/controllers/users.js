@@ -2,19 +2,37 @@ const User = require('../models/users');
 const Group = require('../models/groups');
 const Request = require('../models/requests');
 const Channel = require('../models/channels');
+const Message = require('../models/messages');
 
 const UserController = {
 
     //registrar usuario, se tendrán cambios cuando se tenga implementación de tokens
     registerUser: (req,res)=>{
-        let idUser = req.body.email;
         let user = User(req.body);
         user.save().then((user) =>{
-            res.status(201).send('Se creó el usuario '+user.email);
+            res.status(201).send(user._id);
         })
         .catch(err =>{
             res.status(500).send('Error en el servidor '+err);
         });
+    },
+
+    //evaluar que concuerden las contraseñas CAMBIOS CUANDO SE ENCRIPTEN Y SE USEN TOKENS
+    loginUser: (req,res)=>{
+        let email = req.body.email
+        let password = req.body.password
+
+        User.findOne({ email: `${email}` })
+            .then(user => {
+                if(user.password == password){
+                    res.status(201).send(user._id);
+                } else {
+                    res.status(404).type('text/plain; charset=utf-8').send(`Email o contraseña incorrecta`);
+                }
+            })
+            .catch(err => {
+                res.status(404).type('text/plain; charset=utf-8').send(`Email no registrado`+err);
+            });
     },
 
     //Cambiar el nombre del usuario
@@ -77,62 +95,49 @@ const UserController = {
         let idUser = req.params.idUser
         let idFriend = req.params.idFriend
         User.findById(idUser)
+            .populate("arrDirectMessages")
             .then(usuario => {
-                //por cada canal dentro de mensajes directos 
-                var idCanal = ''
-                var flag = false
-                for(let canal in usuario.arrDirectMessages){
-                    Channel.findById(canal)
-                        .then(canalMensaje =>{
-                            //if canalMensaje.arrMembers contains idFriend
-                            if(canalMensaje.arrMembers.includes(idFriend)){
-                                idCanal = canalMensaje.id
-                                flag = true
-                            }
-                        })
-                        .catch(err=>{
-                            res.status(404).send("No se encontró el canal: "+ err);
-                        })
-                    if(flag == true){
-                        break
-                    }
+                //Encontramos el canal que comparte con el amigo
+                let idChannel = usuario.arrDirectMessages.find(({ arrMembers }) => arrMembers.includes(idFriend))._id
+                if(idChannel == undefined){
+                    res.status(404).send("No se encontró el canal entre usuarios");
                 }
-                //idCanal trae el id del canal de texto de mensajes directos
-
-                //eliminamos el canal que tiene ese ID 
-                Channel.findByIdAndDelete(idCanal)
-                    .then(channel => {
-                        console.log(channel);
-                        //borrar los mensajes que contenía el chat
-                        Message.deleteMany({_id:{$in: channel.arrMessages}})
-                        .then(
-                            console.log('se borro exitosamente el canal ' + channel.id)
-                        )
-                        .catch(err=>{
-                            res.status(400).send('error al eliminar los mensajes del canal');
+                else{
+                    //Borramos este canal
+                    Channel.findByIdAndDelete(idChannel)
+                        .then(channel => {
+                            console.log(channel);
+                            //borrar los mensajes que contenía el chat
+                            Message.deleteMany({_id:{$in: channel.arrMessages}})
+                            .then(
+                                console.log('se borro exitosamente el canal ' + channel.id)
+                            )
+                            .catch(err=>{
+                                res.status(400).send('error al eliminar los mensajes del canal');
+                            })
                         })
-                    })
-                    .catch(err =>{
-                        res.status(404).send("No se encontró el canal con el id: "+ idCanal)
-                    });
-                
-                //quitamos los amigos de la lista y quitamos el id del canal del arreglo de mensajes directos
-                User.findByIdAndUpdate(idUser,{ $pull: { arrFriends: idFriend, arrDirectMessages:idCanal}},{new:true}) 
-                    .then(user1 =>{
-                        User.findByIdAndUpdate(idFriend,{ $pull: { arrFriends: idUser, arrDirectMessages:idCanal}},{new:true}) 
-                            .then(user2 =>{
-                                res.status(200).send(`Se elimino la amistad entre ${user1.name} y ${user2.name}`);
-                            })
-                            .catch(error =>{
-                                res.status(400).send("No se pudo eliminar desde usuario 2 " + error)
-                            })
-                    })
-                    .catch(error =>{
-                        res.status(400).send("No se pudo eliminar desde usuario 1 " + error)
-                    })
+                        .catch(err =>{
+                            res.status(404).send("No se encontró el canal con el id: "+ idCanal)
+                        });
+                    
+                    //quitamos los amigos de la lista y quitamos el id del canal del arreglo de mensajes directos
+                    User.findByIdAndUpdate(idUser,{ $pull: { arrFriends: idFriend, arrDirectMessages:idChannel}},{new:true}) 
+                        .then(user1 =>{
+                            User.findByIdAndUpdate(idFriend,{ $pull: { arrFriends: idUser, arrDirectMessages:idChannel}},{new:true}) 
+                                .then(user2 =>{
+                                    res.status(200).send(`Se elimino la amistad entre ${user1.name} y ${user2.name}`);
+                                })
+                                .catch(error =>{
+                                    res.status(400).send("No se pudo eliminar desde usuario 2 " + error)
+                                })
+                        })
+                        .catch(error =>{
+                            res.status(400).send("No se pudo eliminar desde usuario 1 " + error)
+                        })
+                }
             })
             .catch(error =>{
-
+                res.status(404).send("No se encontró al usuario " + error)
             })
 
     }   

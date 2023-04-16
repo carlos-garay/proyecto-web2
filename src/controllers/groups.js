@@ -20,7 +20,7 @@ const GroupController = {
         // }
 
         let body = req.body
-        let creatorId = body.UserInfo.idUser //camarada que lo esta forjando, viene en req
+        let creatorId = body.UserInfo.idUser 
         let object = {
             title:body.groupInfo.title,
             //sin imagen por ahora, default la pone vacia 
@@ -29,8 +29,7 @@ const GroupController = {
             arrChannels:[],
             arrAudioChannels:[]
         }
-        console.log(object)
-        console.log("\n\nOtra cosa")
+
         Group.create(object)
             .then(newGroup => {
                 console.log(newGroup);
