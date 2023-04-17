@@ -15,16 +15,20 @@ router.post('/',express.json(),requestsController.crearRequest)
  *      - requests
  *    description: crear una nueva solicitud de amistad 
  *    parameters:
- *      - in: body
- *        name: bodyInfo
- *        description: objeto que contiene correo de la persona a agregar
- *        schema:
- *          type: object
+ * 
  *      - in: path
  *        name: idUser
  *        description: el id del usuario en cuya sesion estamos 
  *        schema:
  *          type: string
+ * 
+ *      - in: body
+ *        name: bodyInfo
+ *        description: objeto que contiene correo de la persona a agregar
+ *        schema:
+ *          type: object
+ *          example:
+ *            {"friendEmail": "otro2@test.com"}
  *    responses:
  *      200:
  *        description: se creo el request
@@ -33,6 +37,59 @@ router.post('/',express.json(),requestsController.crearRequest)
  *      404: 
  *        description: no se encontro el usuario al que se manda 
  */
+
+router.get('/',requestsController.getRequests)
+/**
+ * @swagger
+ * /users/{idUser}/requests:
+ *  get:
+ *    tags:
+ *      - requests
+ *    description: traer los arreglos de requests del usuario poblados
+ *    parameters:
+ *      - in: path
+ *        name: idUser
+ *        description: el id del usuario en cuya sesion estamos 
+ *        schema:
+ *          type: string
+ *    responses:
+ *      200:
+ *        description: se obtuvieron los arreglos de requests exitosamente
+ *        schema:
+ *          example:
+ *      
+ *            {
+ *              "ReqSent": [
+ *                  {
+ *                  "_id": "643b678619262fca193b0fb2",
+ *                  "sender": "643aed8b64f01a772cb50353",
+ *                  "receiver": "643af5d692b9f9f15fb1544b",
+ *                  "status": 1,
+ *                  "__v": 0
+ *                  },
+ *                  {
+ *                  "_id": "643c82f7d2e1ff38399dcc36",
+ *                  "sender": "643aed8b64f01a772cb50353",
+ *                  "receiver": "643af5d692b9f9f15fb1544b",
+ *                  "status": 1,
+ *                  "__v": 0
+ *                  }
+ *              ],
+ *              "ReqReceived": [
+ *                  {
+ *                  "_id": "643c9cd97963286ff4f67f08",
+ *                  "sender": "643b02446664b9a3efbf1e60",
+ *                  "receiver": "643aed8b64f01a772cb50353",
+ *                  "status": 0,
+ *                  "__v": 0
+ *                  }
+ *              ]
+ *            }
+ *      404: 
+ *        description: no se encontró al usuario o sus requests. 
+ */
+
+
 
 router.put('/:reqId/accept',requestsController.acceptRequest)
 

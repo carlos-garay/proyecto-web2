@@ -21,6 +21,8 @@ router.post('/',express.json(),audioChannelController.createAudioChannel);
  *        description: objeto que contiene arreglo con los miembros iniciales
  *        schema:
  *          type: object
+ *          example:
+ *            {"arrMembers": ["6420ab1a0db1252132a4a326", "6420ab0f0db1252132a4a324"]}
  *    responses:
  *      200:
  *        description: se agrego el canal de audio 
@@ -56,6 +58,8 @@ router.put('/:idChannel/addMember',express.json(),audioChannelController.addMemb
  *        description: objeto que contiene arreglo con los usuarios a agregar
  *        schema:
  *          type: object
+ *          example:
+ *            {"arrMembers": ["6420ab1a0db1252132a4a326", "6420ab0f0db1252132a4a324"]}
  *    responses:
  *      200:
  *        description: se agregaron los miembros al canal
@@ -87,6 +91,8 @@ router.put('/:idChannel/removeMember',express.json(),audioChannelController.remo
  *        description: objeto que contiene arreglo con los usuarios a agregar
  *        schema:
  *          type: object
+ *          example:
+ *            { "arrMembers": ["641d38e610683da2e7cca8a4","641d38fb10683da2e7cca8a6"]}
  *    responses:
  *      200:
  *        description: se eliminaron los miembros del canal
