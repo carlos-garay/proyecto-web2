@@ -30,10 +30,9 @@ router.get('/:idChannel',channelsController.getMessages);
  * 
  *    responses:
  *      200:
- *        description: objeto del channel con los mensajes populados 
+ *        description: objeto del channel con los mensajes poblados 
  *        schema:
  *            example:
- *              application/json:
  *                 {
  *                      "_id": "643b898e18c959b67911bae3",
  *                      "title": "Nuevo canal",

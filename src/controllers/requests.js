@@ -56,6 +56,26 @@ const RequestController = {
             res.status(404).send('No se encontro ese usuario')
         })
     },
+
+    // users/:idUSer/requests
+    getRequests:(req,res)=>{
+        let idUser = req.params.idUser;
+        User.findById(idUser)
+            .populate("arrRequestsSent")
+            .populate("arrRequestsReceived")
+            .then(usuario => {
+                //obtenemos los arreglos de requests que tiene el usaurio
+                arraysRequests= {ReqSent: usuario.arrRequestsSent, ReqReceived: usuario.arrRequestsReceived }
+                console.log(usuario);
+                res.status(200).type("application/json").json(arraysRequests);
+
+            })
+            .catch(err => {
+                res.status(404).send("No se encontró el usuario con el id: "+idUser +' '+ err);
+            })
+ 
+    },
+
     //     /:reqId/accept
     acceptRequest:(req,res)=>{
         Request.findByIdAndUpdate(req.params.reqId,{status:1},{new : true}) //actualizar estado 

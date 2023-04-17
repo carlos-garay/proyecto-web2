@@ -60,34 +60,126 @@ const UserController = {
         });
     },
 
-    //Obtener datos del usuario para cargar su página principal
+
+ //Obtener datos del usuario para cargar su página principal
     //Consulta la colección de grupos para cargar los grupos de los que es miembro
     loadUser: (req,res) => { 
         let idUser = req.params.idUser;
         User.findById(idUser)
             .populate("arrGroups")
-            .populate("arrFriends")
-            .populate("arrRequestsSent")
-            .populate("arrRequestsReceived")
-            .populate("arrDirectMessages")
             .then(usuario => {
                 //Obtenemos por cada id en el arreglo de grupos del usuario el objeto del grupo correspondiente
                 //Para que posteriormente se puedan usar para cargar sus íconos y nombres en la aplicación
-                if(usuario.arrGroups.length >0){ 
-                    console.log(usuario);
-                    res.status(200).type("application/json").json(usuario);
-                //Si no contiene ningún grupo
-                }else{
-                    let objUser = {}
-                    Object.assign(objUser,usuario.toObject());
-                    objUser.allGroups = []; 
-                    res.status(200).type("application/json").json(objUser);
-                }
+                console.log(usuario);
+                res.status(200).type("application/json").json(usuario);
+
             })
             .catch(err => {
                 res.status(404).send("No se encontró el usuario con el id: "+idUser +' '+ err);
             })
     },
+
+    loadFriends: (req,res) => { 
+        let idUser = req.params.idUser;
+        User.findById(idUser)
+            .populate("arrFriends")
+            .then(usuario => {
+                //Obtenemos por cada id en el arreglo de amigos del usuario el objeto del usuario correspondiente
+                //Para que posteriormente se puedan usar para cargar sus íconos y nombres
+                console.log(usuario);
+                res.status(200).type("application/json").json(usuario.arrFriends);
+               
+            })
+            .catch(err => {
+                res.status(404).send("No se encontró el usuario con el id: "+idUser +' '+ err);
+            })
+    },
+
+    loadChannel: (req,res) => { 
+        let idUser = req.params.idUser;
+        let idFriend = req.params.idFriend;
+
+        //Obtenemos al usuario actual
+        User.findById(idUser)
+            .populate("arrDirectMessages")
+            .then(usuario=>{
+                // Buscamos al canal entre amigos
+                let idChannel = usuario.arrDirectMessages.find(({ arrMembers }) => arrMembers.includes(idFriend))._id
+                if(idChannel == undefined){
+                    res.status(404).send("No se encontró el canal entre usuarios");
+                }
+                else{
+                    Channel.findById(idChannel)
+                    .populate("arrMembers")
+                    .then(channel => {
+                        //Poner el titulo del canal segun el nombre de los usuarios
+                        Channel.findByIdAndUpdate(idChannel,{title: "DM " + channel.arrMembers[0].name + " y " + channel.arrMembers[1].name },{new:true})
+                            .populate("arrMembers")
+                            .populate("arrMessages")
+                            .then(newChannel =>{
+                                //Cambiamos el sender de su id a su nombre para que se pueda desplegar en el mensaje
+                                newChannel.arrMessages.map(msg => msg.sender = newChannel.arrMembers.find(({_id}) => _id == msg.sender).name)
+                                res.status(200).type("application/json").json(newChannel);
+                            })
+                            .catch(err=>{
+                                res.status(400).send("Error al cambiar el título del canal: "+idChannel +' '+ err);
+                            })
+                    })
+                    .catch(err => {
+                        res.status(400).send("Error al obtener datos del canal con el id: "+idChannel +' '+ err);
+                    })
+                }
+                    
+            })
+            .catch(error =>{
+                res.status(404).send("No se encontró al usuario " + error)
+            })
+       
+    },
+
+    sendDM: (req,res) => { 
+
+        //dentro del request hay 2 objetos, el user que tenemos, y el mensaje que queremos crear 
+        let object = req.body //trae ambos
+
+        // object = { //forma del objeto que traera el body 
+        //     UserInfo: {
+        //         idUser:'el id de este men ',
+        //         token:'token'
+                    //atributos extra que para esto no van a importar 
+        //     },
+        //     messageInfo:{
+        //         content:'contenido epico'
+        //     }
+        // }
+
+        let temp = { //este objeto es el que va a mandarse a mongo
+            sender: object.UserInfo.idUser,
+            content: object.messageInfo.content,
+            idChannel: req.params.idChannel
+        }
+
+        Message.create(temp) //mandamos crear mensaje con el objeto anterior
+            .then(response => { //response aqui es el mensaje creado
+                //si ya tengo el mensaje creado
+                let idNewMessage = response._id 
+                
+                //insertarlo al arrMessages del textChannel al que pertenece 
+                //modificar channel al que pertenece 
+                Channel.findByIdAndUpdate(req.params.idChannel,{$push:{arrMessages:idNewMessage}},{new : true})
+                    .then(canal =>{
+                        res.status(200).send(`Se creo el mensaje ${idNewMessage} y se agrego al canal ${canal.title}`)
+                    })
+                    .catch(error =>{
+                        res.status(400).send('No se pudo agregar mensaje al canal')
+                    })
+            })
+            .catch(error =>{
+                res.status(400).send('no se pudo crear/guardar el mensaje ')
+            })
+    },
+
+
     removeFriend: (req,res) =>{
         //borrar los ids de la lista de usuarios
         //borrar el canal de la lista de canales de ambos

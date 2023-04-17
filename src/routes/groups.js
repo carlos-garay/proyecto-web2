@@ -118,8 +118,7 @@ router.get('/:idGroup',groupsController.getGroup) //traer todo lo de ese grupo, 
  *      200:
  *        description: objeto que contiene grupo con sus arreglos poblados con los objetos correspondientes
  *        schema:
- *          example: 
- *           application/json:
+ *          example:
  *              {
  *                  "_id": "643b6d6f23cf96aafcebfb06",
  *                  "title": "grupo1",
