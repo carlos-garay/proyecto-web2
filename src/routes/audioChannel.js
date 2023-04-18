@@ -126,4 +126,57 @@ router.delete('/:idChannel',audioChannelController.deleteAudioChannel);
  *        description: no se encontro el grupo con ese id 
  */
 
+
+router.put('/:idChannel/name',express.json(),audioChannelController.changeChannelName);
+
+/**
+ * @swagger
+ * /groups/{idGroup}/audioChannels/{idChannel}/name:
+ *  put:
+ *    tags:
+ *      - audioChannels
+ *    description: cambiar nombre a un canal de audio
+ * 
+ *    parameters:
+ *      - in: path
+ *        name: idGroup
+ *        description: el id del grupo al que pertenece el canal a cambiar el nombre 
+ *        schema:
+ *          type: string
+ * 
+ *      - in: path
+ *        name: idChannel
+ *        description: el id del canal al que queremos cambiar el nombre 
+ *        schema:
+ *          type: string
+ *
+ *      - in: body
+ *        name: bodyInfo
+ *        description: objeto información de usuario e informacion del grupo con titulo e imagen
+ *        schema:
+ *          type: object
+ *          example: 
+ *              {
+ *               "UserInfo": {
+ *                  "idUser": "643aed8b64f01a772cb50353",
+ *                  "token": "Undefined"
+ *              },
+ *              "channelInfo": {
+ *                  "title": "cambio"
+ *                  }
+ *              }
+ *    responses:
+ *      200:
+ *        description: se ha cambiado el nombre del canal exitosamente
+ *
+ *      400: 
+ *        description: no pudo cambiarse el nombre
+ * 
+ *      401: 
+ *        description: no eres administrador por lo tanto no puedes cambiar el nombre
+ *      
+ *      404:
+ *        description: no se encontro al grupo o canal 
+ */
+
 module.exports = router

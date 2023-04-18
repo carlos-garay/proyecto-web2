@@ -127,7 +127,7 @@ router.put('/:idChannel/addMember',express.json(),channelsController.addMemberTo
  *  put:
  *    tags:
  *      - Channel
- *    description: Añadimos miembros al canal
+ *    description: Añadimos un miembro al canal
  *    parameters:
  *      - in: path
  *        name: idGroup
@@ -137,18 +137,18 @@ router.put('/:idChannel/addMember',express.json(),channelsController.addMemberTo
  * 
  *      - in: path
  *        name: idChannel
- *        description: id del canal al que se le agregaran miembros
+ *        description: id del canal al que se le agregara el miembro
  *        schema:
  *          type: string
  * 
  * 
  *      - in: body
- *        name: arrMembers
- *        description: arreglo con los ids de los miembros que agregaremos
+ *        name: email
+ *        description: email del usuario a añadir
  *        schema:
  *          type: object
  *          example:
- *            { "arrMembers": ["641e54b50d597f66c48a7fa7","641e54bb0d597f66c48a7fa9"]}
+ *            { "email": "otro1@test.com"}
  * 
  *    responses:
  *      200:
@@ -226,6 +226,58 @@ router.delete('/:idChannel',channelsController.deleteChannel);
  *        description: No se encontró el canal con el id idChannel
  *      400:
  *        description: error al eliminar los mensajes del canal
+ */
+
+router.put('/:idChannel/name',express.json(),channelsController.changeChannelName);
+
+/**
+ * @swagger
+ * /groups/{idGroup}/channels/{idChannel}/name:
+ *  put:
+ *    tags:
+ *      - Channel
+ *    description: cambiar nombre a un canal
+ * 
+ *    parameters:
+ *      - in: path
+ *        name: idGroup
+ *        description: el id del grupo al que pertenece el canal a cambiar el nombre 
+ *        schema:
+ *          type: string
+ * 
+ *      - in: path
+ *        name: idChannel
+ *        description: el id del canal al que queremos cambiar el nombre 
+ *        schema:
+ *          type: string
+ *
+ *      - in: body
+ *        name: bodyInfo
+ *        description: objeto información de usuario e informacion del grupo con titulo e imagen
+ *        schema:
+ *          type: object
+ *          example: 
+ *              {
+ *               "UserInfo": {
+ *                  "idUser": "643aed8b64f01a772cb50353",
+ *                  "token": "Undefined"
+ *              },
+ *              "channelInfo": {
+ *                  "title": "cambio"
+ *                  }
+ *              }
+ *    responses:
+ *      200:
+ *        description: se ha cambiado el nombre del grupo exitosamente
+ *
+ *      400: 
+ *        description: no pudo cambiarse el nombre
+ * 
+ *      401: 
+ *        description: no eres administrador por lo tanto no puedes cambiar el nombre
+ *      
+ *      404:
+ *        description: no se encontro al grupo 
  */
 
 

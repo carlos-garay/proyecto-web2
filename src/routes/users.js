@@ -44,7 +44,7 @@ router.post('/register',express.json(),usersController.registerUser);
  *          type: string
  *          example: "643b02446664b9a3efbf1e60"
  * 
- *      500:
+ *      400:
  *        description: Error en el servidor
  */
 
@@ -384,7 +384,7 @@ router.put('/:idUser/password',express.json(),usersController.updateUserPassword
  *  put:
  *    tags:
  *      - User
- *    description: se cambia el nombre del usuario
+ *    description: se cambia el password del usuario
  *    parameters:
  *      - in: path
  *        name: idUser
@@ -394,14 +394,14 @@ router.put('/:idUser/password',express.json(),usersController.updateUserPassword
  * 
  *      - in: body
  *        name: name
- *        description: nombre del usuario a cambiar
+ *        description: pasword del usuario a cambiar
  *        schema:
  *          type: object
  *          example: 
  *            {"password":"cambiopassword" } 
  *    responses:
  *      200:
- *        description: mensaje se actualizó el usuario y su nombre nuevo
+ *        description: mensaje se actualizó el usuario y su password nuevo
  *      404:
  *        description: No se encontro el usuario con el id idUSer
  */

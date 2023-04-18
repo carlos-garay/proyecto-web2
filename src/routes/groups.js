@@ -84,12 +84,12 @@ router.put('/:idGroup',express.json(),groupsController.addUserToGroup) //el body
  *          type: string
  *      - in: body
  *        name: idUser
- *        description: objeto que contiene el id del user que quiere unirse al grupo
+ *        description: objeto que contiene el correo del user que quiere unirse al grupo
  *        schema:
  *          type: object
  *          example:
  *            {
- *              "idUser":"6420ab210db1252132a4a328"
+ *              "email":"otro3@test.com"
  *            }
  *    responses:
  *      200:
