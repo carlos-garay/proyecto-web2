@@ -10,8 +10,8 @@ import { GroupComponent } from './pages/group/group.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { GrouptextchannelComponent } from './pages/group/grouptextchannel/grouptextchannel.component';
 import { GroupvoicechannelComponent } from './pages/group/groupvoicechannel/groupvoicechannel.component';
-import { FriendlistComponent } from './pages/friendlist/friendlist.component';
-import { FriendchatComponent } from './pages/friendchat/friendchat.component';
+import { FriendlistComponent } from './pages/directmessages/friendlist/friendlist.component';
+import { FriendchatComponent } from './pages/directmessages/friendchat/friendchat.component';
 
 import { MaterialModule } from './modules/material/material.module';
 import { HomeComponent } from './pages/home/home.component';
