@@ -80,9 +80,7 @@ export class NavComponent {
 
   traerUsuario(){
     //debe ser desde el servicio el sessionman
-    this.userService.getUser().subscribe((response:any)=>{
-      this.usuario = response;
-    })
+    this.usuario = this.userService.getUser()
   }
 
   goToGroup(id:string){

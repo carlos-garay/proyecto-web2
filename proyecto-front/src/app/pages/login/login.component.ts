@@ -22,13 +22,14 @@ export class LoginComponent {
     let valores = this.formLogin.value
     let email:string = valores.email
     let password: string= valores.password
-    this.userService.loginUser(email,password).subscribe((response:any)=>{ //al hacer login nos regresa el id del nuevo usuario
+    this.userService.loginUser(email,password).subscribe((response:any)=>{
 
       //la response va a traer el usuario y va a traer el token
-      //queremos que la informacion dl usuario se suba a sessionStorage como UserInfo, dice el master
-      //que es ilegal hacerlo desde un componente, asi que tal vez se ocupa una funcion void en el servicio que lo haga 
       
-      //hacer que se ejecute la funcion de cargar usuario desde nav ahora que ya tenemos el token cargado 
+      //subimos a sessionStorage el valor del ID 
+      //se llama loadUser desde el servicio para que traiga el usuario actual, el ID que usa el servicio ya va a estar en el session storage
+      this.userService.loadUser()
+      //hacer que desde nav se ejecute la funcion getUser 
     })
   }
 }

@@ -1,1 +1,20 @@
 <p>listausuarios works!</p>
+
+USUARIOS DEL SERVIDOR: 
+<div>
+    <mat-list>
+        <ng-container *ngFor="let item of grupo.arrUsers">
+
+            <mat-list-item>
+                <mat-card class="example-card">
+                    <mat-card-header>
+                      <div mat-card-avatar class="example-header-image"></div>
+                      <mat-card-title>{{item.name}}</mat-card-title>
+                      <mat-card-subtitle>epic</mat-card-subtitle>
+                    </mat-card-header>
+                </mat-card>
+            </mat-list-item>
+        </ng-container>
+    </mat-list>
+</div>
+
