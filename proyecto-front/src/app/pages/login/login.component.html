@@ -1,0 +1,32 @@
+<p>login works!</p>
+
+<div class="login">
+    <form [formGroup]="formLogin">
+
+        <mat-form-field appearance="fill">
+            <mat-label>Ingresa correo </mat-label>
+            <input matInput type="email" placeholder="pat@example.com" formControlName="email" required>
+        </mat-form-field>
+        <br>
+        <mat-form-field appearance="fill">
+            <mat-label>Password</mat-label>
+            <input matInput type="password" placeholder="x" formControlName="password" required>
+        </mat-form-field>
+        <br>
+        <button [disabled]="formLogin.invalid" mat-raised-button color="primary" (click)="loginUsuario()">Login</button>
+        <br>
+
+        <br>
+        <!--
+
+            nombre: <input type="text" id="nombre" formControlName="name"> <br>
+            correo: <input type="email" id="correo" formControlName="email"><br>
+            password: <input type="password" id="pass1" formControlName="password"><br>
+            confirm password: <input type="password" id="pass2" formControlName="confirm"><br>
+            <input type="checkbox" name="" id="" formControlName="aceptar"> Acepto terminos y condiciones <br>
+        -->
+
+
+    </form>
+
+</div>

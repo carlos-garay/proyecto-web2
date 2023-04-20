@@ -1,0 +1,36 @@
+<p>channellist works!epic</p>
+
+<div class="channelList">
+
+
+    <div class="groupName">
+        <mat-list>
+            <mat-list-item>
+                <button id="buttonTitle" mat-stroked-button color="accent" class="mat-list-item">{{grupo.title}}</button>
+            </mat-list-item>
+        </mat-list>
+    </div>
+    <br>
+    <mat-divider></mat-divider>
+    <br>
+    <label class="titulos">Text Channels</label>
+    
+    <mat-list>
+        <mat-list-item *ngFor="let item of grupo.arrChannels">
+            <button mat-button class="mat-list-item" (click)="goTextChannel(item._id)"><mat-icon>#</mat-icon> {{item.title}}</button>
+        </mat-list-item>
+    </mat-list>
+    
+    
+    <mat-divider></mat-divider>
+    <br>
+    
+    <label class="titulos">Voice Channels</label>
+    <mat-list>
+        <mat-list-item *ngFor="let item of grupo.arrAudioChannels">
+            <button mat-button class="mat-list-item" (click)="goVoiceChannel(item._id)"><mat-icon>volume_up</mat-icon>  {{item.title}}</button>
+        </mat-list-item>
+    </mat-list>
+    
+    <mat-divider></mat-divider>
+</div>
