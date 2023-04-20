@@ -36,7 +36,8 @@ const GroupController = {
             //obtener y modificar el usuario agregando el newGroup a la lista de grupos 
             User.findByIdAndUpdate(creatorId,{$push:{arrGroups:newGroup._id}}, { new : true })
                 .then(user => {
-                    res.status(200).send(`el usuario ${user.name} ha creado el grupo ${newGroup.title}`)
+                    //res.status(200).send(`el usuario ${user.name} ha creado el grupo ${newGroup.title}`)
+                    res.status(200).send(newGroup)
                 })
                 .catch(error => {
                     res.status(400).send('No pudo agregarse el grupo a la lista del usuario')
