@@ -5,6 +5,9 @@ import { UserService} from 'src/app/shared/services/user.service'
 import { User } from 'src/app/shared/interfaces/user'
 import { Userpopulated } from 'src/app/shared/interfaces/userpopulated';
 
+import { MatDialog } from '@angular/material/dialog';
+import { NewGroupComponent } from 'src/app/modals/new-group/new-group.component';
+
 @Component({
   selector: 'app-nav',
   templateUrl: './nav.component.html',
@@ -23,7 +26,7 @@ export class NavComponent {
     arrDirectMessages:[]
   }
   //aqui llamamos al user controller y cargamos el valor 
-  constructor(private userService:UserService,private router: Router){
+  constructor(private userService:UserService,private router: Router, private matDialog:MatDialog){
     //mientras no tenemos la sesion y la conexion entre componentes SE HARDCODEA
     
     this.usuario._id="643aed8b64f01a772cb50353"
@@ -75,9 +78,6 @@ export class NavComponent {
     
   }
 
-
-  //todos estos camaradas están mal 
-
   traerUsuario(){
     //debe ser desde el servicio el sessionman
     this.usuario = this.userService.getUser()
@@ -88,5 +88,8 @@ export class NavComponent {
     this.router.navigate([url])
   }
   
-  
+  //FUNCIONES DE DIALOGOS / MODALES 
+  openGroupDialog(){
+    this.matDialog.open(NewGroupComponent,{})
+  }
 }

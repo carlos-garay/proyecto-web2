@@ -77,7 +77,7 @@ export class UserService {
     let body = {
       password: password
     }
-    let idUser:string = '' //Este men se va a traer del session storage
+    let idUser:string = this.usuarioActual._id //Este men se va a traer del session storage
     const headers = new HttpHeaders().set('Content-Type', 'application/json');
     let url:string = environment.apiUrl+'users/'+idUser+'password'
     return this.httpClient.put(url,body,{headers})
@@ -87,7 +87,7 @@ export class UserService {
     let body = {
       name: name
     }
-    let idUser:string = '' //Este men se va a traer del session storage
+    let idUser:string = this.usuarioActual._id //Este men se va a traer del session storage
     const headers = new HttpHeaders().set('Content-Type', 'application/json');
     let url:string = environment.apiUrl+'users/'+idUser+'name'
     return this.httpClient.put(url,body,{headers})

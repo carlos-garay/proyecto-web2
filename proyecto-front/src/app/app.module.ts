@@ -23,6 +23,8 @@ import { ChangepasswordComponent } from './pages/changepassword/changepassword.c
 import { DirectmessagesComponent } from './pages/directmessages/directmessages.component';
 import { ChannellistComponent } from './pages/group/channellist/channellist.component';
 import { ListausuariosComponent } from './pages/group/listausuarios/listausuarios.component';
+import { NewGroupComponent } from './modals/new-group/new-group.component';
+import { NewRequestComponent } from './modals/new-request/new-request.component';
 
 @NgModule({
   declarations: [
@@ -41,7 +43,9 @@ import { ListausuariosComponent } from './pages/group/listausuarios/listausuario
     ChangepasswordComponent,
     DirectmessagesComponent,
     ChannellistComponent,
-    ListausuariosComponent
+    ListausuariosComponent,
+    NewGroupComponent,
+    NewRequestComponent
   ],
   imports: [
     BrowserModule,
