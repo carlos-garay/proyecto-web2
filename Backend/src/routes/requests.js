@@ -58,33 +58,36 @@ router.get('/',requestsController.getRequests)
  *        schema:
  *          example:
  *      
- *            {
- *              "ReqSent": [
- *                  {
- *                  "_id": "643b678619262fca193b0fb2",
- *                  "sender": "643aed8b64f01a772cb50353",
- *                  "receiver": "643af5d692b9f9f15fb1544b",
- *                  "status": 1,
- *                  "__v": 0
- *                  },
- *                  {
- *                  "_id": "643c82f7d2e1ff38399dcc36",
- *                  "sender": "643aed8b64f01a772cb50353",
- *                  "receiver": "643af5d692b9f9f15fb1544b",
- *                  "status": 1,
- *                  "__v": 0
- *                  }
- *              ],
- *              "ReqReceived": [
- *                  {
- *                  "_id": "643c9cd97963286ff4f67f08",
- *                  "sender": "643b02446664b9a3efbf1e60",
- *                  "receiver": "643aed8b64f01a772cb50353",
- *                  "status": 0,
- *                  "__v": 0
- *                  }
- *              ]
- *            }
+ *               {
+ *               "ReqSent": [
+ *                   {
+ *                   "_id": "643b678619262fca193b0fb2",
+ *                   "sender": "Usuario precargado1",
+ *                   "receiver": "Usuario precargado2",
+ *                   "status": 1,
+ *                   "__v": 0,
+ *                   "image": "no image"
+ *                   },
+ *                   {
+ *                   "_id": "643c86b7b8ca456b01854cca",
+ *                   "sender": "Usuario precargado1",
+ *                   "receiver": "Usuario precargado3",
+ *                   "status": 1,
+ *                   "__v": 0,
+ *                   "image": "no image"
+ *                   }
+ *               ],
+ *               "ReqReceived": [
+ *                   {
+ *                   "_id": "643c9cd97963286ff4f67f08",
+ *                   "sender": "Usuario precargado3",
+ *                  "receiver": "Usuario precargado1",
+ *                   "status": 0,
+ *                   "__v": 0,
+ *                   "image": "no image"
+ *                   }
+ *               ]
+ *               }
  *      404: 
  *        description: no se encontró al usuario o sus requests. 
  */

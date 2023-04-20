@@ -63,10 +63,36 @@ const RequestController = {
         User.findById(idUser)
             .populate("arrRequestsSent")
             .populate("arrRequestsReceived")
-            .then(usuario => {
+            .then(async usuario => {
+
+                for (let request of usuario.arrRequestsReceived){
+                    objSender = await User.findById(request.sender)
+                    index = usuario.arrRequestsReceived.indexOf(request)
+                    usuario.arrRequestsReceived[index].sender = objSender.name 
+                    usuario.arrRequestsReceived[index].image = objSender.image
+                }
+
+
+                usuario.arrRequestsReceived.map(request =>{
+                    request.receiver = usuario.name;
+                    request.image = usuario.image;
+                })    
+
+                usuario.arrRequestsSent.map(request =>{
+                    request.sender = usuario.name;
+                    request.image = usuario.image;
+                })
+
+                for (let request of usuario.arrRequestsSent){
+                    objReceiver = await User.findById(request.receiver)
+                    index = usuario.arrRequestsSent.indexOf(request)
+                    usuario.arrRequestsSent[index].receiver = objReceiver.name 
+                    usuario.arrRequestsSent[index].image = objReceiver.image
+                }
                 //obtenemos los arreglos de requests que tiene el usaurio
+                console.log(usuario.arrRequestsSent)
                 arraysRequests= {ReqSent: usuario.arrRequestsSent, ReqReceived: usuario.arrRequestsReceived }
-                console.log(usuario);
+                console.log(arraysRequests.ReqSent);
                 res.status(200).type("application/json").json(arraysRequests);
 
             })

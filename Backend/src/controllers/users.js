@@ -13,7 +13,7 @@ const UserController = {
             res.status(201).send(user._id);
         })
         .catch(err =>{
-            res.status(500).send('Error en el servidor '+err);
+            res.status(400).send('email incorrecto '+err);
         });
     },
 

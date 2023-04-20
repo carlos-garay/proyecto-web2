@@ -3,6 +3,7 @@ const express = require('express')
 const routes = require('./src/routes') //carpeta que trae rutas particulares, el router
 require('dotenv').config()
 const mongoose = require('mongoose');
+const cors = require('cors');
 
 const swaggerJsDoc = require('swagger-jsdoc')
 const swaggerUi = require('swagger-ui-express')
@@ -24,6 +25,18 @@ mongoose.connect(mongoUrl,{autoIndex: false})
   });
 
 const port = process.env.PORT
+
+app.use((req,res,next)=>{
+  res.setHeader('Access-Control-Allow-Origin', 'http://localhost:4200');
+
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, DELETE');
+
+  res.setHeader('Access-Control-Allow-Headers', 'Content-type, Authorization');
+
+  next();
+});
+
+app.use(express.json()); // Use express body-parser to parse all request bodies.
 
 const swaggerDocs = swaggerJsDoc(swaggerConf)
 

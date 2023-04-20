@@ -20,6 +20,11 @@ const userSchema = new Schema({
         default: "undefined"
     },
     //También contará con foto de perfil ya que se determine como se manejarán las imágenes
+    image: {
+        type: String,
+        required: true,
+        default: "noimage"
+    },
     
     arrGroups: {
         type: [{
