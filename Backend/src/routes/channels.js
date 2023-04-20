@@ -97,16 +97,6 @@ router.post('/',express.json(),channelsController.createChannel);
  *        schema:
  *          type: string
  * 
- *      - in: body
- *        name: arrMembers
- *        description: arreglo con los ids de los miembros que perteneceran al canal
- *        schema:
- *          type: object
- *          example:
- *              {  
- *               "arrMembers": ["6420ab210db1252132a4a328", "6420ab0f0db1252132a4a324","6420ab1a0db1252132a4a326"]
- *              }
- * 
  * 
  *    responses:
  *      200:
@@ -166,7 +156,7 @@ router.put('/:idChannel/removeMember',express.json(),channelsController.removeMe
  *  put:
  *    tags:
  *      - Channel
- *    description: Quitamos miembros del canal
+ *    description: Quitamos un miembro del canal
  *    parameters:
  *      - in: path
  *        name: idGroup
@@ -181,12 +171,12 @@ router.put('/:idChannel/removeMember',express.json(),channelsController.removeMe
  *          type: string
  * 
  *      - in: body
- *        name: arrMembers
- *        description: arreglo con los ids de los miembros que quitaremos
+ *        name: email
+ *        description: email del usuario que sacaramos del canal
  *        schema:
  *          type: object
  *          example:
- *            { "arrMembers": ["641e54b50d597f66c48a7fa7","641e54bb0d597f66c48a7fa9"]}
+ *            { "email": "otro1@test.com"}
  * 
  *    responses:
  *      200:

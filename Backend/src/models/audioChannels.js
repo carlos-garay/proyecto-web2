@@ -13,6 +13,12 @@ const audioChannelSchema = new Schema({
         }],
         required: true
     },
+    arrInCall:{
+        type: [{
+            type: Schema.ObjectId,
+            ref: "users"
+        }]
+    },
     private: { 
         type: Boolean, 
         required: true,

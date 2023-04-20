@@ -13,7 +13,15 @@ const ChannelController = {
             .populate("arrMessages")
             .then(channel => {
                 //Cambiamos el sender de su id a su nombre para que se pueda desplegar en el mensaje
-                channel.arrMessages.map(msg => msg.sender = channel.arrMembers.find(({_id}) => _id == msg.sender).name)
+                channel.arrMessages.map(msg => {
+
+                    let foundSender =  channel.arrMembers.find(({_id}) => _id == msg.sender)
+                    if(foundSender){
+                        msg.sender = foundSender.name
+                    }else{
+                        msg.sender = "Usuario eliminado"
+                    }
+                })
                 res.status(200).type("application/json").json(channel);
             })
             .catch(err => {
@@ -24,21 +32,27 @@ const ChannelController = {
     createChannel: (req,res)=>{
         console.log(req.params)
         let idGroup = req.params.idGroup;
-        let channelBD = Channel(req.body);
-        channelBD.save().then(channel => {
-            //Intentamos asignar el _id del canal al arreglo de canales del grupo
-            Group.findByIdAndUpdate(idGroup, {$push:{arrChannels: channel._id}}, { new : true }).then(group => {
-                res.status(200).send(`Se agregó el canal ${channel._id} al grupo  ${group.title}`);
+
+        Group.findById(idGroup)
+        .then(grupo =>{
+            //El canal automaticamente se crea con todos los miembros
+            Channel.create({arrMembers:grupo.arrUsers}).then(channel => {
+                //Intentamos asignar el _id del canal al arreglo de canales del grupo
+                Group.findByIdAndUpdate(idGroup, {$push:{arrChannels: channel._id}}, { new : true }).then(group => {
+                    res.status(200).send(`Se agregó el canal ${channel._id} al grupo  ${group.title}`);
+                })
+                .catch(err => {
+                    //Si no se puedo guardar al grupo el canal, hay que eliminarlo de la base de datos de canales
+                    Channel.findByIdAndDelete(channel._id);
+                    res.status(404).send("No se encontró el grupo con el id: "+ idGroup);
+                    
+                });
             })
-            .catch(err => {
-                //Si no se puedo guardar al grupo el canal, hay que eliminarlo de la base de datos de canales
-                Channel.findByIdAndDelete(channel._id);
-                res.status(404).send("No se encontró el grupo con el id: "+ idGroup);
-                
-            });
-        })
-        .catch(err =>{
-            res.status(500).send("Error en el servidor " + err);
+            .catch(err =>{
+                res.status(500).send("Error en el servidor " + err);
+            })
+        }).catch(err=>{
+            res.status(404).send("Error al encontrar el grupo "+err)
         })
     },
 
@@ -109,16 +123,23 @@ const ChannelController = {
     },
 
     removeMemberFromChannel: (req,res)=>{
-        let arrayDeleteMembers = req.body.arrMembers;
+        let email = req.body.email;
         let idChannel = req.params.idChannel;
         let idGroup = req.params.idGroup;
-        console.log(arrayDeleteMembers);
-        Channel.findByIdAndUpdate(idChannel, {$pullAll:{arrMembers:arrayDeleteMembers}}, { new : true }).then(channel => {
-            res.status(200).send(`Se eliminaron miembros del canal ${channel._id} del grupo  ${idGroup}`);
+        console.log(email);
+        User.findOne({email: email})
+        .then(user=>{
+            Channel.findByIdAndUpdate(idChannel, {$pull:{arrMembers:user._id}}, { new : true })
+            .then(channel => {
+                res.status(200).send(`Se elimino al usuario ${email} del canal ${channel._id} del grupo  ${idGroup}`);
+            })
+            .catch(err => {
+                res.status(404).send("No se encontró el canal con el id: "+ idChannel + " "+ err);
+            });
         })
-        .catch(err => {
-            res.status(404).send("No se encontró el canal con el id: "+ idChannel + err);
-        });
+        .catch(err =>{
+            res.status(404).send("No se encontró el usuario con el email "+ email + " "+err );
+        })
     },
 
     changeChannelName: (req,res)=>{

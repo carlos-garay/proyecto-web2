@@ -45,7 +45,7 @@ router.post('/',express.json(),groupsController.createGroup)
  */
 
 
-router.delete('/:idGroup',groupsController.deleteGroup) //esta bien criminal este dude, borrar el arreglo de toda la lista de usuarios, borrar todos sus canales y borrar todos los mensajes LOOOOL
+router.delete('/:idGroup',groupsController.deleteGroup)
 /**
  * @swagger
  * /groups/{idGroup}:
@@ -66,8 +66,6 @@ router.delete('/:idGroup',groupsController.deleteGroup) //esta bien criminal est
  *        description: no pudo borrares el grupo 
  */
 
-//agregar usuarios solamente será por medio de invitación, esa invitación es un link que llama este request
-//el body va a traer el id del usuario que tiene sesion iniciada, que es quien se metera al grupo 
 router.put('/:idGroup',express.json(),groupsController.addUserToGroup) //el body va a traer el user que quieres agregar 
 /**
  * @swagger
@@ -97,6 +95,43 @@ router.put('/:idGroup',express.json(),groupsController.addUserToGroup) //el body
  *      400: 
  *        description: no se pudo agregar al grupo
  */
+
+
+
+router.put('/:idGroup/remove',express.json(),groupsController.removeUserFromGroup) //el body va a traer el user que quieres agregar 
+/**
+ * @swagger
+ * /groups/{idGroup}/remove:
+ *  put:
+ *    tags:
+ *      - groups
+ *    description: sacar a un usuario del grupo 
+ *    parameters:
+ *      - in: path
+ *        name: idGroup
+ *        description: el id del grupo donde se sacará al usuario
+ *        schema:
+ *          type: string
+ *      - in: body
+ *        name: idUser
+ *        description: objeto que contiene el correo del user que queremos sacar del grupo
+ *        schema:
+ *          type: object
+ *          example:
+ *            {
+ *              "email":"otro3@test.com"
+ *            }
+ *    responses:
+ *      200:
+ *        description: el usuario fue sacado del grupo exitosamente
+ *      400: 
+ *        description: no se pudo eliminar el usuario del grupo
+ *      500:
+ *        description: error al actualizar datos en las colecciones
+ *      404:
+ *        description: no se encontro el grupo, canal o usuario
+ */
+
 
 
 router.get('/:idGroup',groupsController.getGroup) //traer todo lo de ese grupo, usamos populate 

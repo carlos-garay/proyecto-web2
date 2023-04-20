@@ -16,20 +16,14 @@ router.post('/',express.json(),audioChannelController.createAudioChannel);
  *        description: el id del grupo donde vamos a crear el canal
  *        schema:
  *          type: string
- *      - in: body
- *        name: arrUsers
- *        description: objeto que contiene arreglo con los miembros iniciales
- *        schema:
- *          type: object
- *          example:
- *            {"arrMembers": ["6420ab1a0db1252132a4a326", "6420ab0f0db1252132a4a324"]}
+ * 
  *    responses:
  *      200:
  *        description: se agrego el canal de audio 
  *      404: 
  *        description: no se encontro el grupo con ese id 
  *      500: 
- *        description: eror en el servidor 
+ *        description: error en el servidor 
  */
 
 
@@ -41,31 +35,36 @@ router.put('/:idChannel/addMember',express.json(),audioChannelController.addMemb
  *  put:
  *    tags:
  *      - audioChannels
- *    description: agregar los usuarios del arreglo al canal
+ *    description: Añadimos un miembro al canal
  *    parameters:
  *      - in: path
  *        name: idGroup
- *        description: el id del grupo al que pertenece el canal
+ *        description: id del grupo al que pertenece el canal
  *        schema:
  *          type: string
+ * 
  *      - in: path
  *        name: idChannel
- *        description: el id del canal donde agregaremos el miembro
+ *        description: id del canal de audio al que se le agregara el miembro
  *        schema:
  *          type: string
+ * 
+ * 
  *      - in: body
- *        name: arrUsers
- *        description: objeto que contiene arreglo con los usuarios a agregar
+ *        name: email
+ *        description: email del usuario a añadir
  *        schema:
  *          type: object
  *          example:
- *            {"arrMembers": ["6420ab1a0db1252132a4a326", "6420ab0f0db1252132a4a324"]}
+ *            { "email": "otro1@test.com"}
+ * 
  *    responses:
  *      200:
- *        description: se agregaron los miembros al canal
- *      404: 
- *        description: no se encontro el grupo con ese id 
+ *        description: se agregaron los miembros al canal idChannel del grupo idGroup
+ *      404:
+ *        description: No se encontró el canal con el id idChannel
  */
+
 
 router.put('/:idChannel/removeMember',express.json(),audioChannelController.removeMemberFromAudioChannel);
 /**
@@ -74,7 +73,7 @@ router.put('/:idChannel/removeMember',express.json(),audioChannelController.remo
  *  put:
  *    tags:
  *      - audioChannels
- *    description: eliminar los usuarios del arreglo del canal
+ *    description: eliminar un usuario del arreglo del canal
  *    parameters:
  *      - in: path
  *        name: idGroup
@@ -83,16 +82,16 @@ router.put('/:idChannel/removeMember',express.json(),audioChannelController.remo
  *          type: string
  *      - in: path
  *        name: idChannel
- *        description: el id del canal donde agregaremos el miembro
+ *        description: el id del canal donde eliminaremos al miembro
  *        schema:
  *          type: string
  *      - in: body
- *        name: arrUsers
- *        description: objeto que contiene arreglo con los usuarios a agregar
+ *        name: email
+ *        description: email del usuario a eliminar del canal
  *        schema:
  *          type: object
  *          example:
- *            { "arrMembers": ["641d38e610683da2e7cca8a4","641d38fb10683da2e7cca8a6"]}
+ *            { "email": "otro1@test.com"}
  *    responses:
  *      200:
  *        description: se eliminaron los miembros del canal
@@ -124,6 +123,83 @@ router.delete('/:idChannel',audioChannelController.deleteAudioChannel);
  *        description: se elimino el canal de audio
  *      404: 
  *        description: no se encontro el grupo con ese id 
+ */
+
+
+
+router.put('/:idChannel/enterCall',express.json(),audioChannelController.enterCall);
+/**
+ * @swagger
+ * /groups/{idGroup}/audioChannels/{idChannel}/enterCall:
+ *  put:
+ *    tags:
+ *      - audioChannels
+ *    description: Añadimos un miembro a una llamada
+ *    parameters:
+ *      - in: path
+ *        name: idGroup
+ *        description: id del grupo al que pertenece el canal
+ *        schema:
+ *          type: string
+ * 
+ *      - in: path
+ *        name: idChannel
+ *        description: id del canal de audio al que se agrega un usuario a la llamada
+ *        schema:
+ *          type: string
+ * 
+ * 
+ *      - in: body
+ *        name: idUser
+ *        description: id del usuario a añadir a la llamada
+ *        schema:
+ *          type: object
+ *          example:
+ *            { "idUser": "643aed8b64f01a772cb50353"}
+ * 
+ *    responses:
+ *      200:
+ *        description: se agrego el usuario a la llamada
+ *      404:
+ *        description: No se encontró el canal con el id idChannel
+ */
+
+
+router.put('/:idChannel/exitCall',express.json(),audioChannelController.exitCall);
+/**
+ * @swagger
+ * /groups/{idGroup}/audioChannels/{idChannel}/exitCall:
+ *  put:
+ *    tags:
+ *      - audioChannels
+ *    description: Sacamos a un miembro de una llamada
+ *    parameters:
+ *      - in: path
+ *        name: idGroup
+ *        description: id del grupo al que pertenece el canal
+ *        schema:
+ *          type: string
+ * 
+ *      - in: path
+ *        name: idChannel
+ *        description: id del canal de audio al que se saca al usuario a la llamada
+ *        schema:
+ *          type: string
+ * 
+ * 
+ *      - in: body
+ *        name: idUser
+ *        description: id del usuario a sacar de la llamada
+ *        schema:
+ *          type: object
+ *          example:
+ *            { "idUser": "643aed8b64f01a772cb50353"}
+ * 
+ *    responses:
+ *      200:
+ *        description: se eliminó al usuario de la llamada
+ *      404:
+ *        description: No se encontró el canal con el id idChannel
  */
 
 

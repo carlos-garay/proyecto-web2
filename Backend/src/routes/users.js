@@ -105,47 +105,76 @@ router.get('/:idUser',usersController.loadUser);
  *        schema:
  *          example:
  *              {
- *                  "_id": "643aed8b64f01a772cb50353",
- *                  "name": "usuario1",
- *                  "email": "otro1@test.com",
- *                  "password": "password",
- *                  "token": "undefined",
- *                  "arrGroups": [
- *                      {
- *                      "_id": "643b6d6f23cf96aafcebfb06",
- *                      "title": "grupo1",
- *                      "image": "noimage",
- *                      "arrUsers": [
- *                          "643aed8b64f01a772cb50353",
- *                          "643af5d692b9f9f15fb1544b",
- *                          "643b02446664b9a3efbf1e60"
- *                      ],
- *                      "arrAdmins": [
- *                          "643aed8b64f01a772cb50353"
- *                      ],
- *                      "arrChannels": [
- *                          "643b898e18c959b67911bae3"
- *                      ],
- *                      "arrAudioChannels": [
- *                          "643b8cb186388eeae83cec80"
- *                      ],
- *                      "__v": 0
- *                      }
- *                  ],
- *                  "arrFriends": [],
- *                  "arrRequestsSent": [
- *                      {
- *                      "_id": "643b678619262fca193b0fb2",
- *                      "sender": "643aed8b64f01a772cb50353",
- *                      "receiver": "643af5d692b9f9f15fb1544b",
- *                      "status": 1,
- *                      "__v": 0
- *                      }
- *                  ],
- *                  "arrRequestsReceived": [],
- *                  "arrDirectMessages": [],
- *                  "__v": 0
- *                  }  
+ *               "_id": "643aed8b64f01a772cb50353",
+ *               "name": "Usuario precargado1",
+ *               "email": "otro1@test.com",
+ *               "password": "password",
+ *               "token": "undefined",
+ *               "arrGroups": [
+ *                   {
+ *                       "_id": "643d910ee3f376459277de77",
+ *                       "title": "grupo1",
+ *                       "image": "noimage",
+ *                       "arrUsers": [
+ *                           "643aed8b64f01a772cb50353",
+ *                           "643af5d692b9f9f15fb1544b"
+ *                       ],
+ *                       "arrAdmins": [
+ *                           "643aed8b64f01a772cb50353"
+ *                       ],
+ *                       "arrChannels": [
+ *                           "643dab07cd8ff99e26bc3f56",
+ *                           "643dbf0527bc80c7910407c9"
+ *                       ],
+ *                       "arrAudioChannels": [
+ *                           "643e07435919adb973eccb4d",
+ *                           "643f8faf4fcc74d3d5301a00"
+ *                       ],
+ *                       "__v": 3
+ *                       },
+ *                       {
+ *                       "_id": "643dbbb427bc80c7910407c4",
+ *                       "title": "grupo2",
+ *                       "image": "noimage",
+ *                       "arrUsers": [
+ *                           "643aed8b64f01a772cb50353",
+ *                           "643af5d692b9f9f15fb1544b",
+ *                           "643b02446664b9a3efbf1e60",
+ *                           "643f5b1dae5c170d91ee8d99"
+ *                       ],
+ *                       "arrAdmins": [
+ *                           "643aed8b64f01a772cb50353"
+ *                       ],
+ *                       "arrChannels": [
+ *                           "643dbf1c27bc80c7910407cc",
+ *                           "643efcbdf8f79921bd42a1f4",
+ *                           "643f545c204a18cbfcd936cc"
+ *                       ],
+ *                       "arrAudioChannels": [
+ *                           "643ed78a88486d6dd59d7be5",
+ *                           "643f8ed65865f04f90d29514"
+ *                       ],
+ *                       "__v": 7
+ *                       }
+ *                       ],
+ *                       "arrFriends": [
+ *                           "643af5d692b9f9f15fb1544b"
+ *                       ],
+ *                       "arrRequestsSent": [
+ *                           "643b678619262fca193b0fb2",
+ *                           "643b67ef19262fca193b0fbc",
+ *                           "643c82f7d2e1ff38399dcc36",
+ *                           "643c86b7b8ca456b01854cca"
+ *                       ],
+ *                       "arrRequestsReceived": [
+ *                           "643c9cd97963286ff4f67f08"
+ *                       ],
+ *                       "arrDirectMessages": [
+ *                           "643c832ed2e1ff38399dcc3b"
+ *                       ],
+ *                       "__v": 0,
+ *                       "image": "no image"
+ *                   }
  *      404:
  *        description: No se encontro el usuario con el id idUSer
  */
