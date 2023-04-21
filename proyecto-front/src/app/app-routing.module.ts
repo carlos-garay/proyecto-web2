@@ -10,8 +10,7 @@ import { GroupvoicechannelComponent } from './pages/group/groupvoicechannel/grou
 import { DirectmessagesComponent } from './pages/directmessages/directmessages.component';
 import { ChangenameComponent } from './pages/changename/changename.component';
 import { ChangepasswordComponent } from './pages/changepassword/changepassword.component';
-import { FriendchatComponent } from './pages/friendchat/friendchat.component';
-
+import { FriendchatComponent } from './pages/directmessages/friendchat/friendchat.component';
 
 const routes: Routes = [
   {path: '',component:HomeComponent},
