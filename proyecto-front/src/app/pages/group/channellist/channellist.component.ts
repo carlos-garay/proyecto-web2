@@ -36,4 +36,18 @@ export class ChannellistComponent{
     this.router.navigate([url])
   }
 
+  deleteGroup(){
+    this.grupo._id
+  }
+
+  openNameDialog(){
+
+  }
+  openTextChannelDialog(){
+    
+  }
+  openVoiceChannelDialog(){
+    
+  }
+
 }

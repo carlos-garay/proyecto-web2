@@ -13,13 +13,14 @@ export class NewRequestComponent {
   formNewRequest: FormGroup
   constructor(private formBuilder:FormBuilder,private router: Router, private requestService: RequestsService){
     this.formNewRequest = formBuilder.group({ //lleva this el formBuilder?
-      email:['',[Validators.required, Validators.email]]
+      email:['',Validators.required],
     })
   }
 
   createNewRequest(){
     //recuperar del form magico 
-    let email:string = ''
+    let valores = this.formNewRequest.value
+    let email:string = valores.email
     this.requestService.createRequest(email).subscribe((response:any)=>{
 
     })

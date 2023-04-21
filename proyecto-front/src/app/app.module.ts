@@ -25,6 +25,7 @@ import { ChannellistComponent } from './pages/group/channellist/channellist.comp
 import { ListausuariosComponent } from './pages/group/listausuarios/listausuarios.component';
 import { NewGroupComponent } from './modals/new-group/new-group.component';
 import { NewRequestComponent } from './modals/new-request/new-request.component';
+import { GenericComponent } from './modals/generic/generic.component';
 
 @NgModule({
   declarations: [
@@ -45,7 +46,8 @@ import { NewRequestComponent } from './modals/new-request/new-request.component'
     ChannellistComponent,
     ListausuariosComponent,
     NewGroupComponent,
-    NewRequestComponent
+    NewRequestComponent,
+    GenericComponent
   ],
   imports: [
     BrowserModule,
