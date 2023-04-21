@@ -18,14 +18,14 @@
     </mat-list>
 </div><br>
 
-<form class="SendMessageForm">
+<form class="SendMessageForm" [formGroup]="formSendDM">
     <mat-form-field appearance="fill" [style.width.%]=95>
       <mat-label>Escribe tu mensaje</mat-label>
-      <input type="text" matInput class="sendInput">
+      <textarea type="text" matInput class="sendInput" formControlName="message" required  [(ngModel)]="inputValue"></textarea>
       <button matPrefix mat-mini-fab color="primary" class="mat-list-item">
         <mat-icon>upload</mat-icon>
       </button>
-      <button matSuffix mat-mini-fab color="primary" class="mat-list-item">
+      <button [disabled]="formSendDM.invalid" matSuffix mat-mini-fab color="primary" class="mat-list-item" (click)="sendMessage()">
         <mat-icon>send</mat-icon>
       </button>
     </mat-form-field>

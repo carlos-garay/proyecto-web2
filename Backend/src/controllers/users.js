@@ -141,6 +141,8 @@ const UserController = {
 
         //dentro del request hay 2 objetos, el user que tenemos, y el mensaje que queremos crear 
         let object = req.body //trae ambos
+        let idUser = req.params.idUser;
+        let idFriend = req.params.idFriend;
 
         // object = { //forma del objeto que traera el body 
         //     UserInfo: {
@@ -153,30 +155,51 @@ const UserController = {
         //     }
         // }
 
-        let temp = { //este objeto es el que va a mandarse a mongo
-            sender: object.UserInfo.idUser,
-            content: object.messageInfo.content,
-            idChannel: req.params.idChannel
-        }
+        //Obtenemos al usuario actual
+        User.findById(idUser)
+        .populate("arrDirectMessages")
+        .then(usuario=>{
+            // Buscamos al canal entre amigos
+            let idChannel = usuario.arrDirectMessages.find(({ arrMembers }) => arrMembers.includes(idFriend))._id
+            if(idChannel == undefined){
+                res.status(404).send("No se encontró el canal entre usuarios");
+            }
+            else{
+                Channel.findById(idChannel)
+                .populate("arrMembers")
+                .then(channel => {
 
-        Message.create(temp) //mandamos crear mensaje con el objeto anterior
-            .then(response => { //response aqui es el mensaje creado
-                //si ya tengo el mensaje creado
-                let idNewMessage = response._id 
-                
-                //insertarlo al arrMessages del textChannel al que pertenece 
-                //modificar channel al que pertenece 
-                Channel.findByIdAndUpdate(req.params.idChannel,{$push:{arrMessages:idNewMessage}},{new : true})
-                    .then(canal =>{
-                        res.status(200).send(`Se creo el mensaje ${idNewMessage} y se agrego al canal ${canal.title}`)
+                    let temp = { //este objeto es el que va a mandarse a mongo
+                        sender: object.UserInfo.idUser,
+                        content: object.messageInfo.content,
+                        idChannel: channel._id
+                    }
+                    //si ya tengo el mensaje creado
+                    Message.create(temp) //mandamos crear mensaje con el objeto anterior
+                    .then(response => { //response aqui es el mensaje creado
+                        let idNewMessage = response._id 
+                        //insertarlo al arrMessages del textChannel al que pertenece 
+                        //modificar channel al que pertenece
+                        Channel.findByIdAndUpdate(idChannel,{$push:{arrMessages:idNewMessage}},{new : true})
+                        .then(canal =>{
+                            res.status(200).type("application/json").json(response);
+                        })
+                        .catch(error =>{
+                            res.status(400).send('No se pudo agregar el mensaje al canal' + error);
+                        })
                     })
                     .catch(error =>{
-                        res.status(400).send('No se pudo agregar mensaje al canal')
+                        res.status(400).send('No se pudo crear el mensaje');
                     })
-            })
-            .catch(error =>{
-                res.status(400).send('no se pudo crear/guardar el mensaje ')
-            })
+                })
+                .catch(error =>{
+                    res.status(404).send('No se encontró el chat entre amigos');
+                })
+            }
+        })
+        .catch(error =>{
+            res.status(400).send('no se pudo crear/guardar el mensaje ' + error);
+        })
     },
 
 

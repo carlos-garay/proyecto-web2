@@ -328,10 +328,10 @@ router.get('/:idUser/friends/:idFriend',usersController.loadChannel);
  */
 
 
-router.post('/:idUser/friends/:idChannel/send',express.json(),usersController.sendDM);
+router.post('/:idUser/friends/:idFriend/send',express.json(),usersController.sendDM);
 /**
  * @swagger
- * /users/{idUser}/friends/{idChannel}/send:
+ * /users/{idUser}/friends/{idFriend}/send:
  *  post:
  *    tags:
  *      - User
@@ -344,8 +344,8 @@ router.post('/:idUser/friends/:idChannel/send',express.json(),usersController.se
  *          type: string
  * 
  *      - in: path
- *        name: idChannel
- *        description: canal de mensaje directo al que se agregó un mensaje
+ *        name: idFriend
+ *        description: id del amigo con el que se esta chateando
  *        schema:
  *          type: string
  * 
