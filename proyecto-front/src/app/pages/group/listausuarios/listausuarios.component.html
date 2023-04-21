@@ -5,14 +5,17 @@ USUARIOS DEL SERVIDOR:
     <mat-list>
         <ng-container *ngFor="let item of grupo.arrUsers">
 
-            <mat-list-item>
-                <mat-card class="example-card">
-                    <mat-card-header>
-                      <div mat-card-avatar class="example-header-image"></div>
-                      <mat-card-title>{{item.name}}</mat-card-title>
-                      <mat-card-subtitle>{{item.email}}</mat-card-subtitle>
-                    </mat-card-header>
-                </mat-card>
+            <mat-list-item >
+                <button mat-button  style="height: auto;">
+                    <mat-card class="example-card">
+                        <mat-card-header>
+                          <div mat-card-avatar class="example-header-image"></div>
+                          <mat-card-title>{{item.name}}</mat-card-title>
+                          <mat-card-subtitle>{{item.email}}</mat-card-subtitle>
+                        </mat-card-header>
+                    </mat-card>
+                </button>
+                
             </mat-list-item>
         </ng-container>
     </mat-list>

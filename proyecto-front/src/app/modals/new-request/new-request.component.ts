@@ -1,4 +1,7 @@
 import { Component } from '@angular/core';
+import {FormGroup,FormBuilder,Validators} from '@angular/forms'
+import { RequestsService } from 'src/app/shared/services/requests.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-new-request',
@@ -7,4 +10,19 @@ import { Component } from '@angular/core';
 })
 export class NewRequestComponent {
 
+  formNewRequest: FormGroup
+  constructor(private formBuilder:FormBuilder,private router: Router, private requestService: RequestsService){
+    this.formNewRequest = formBuilder.group({ //lleva this el formBuilder?
+      email:['',[Validators.required, Validators.email]]
+    })
+  }
+
+  createNewRequest(){
+    //recuperar del form magico 
+    let email:string = ''
+    this.requestService.createRequest(email).subscribe((response:any)=>{
+
+    })
+
+  }
 }

@@ -1,1 +1,37 @@
 <p>grouptextchannel works!</p>
+
+<h2>{{channel.title}}</h2>
+
+<div class="scrollContainer">
+    <mat-list>
+        <ng-container *ngFor="let item of channel.arrMessages">
+
+            <mat-card class="example-card">
+                <mat-card-header>
+                <div mat-card-avatar class="example-header-image"></div>
+                <mat-card-title>{{item.sender}}</mat-card-title>
+                <mat-card-subtitle>{{item.dateTime}}</mat-card-subtitle>
+                </mat-card-header>
+                <mat-card-content>{{item.content}}</mat-card-content>
+            </mat-card>
+            <mat-divider></mat-divider>
+        </ng-container>
+
+    </mat-list>
+</div><br>
+
+<form class="SendMessageForm">
+    <mat-form-field appearance="fill" [style.width.%]=95>
+      <mat-label>Escribe tu mensaje</mat-label>
+      <input type="text" matInput class="sendInput">
+      <button matPrefix mat-mini-fab color="primary" class="mat-list-item">
+        <mat-icon>upload</mat-icon>
+      </button>
+      <button matSuffix mat-mini-fab color="primary" class="mat-list-item">
+        <mat-icon>send</mat-icon>
+      </button>
+    </mat-form-field>
+</form>
+
+  
+
