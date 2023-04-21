@@ -55,13 +55,13 @@ Requests Recibidos
                 <mat-card class="withButtons">
                     <mat-card-header>
                       <div mat-card-avatar class="example-header-image"></div>
-                      <mat-card-title>{{item.receiver}}</mat-card-title>
+                      <mat-card-title>{{item.sender}}</mat-card-title>
                       <mat-card-subtitle>Pending</mat-card-subtitle>
                     </mat-card-header>
                     <mat-card-actions>
                         <button mat-button color="accent" (click)="acceptRequest(item._id)">Accept</button>
                         <button mat-button color="warn" (click)="declineRequest(item._id)">Decline</button>
-                      </mat-card-actions>
+                    </mat-card-actions>
                 </mat-card>
             </mat-list-item>
         </ng-container>
@@ -70,7 +70,7 @@ Requests Recibidos
                 <mat-card class="example-card">
                     <mat-card-header>
                       <div mat-card-avatar class="example-header-image"></div>
-                      <mat-card-title>{{item.receiver}}</mat-card-title>
+                      <mat-card-title>{{item.sender}}</mat-card-title>
                       <mat-card-subtitle>Aceptada</mat-card-subtitle>
                     </mat-card-header>
                 </mat-card>
@@ -81,7 +81,7 @@ Requests Recibidos
                 <mat-card class="example-card">
                     <mat-card-header>
                       <div mat-card-avatar class="example-header-image"></div>
-                      <mat-card-title>{{item.receiver}}</mat-card-title>
+                      <mat-card-title>{{item.sender}}</mat-card-title>
                       <mat-card-subtitle>Rechazada</mat-card-subtitle>
                     </mat-card-header>
                 </mat-card>

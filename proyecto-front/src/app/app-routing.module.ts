@@ -19,7 +19,7 @@ const routes: Routes = [
   {path: 'requests',component:RequestsComponent},
   {path: 'directMessages',component:DirectmessagesComponent,
     children:[
-      {path:':idChannel',component:FriendchatComponent}
+      {path:':idFriend',component:FriendchatComponent}
     ]}, 
   {path: 'changeName', component:ChangenameComponent},
   {path: 'changePassword', component:ChangepasswordComponent},

@@ -11,7 +11,8 @@ export interface User {
     arrRequestsSent:string[],
     arrRequestsReceived:string[],
     arrDirectMessages:string[],
-    __v?:number
+    __v?:number,
+    image?:string
 }
 
 

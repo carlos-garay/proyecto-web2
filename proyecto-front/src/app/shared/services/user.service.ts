@@ -79,7 +79,7 @@ export class UserService {
     }
     let idUser:string = this.usuarioActual._id //Este men se va a traer del session storage
     const headers = new HttpHeaders().set('Content-Type', 'application/json');
-    let url:string = environment.apiUrl+'users/'+idUser+'password'
+    let url:string = environment.apiUrl+'users/'+idUser+'/password'
     return this.httpClient.put(url,body,{headers})
   }
 
@@ -89,7 +89,7 @@ export class UserService {
     }
     let idUser:string = this.usuarioActual._id //Este men se va a traer del session storage
     const headers = new HttpHeaders().set('Content-Type', 'application/json');
-    let url:string = environment.apiUrl+'users/'+idUser+'name'
+    let url:string = environment.apiUrl+'users/'+idUser+'/name'
     return this.httpClient.put(url,body,{headers})
   }
 }

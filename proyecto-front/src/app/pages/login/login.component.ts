@@ -17,6 +17,7 @@ export class LoginComponent {
       password:['',[Validators.required]]
     })
   }
+  
   loginUsuario(){
     //recuperamos los valores del form y los pasamos como parametro a la funcion del servicio 
     let valores = this.formLogin.value
