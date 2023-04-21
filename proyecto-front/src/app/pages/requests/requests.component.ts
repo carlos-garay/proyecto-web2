@@ -2,6 +2,9 @@ import { Component, OnInit  } from '@angular/core';
 import { Request } from 'src/app/shared/interfaces/request';
 import { RequestsService } from 'src/app/shared/services/requests.service';
 
+import { MatDialog } from '@angular/material/dialog';
+import { NewRequestComponent } from 'src/app/modals/new-request/new-request.component';
+
 @Component({
   selector: 'app-requests',
   templateUrl: './requests.component.html',
@@ -10,7 +13,7 @@ import { RequestsService } from 'src/app/shared/services/requests.service';
 export class RequestsComponent implements OnInit{
   arrRequestsSent: Request[] = [];
   arrRequestsReceived: Request[] = [];
-  constructor(private requestService: RequestsService){ }
+  constructor(private requestService: RequestsService, private matDialog:MatDialog){ }
 
   ngOnInit(){
     this.getAllRequests()
@@ -36,4 +39,7 @@ export class RequestsComponent implements OnInit{
     })
   }
 
+  openRequestDialog(){
+    this.matDialog.open(NewRequestComponent,{})
+  }
 }

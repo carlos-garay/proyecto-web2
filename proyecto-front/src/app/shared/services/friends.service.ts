@@ -12,24 +12,21 @@ export class FriendsService {
 
   loadFriends(){ //esta funcion se llama al elegir mensajes directos 
 
-    let idUser:string = '643aed8b64f01a772cb50353' 
-    //let idUser:string = this.userService.getUser()._id
+    let idUser:string = this.userService.getUser()._id
 
     const url:string = environment.apiUrl+'users/'+idUser+'/friends'
     return this.httpClient.get(url)
   }
 
   removeFriend(idFriend:string){
-    let idUser:string = '643aed8b64f01a772cb50353' 
-    //let idUser:string = this.userService.getUser()._id
+    let idUser:string = this.userService.getUser()._id
     let url:string = environment.apiUrl+'users/'+idUser+'/friends/'+idFriend+'/remove'
     console.log(idFriend)
     return this.httpClient.delete(url)
   }
 
   getDMChannel(idFriend:string ){ //esta funcion se llama al entrar a un DM
-    let idUser:string = '643aed8b64f01a772cb50353' 
-    //let idUser:string = this.userService.getUser()._id
+    let idUser:string = this.userService.getUser()._id
 
     const url:string = environment.apiUrl+'users/'+idUser+'/friends/'+idFriend
     return this.httpClient.get(url)

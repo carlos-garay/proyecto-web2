@@ -10,3 +10,11 @@ background-size: cover;
     max-height: 80vh;
     width: 95%;
 }
+
+.SendMessageForm{
+    position: relative;
+}
+
+#contenedorMessageForm{
+    position: relative; //no jala, deberia fijarlo abajo manteniendo width de 100% 
+}

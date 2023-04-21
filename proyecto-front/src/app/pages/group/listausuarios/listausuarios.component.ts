@@ -23,4 +23,8 @@ export class ListausuariosComponent {
     console.log('lista mans')
     console.log(this.grupo.arrUsers)
   }
+
+  removeFromChannel(){
+    //eliminar usuarios del canal 
+  }
 }

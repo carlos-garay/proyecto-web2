@@ -35,4 +35,11 @@ export class GroupService {
     let url: string = environment.apiUrl+'groups'
     return this.httpClient.post(url,body,{headers})
   }
+
+  getTextChannel(idGroup:string, idChannel:string){
+    //groups/:idGroup/channels/:idChannel
+
+    let url: string = environment.apiUrl+'groups/'+idGroup+'/channels/'+idChannel
+    return this.httpClient.get(url)
+  }
 }

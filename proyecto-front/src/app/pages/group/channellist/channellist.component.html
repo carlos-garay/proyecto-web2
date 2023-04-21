@@ -1,12 +1,10 @@
 <p>channellist works!epic</p>
 
 <div class="channelList">
-
-
     <div class="groupName">
         <mat-list>
             <mat-list-item>
-                <button id="buttonTitle" mat-stroked-button color="accent" class="mat-list-item">{{grupo.title}}</button>
+                <button [matMenuTriggerFor]="allOptions" id="buttonTitle" mat-stroked-button color="accent" class="mat-list-item">{{grupo.title}}</button>
             </mat-list-item>
         </mat-list>
     </div>
@@ -34,3 +32,11 @@
     
     <mat-divider></mat-divider>
 </div>
+
+<mat-menu #allOptions="matMenu">
+    <button mat-menu-item (click)="openNameDialog()">Cambiar Nombre</button>
+    <button mat-menu-item (click)="openTextChannelDialog()">Agregar Canal Texto</button>
+    <button mat-menu-item (click)="openVoiceChannelDialog()">Agregar Canal Voz</button>
+    <button mat-menu-item (click)="deleteGroup()">Eliminar Grupo</button>
+
+</mat-menu>
