@@ -15,6 +15,12 @@ background-size: cover;
     position: relative;
 }
 
-#contenedorMessageForm{
-    position: relative; //no jala, deberia fijarlo abajo manteniendo width de 100% 
+
+
+textarea{
+    white-space: pre-line;
+}
+
+mat-card-content{
+    white-space: pre-line;
 }

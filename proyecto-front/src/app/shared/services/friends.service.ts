@@ -40,7 +40,6 @@ export class FriendsService {
       idUser:idUser,
       token:'undefined'
     }
-    let user = this.userService.getUser()
     let messageInfo = {
       content: content
     }

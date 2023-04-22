@@ -18,12 +18,11 @@
     </mat-list>
 </div><br>
 
-<div id="contenedorMessageForm">
 
 <form class="SendMessageForm" [formGroup]="formSendDM">
     <mat-form-field appearance="fill" [style.width.%]=95>
       <mat-label>Escribe tu mensaje</mat-label>
-      <textarea type="text" matInput class="sendInput" formControlName="message" required  [(ngModel)]="inputValue"></textarea>
+      <textarea type="text" matInput class="sendInput" formControlName="message" required  [(ngModel)]="inputValue" (keydown.enter)="onEnter($event)"></textarea>
       <button matPrefix mat-mini-fab color="primary" class="mat-list-item">
         <mat-icon>upload</mat-icon>
       </button>

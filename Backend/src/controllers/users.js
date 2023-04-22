@@ -174,6 +174,7 @@ const UserController = {
                         content: object.messageInfo.content,
                         idChannel: channel._id
                     }
+                    console.log(temp)
                     //si ya tengo el mensaje creado
                     Message.create(temp) //mandamos crear mensaje con el objeto anterior
                     .then(response => { //response aqui es el mensaje creado
@@ -189,11 +190,11 @@ const UserController = {
                         })
                     })
                     .catch(error =>{
-                        res.status(400).send('No se pudo crear el mensaje');
+                        res.status(400).send('No se pudo crear el mensaje' + error);
                     })
                 })
                 .catch(error =>{
-                    res.status(404).send('No se encontró el chat entre amigos');
+                    res.status(404).send('No se encontró el chat entre amigos' + error);
                 })
             }
         })

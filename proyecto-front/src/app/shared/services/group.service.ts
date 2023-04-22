@@ -42,4 +42,25 @@ export class GroupService {
     let url: string = environment.apiUrl+'groups/'+idGroup+'/channels/'+idChannel
     return this.httpClient.get(url)
   }
+
+  sendMessage(idGroup:string, idChannel:string,content:string){
+    let idUser:string = '643aed8b64f01a772cb50353' 
+    //let idUser:string = this.userService.getUser()._id
+
+    let UserInfo = {
+      idUser:idUser,
+      token:'undefined'
+    }
+    let messageInfo = {
+      content: content
+    }
+    let body = {
+      UserInfo:UserInfo,
+      messageInfo:messageInfo
+    }
+    const headers = new HttpHeaders().set('Content-Type', 'application/json');
+    const url:string = environment.apiUrl+'groups/'+idGroup+'/channels/'+idChannel+'/messages';
+    return this.httpClient.post(url,body,{headers});
+  }
+
 }

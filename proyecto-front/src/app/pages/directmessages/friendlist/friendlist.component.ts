@@ -19,7 +19,6 @@ export class FriendlistComponent {
 
   loadFriends(){
     this.friendsService.loadFriends().subscribe((response:any)=>{
-      console.log(response)
       this.arrFriends=response
     })
   }

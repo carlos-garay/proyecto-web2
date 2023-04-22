@@ -13,6 +13,7 @@ import { FriendsService } from 'src/app/shared/services/friends.service';
 export class FriendchatComponent {
   formSendDM: FormGroup;
   inputValue: string = "";
+  idFriend: string = "";
   channel:TextchannelPopulated={
     _id: '',
     title: '',
@@ -28,27 +29,32 @@ export class FriendchatComponent {
 
     
   ngOnInit(){
-    this.loadChannel();
-  }
-
-  loadChannel(){
     this.route.params.subscribe(params => {
-      const idFriend = params['idFriend'];
-      this.friendsService.getDMChannel(idFriend).subscribe((response:any)=>{
-        console.log(response)
-        this.channel = response
-      })
+      this.idFriend = params['idFriend']
+      this.loadChannel();
     })
   }
 
+  loadChannel(){
+      this.friendsService.getDMChannel(this.idFriend).subscribe((response:any)=>{
+        this.channel = response
+      })
+  }
+
+  onEnter(event: Event) {
+    if(event instanceof KeyboardEvent){
+      let keyEvent:KeyboardEvent = event
+      if (this.inputValue.trim() !== '' && !keyEvent.shiftKey) {
+        this.sendMessage()
+      }
+    }
+  }
+
   sendMessage(){
-    this.route.params.subscribe(params => {
-      const idFriend = params['idFriend'];
       let message:string = this.formSendDM.value.message
-      this.friendsService.sendDM(idFriend,message).subscribe((response:any)=>{
+      this.friendsService.sendDM(this.idFriend,message).subscribe((response:any)=>{
         this.inputValue=""
         this.loadChannel()
-      })
     })
   }
 

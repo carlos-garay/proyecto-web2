@@ -11,3 +11,15 @@
         width: 95%;
     }
     
+
+    .SendMessageForm{
+        position: relative;
+    }
+    
+    textarea{
+        white-space: pre-line;
+    }
+    
+    mat-card-content{
+        white-space: pre-line;
+    }
