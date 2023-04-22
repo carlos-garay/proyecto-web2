@@ -16,7 +16,8 @@
     
     <mat-list>
         <mat-list-item *ngFor="let item of grupo.arrChannels">
-            <button mat-button class="mat-list-item" (click)="goTextChannel(item._id)"><mat-icon>#</mat-icon> {{item.title}}</button>
+            <button (contextmenu)="openChannelMenu($event,item._id)" #menuTrigger="matMenuTrigger" [matMenuTriggerFor]="textChannelUtils"
+             mat-button class="mat-list-item" (click)="goTextChannel(item._id)"><mat-icon>#</mat-icon> {{item.title}}</button>
         </mat-list-item>
     </mat-list>
     
@@ -43,12 +44,12 @@
 
 </mat-menu>
 
-<mat-menu #nada="matMenu">
+<mat-menu #textChannelUtils="matMenu">
     <button mat-menu-item (click)="addUserToChannel()">Agregar Usuario</button>
     <button mat-menu-item (click)="removeUserFromChannel()">Quitar usuario</button>
     <button mat-menu-item (click)="changeChannelName()">Cambiar nombre</button>
 </mat-menu>
 
 
-<button mat-button (contextmenu)="openChannelMenu($event,'epicness')" #menuTrigger="matMenuTrigger" [matMenuTriggerFor]="nada">...</button>
+<button mat-button (contextmenu)="openChannelMenu($event,'epicness')" #menuTrigger="matMenuTrigger" [matMenuTriggerFor]="textChannelUtils">...</button>
 
