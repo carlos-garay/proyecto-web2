@@ -19,12 +19,21 @@ export class ListausuariosComponent {
     arrChannels: [],
     arrAudioChannels: []
   }
-  constructor(){
-    console.log('lista mans')
-    console.log(this.grupo.arrUsers)
-  }
+  selectedUser:string= ''
 
+  constructor(private groupService : GroupService){ }
+
+  selectUser(id:string){
+    this.selectedUser = id
+  }
   removeFromChannel(){
     //eliminar usuarios del canal 
+    //hacer la llamada al servicio de grupo 
+    this.groupService.eliminarUsuarioDegrupo(this.grupo._id).subscribe((response:any)=>{
+
+    })
+    console.log('eliminar' + this.selectedUser)
   }
+
+
 }

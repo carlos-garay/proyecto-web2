@@ -44,8 +44,8 @@ export class GroupService {
   }
 
   sendMessage(idGroup:string, idChannel:string,content:string){
-    let idUser:string = '643aed8b64f01a772cb50353' 
-    //let idUser:string = this.userService.getUser()._id
+
+    let idUser:string = this.userService.getUser()._id
 
     let UserInfo = {
       idUser:idUser,
@@ -61,6 +61,20 @@ export class GroupService {
     const headers = new HttpHeaders().set('Content-Type', 'application/json');
     const url:string = environment.apiUrl+'groups/'+idGroup+'/channels/'+idChannel+'/messages';
     return this.httpClient.post(url,body,{headers});
+  }
+
+  eliminarUsuarioDegrupo(idGroup:string){
+    let idUser:string = this.userService.getUser()._id ; //va a ir en el body
+    let body = {
+      idUser : idUser
+    }
+
+    const headers = new HttpHeaders().set('Content-Type', 'application/json');
+    
+    const url:string = environment.apiUrl+'groups/'+idGroup+'/remove';
+
+    return this.httpClient.put(url,body,{headers})
+
   }
 
 }
