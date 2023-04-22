@@ -4,22 +4,27 @@
     background-size: cover;
     }
     
-    .scrollContainer {
-        overflow: auto; /* Make the container scrollable */
-        position: relative;
-        max-height: 80vh;
-        width: 95%;
-    }
-    
+.scrollContainer {
+    overflow: auto; /* Make the container scrollable */
+    position: relative;
+    max-height: 80vh;
+    width: 95%;
+}
 
-    .SendMessageForm{
-        position: relative;
-    }
-    
-    textarea{
-        white-space: pre-line;
-    }
-    
-    mat-card-content{
-        white-space: pre-line;
-    }
+
+.SendMessageForm{
+    position: relative;
+}
+
+textarea{
+    white-space: pre-line;
+}
+
+mat-card-content{
+    white-space: pre-line;
+}
+
+mat-card{
+    border-radius: 25px;
+    margin: 10px;
+}

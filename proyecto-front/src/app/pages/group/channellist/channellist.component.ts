@@ -28,6 +28,7 @@ export class ChannellistComponent{
   selectedChannel:string=''
   @ViewChild('menuTrigger') menuTrigger!: MatMenuTrigger; 
   
+  
   constructor(private route: ActivatedRoute,private router:Router, private groupService:GroupService) { 
     //mientras no se puedan hacer requests se va a hardcodear para poder forjar la interfaz 
     

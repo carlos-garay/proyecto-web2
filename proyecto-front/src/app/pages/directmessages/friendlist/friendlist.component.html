@@ -5,19 +5,18 @@
     
     <mat-list>
         <ng-container *ngFor="let item of arrFriends">
-
-            <mat-card class="example-card">
-                <mat-card-header>
-                  <div mat-card-avatar class="example-header-image"></div>
-                  <mat-card-title>{{item.name}}</mat-card-title>
-                  <mat-card-subtitle>{{item.email}}</mat-card-subtitle>
-                  <mat-card-actions>
-                    <button mat-button color="accent"  (click)="goDirectMessage(item._id)">Chat</button>
-                    <button mat-button color="warn" (click) ="removeFriend(item._id)" >Eliminar</button>
-                </mat-card-actions>
-                </mat-card-header>
-
-            </mat-card>
+                <mat-card class="example-card">
+                    <mat-card-header>
+                      <div mat-card-avatar class="example-header-image"></div>
+                      <mat-card-title>{{item.name}}</mat-card-title>
+                      <mat-card-subtitle>{{item.email}}</mat-card-subtitle>
+                      <mat-card-actions>
+                        <button mat-button color="accent"  (click)="goDirectMessage(item._id)">Chat</button>
+                        <button mat-button color="warn" (click) ="removeFriend(item._id)" >Eliminar</button>
+                    </mat-card-actions>
+                    </mat-card-header>
+    
+                </mat-card>
         </ng-container>
 
     </mat-list>
