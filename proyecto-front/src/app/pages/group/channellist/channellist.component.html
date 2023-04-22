@@ -1,5 +1,6 @@
 <p>channellist works!epic</p>
 
+
 <div class="channelList">
     <div class="groupName">
         <mat-list>
@@ -35,8 +36,19 @@
 
 <mat-menu #allOptions="matMenu">
     <button mat-menu-item (click)="openNameDialog()">Cambiar Nombre</button>
+    <button mat-menu-item (click)="addUser()">Agregar Usuario</button>
     <button mat-menu-item (click)="openTextChannelDialog()">Agregar Canal Texto</button>
     <button mat-menu-item (click)="openVoiceChannelDialog()">Agregar Canal Voz</button>
     <button mat-menu-item (click)="deleteGroup()">Eliminar Grupo</button>
 
 </mat-menu>
+
+<mat-menu #nada="matMenu">
+    <button mat-menu-item (click)="addUserToChannel()">Agregar Usuario</button>
+    <button mat-menu-item (click)="removeUserFromChannel()">Quitar usuario</button>
+    <button mat-menu-item (click)="changeChannelName()">Cambiar nombre</button>
+</mat-menu>
+
+
+<button mat-button (contextmenu)="openChannelMenu($event,'epicness')" #menuTrigger="matMenuTrigger" [matMenuTriggerFor]="nada">...</button>
+
