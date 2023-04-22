@@ -61,7 +61,7 @@ router.delete('/:idGroup',groupsController.deleteGroup)
  *          type: string
  *    responses:
  *      200:
- *        description: es borro todo exitosamente
+ *        description: objeto del grupo eliminado
  *      400: 
  *        description: no pudo borrares el grupo 
  */
@@ -91,7 +91,7 @@ router.put('/:idGroup',express.json(),groupsController.addUserToGroup) //el body
  *            }
  *    responses:
  *      200:
- *        description: el usuario se unio al grupo exitosamente
+ *        description: objeto del usuario que se agregó al grupo
  *      400: 
  *        description: no se pudo agregar al grupo
  */
@@ -123,7 +123,7 @@ router.put('/:idGroup/remove',express.json(),groupsController.removeUserFromGrou
  *            }
  *    responses:
  *      200:
- *        description: el usuario fue sacado del grupo exitosamente
+ *        description: objeto del usuario que fue sacado del grupo
  *      400: 
  *        description: no se pudo eliminar el usuario del grupo
  *      500:
@@ -268,7 +268,7 @@ router.put('/:idGroup/name',express.json(),groupsController.changeGroupName) // 
  *              }
  *    responses:
  *      200:
- *        description: se ha cambiado el nombre del grupo exitosamente
+ *        description: objeto del grupo al que se le cambió el nombre
  *
  *      400: 
  *        description: no pudo cambiarse el nombre

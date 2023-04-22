@@ -10,7 +10,8 @@ const UserController = {
     registerUser: (req,res)=>{
         let user = User(req.body);
         user.save().then((user) =>{
-            res.status(201).send(user._id);
+            let objUserId = {_id:user._id}
+            res.status(201).type("application/json").json(objUserId);
         })
         .catch(err =>{
             res.status(400).send('email incorrecto '+err);
@@ -25,7 +26,8 @@ const UserController = {
         User.findOne({ email: `${email}` })
             .then(user => {
                 if(user.password == password){
-                    res.status(201).send(user._id);
+                    let objUserId = {_id:user._id}
+                    res.status(201).type("application/json").json(objUserId);
                 } else {
                     res.status(404).type('text/plain; charset=utf-8').send(`Email o contraseña incorrecta`);
                 }
@@ -40,7 +42,7 @@ const UserController = {
         let nameChange = req.body.name;
         let idUser = req.params.idUser;
         User.findByIdAndUpdate(idUser, {name: nameChange}, { new : true }).then(user => {
-            res.status(200).type('text/plain; charset=utf-8').send(`Se actualizó el usuario ${user.name}`);
+            res.status(200).type("application/json").json(user);
         })
         .catch(err => {
             res.status(404).send("No se encontró el usuario con el id: "+idUser);
@@ -53,7 +55,7 @@ const UserController = {
         let idUser = req.params.idUser;
         console.log(req.params);
         User.findByIdAndUpdate(idUser, {password: passwordChange}, { new : true }).then(user => {
-            res.status(200).type('text/plain; charset=utf-8').send(`Se cambio la contraseña del usuario ${user.name}`);
+            res.status(200).type("application/json").json(user);
         })
         .catch(err => {
             res.status(404).send("No se encontró el usuario con el id: "+idUser);
@@ -187,50 +189,50 @@ const UserController = {
         let idUser = req.params.idUser
         let idFriend = req.params.idFriend
         User.findById(idUser)
-            .populate("arrDirectMessages")
-            .then(usuario => {
-                //Encontramos el canal que comparte con el amigo
-                let idChannel = usuario.arrDirectMessages.find(({ arrMembers }) => arrMembers.includes(idFriend))._id
-                if(idChannel == undefined){
-                    res.status(404).send("No se encontró el canal entre usuarios");
-                }
-                else{
-                    //Borramos este canal
-                    Channel.findByIdAndDelete(idChannel)
-                        .then(channel => {
-                            console.log(channel);
-                            //borrar los mensajes que contenía el chat
-                            Message.deleteMany({_id:{$in: channel.arrMessages}})
-                            .then(
-                                console.log('se borro exitosamente el canal ' + channel.id)
-                            )
-                            .catch(err=>{
-                                res.status(400).send('error al eliminar los mensajes del canal');
-                            })
-                        })
-                        .catch(err =>{
-                            res.status(404).send("No se encontró el canal con el id: "+ idCanal)
-                        });
-                    
-                    //quitamos los amigos de la lista y quitamos el id del canal del arreglo de mensajes directos
-                    User.findByIdAndUpdate(idUser,{ $pull: { arrFriends: idFriend, arrDirectMessages:idChannel}},{new:true}) 
-                        .then(user1 =>{
-                            User.findByIdAndUpdate(idFriend,{ $pull: { arrFriends: idUser, arrDirectMessages:idChannel}},{new:true}) 
-                                .then(user2 =>{
-                                    res.status(200).send(`Se elimino la amistad entre ${user1.name} y ${user2.name}`);
-                                })
-                                .catch(error =>{
-                                    res.status(400).send("No se pudo eliminar desde usuario 2 " + error)
-                                })
-                        })
-                        .catch(error =>{
-                            res.status(400).send("No se pudo eliminar desde usuario 1 " + error)
-                        })
-                }
-            })
-            .catch(error =>{
-                res.status(404).send("No se encontró al usuario " + error)
-            })
+        .populate("arrDirectMessages")
+        .then(usuario => {
+            //Encontramos el canal que comparte con el amigo
+            let idChannel = usuario.arrDirectMessages.find(({ arrMembers }) => arrMembers.includes(idFriend))._id
+            if(idChannel == undefined){
+                res.status(404).send("No se encontró el canal entre usuarios");
+            }
+            else{
+                //Borramos este canal
+                Channel.findByIdAndDelete(idChannel)
+                .then(channel => {
+                    console.log(channel);
+                    //borrar los mensajes que contenía el chat
+                    Message.deleteMany({_id:{$in: channel.arrMessages}})
+                    .then(
+                        console.log('se borro exitosamente el canal ' + channel.id)
+                    )
+                    .catch(err=>{
+                        res.status(400).send('error al eliminar los mensajes del canal');
+                    })
+                })
+                .catch(err =>{
+                    res.status(404).send("No se encontró el canal con el id: "+ idCanal)
+                });
+                
+                //quitamos los amigos de la lista y quitamos el id del canal del arreglo de mensajes directos
+                User.findByIdAndUpdate(idUser,{ $pull: { arrFriends: idFriend, arrDirectMessages:idChannel}},{new:true}) 
+                .then(user1 =>{
+                    User.findByIdAndUpdate(idFriend,{ $pull: { arrFriends: idUser, arrDirectMessages:idChannel}},{new:true}) 
+                    .then(user2 =>{
+                        res.status(200).type("application/json").json(user2);
+                    })
+                    .catch(error =>{
+                        res.status(400).send("No se pudo eliminar desde usuario 2 " + error)
+                    })
+                })
+                .catch(error =>{
+                    res.status(400).send("No se pudo eliminar desde usuario 1 " + error)
+                })
+            }
+        })
+        .catch(error =>{
+            res.status(404).send("No se encontró al usuario " + error)
+        })
 
     }   
 }

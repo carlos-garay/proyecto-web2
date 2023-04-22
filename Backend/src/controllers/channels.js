@@ -39,7 +39,7 @@ const ChannelController = {
             Channel.create({arrMembers:grupo.arrUsers}).then(channel => {
                 //Intentamos asignar el _id del canal al arreglo de canales del grupo
                 Group.findByIdAndUpdate(idGroup, {$push:{arrChannels: channel._id}}, { new : true }).then(group => {
-                    res.status(200).send(`Se agregó el canal ${channel._id} al grupo  ${group.title}`);
+                    res.status(200).type("application/json").json(channel);
                 })
                 .catch(err => {
                     //Si no se puedo guardar al grupo el canal, hay que eliminarlo de la base de datos de canales
@@ -66,7 +66,7 @@ const ChannelController = {
                 //borrar los mensajes que contenía el chat
                 Message.deleteMany({_id:{$in: channel.arrMessages}})
                 .then(
-                    res.status(200).send(`Se eliminó el canal ${idChannel} del grupo  ${group._id}`)
+                    res.status(200).type("application/json").json(channel)
                 )
                 .catch(err=>{
                     res.status(400).send('error al eliminar los mensajes del canal');
@@ -105,7 +105,7 @@ const ChannelController = {
                             channel.arrMembers.push(user._id)
                             channel.save()
                             .then(channel=>{
-                                res.status(200).send(`Se añadio al usuario al canal ${channel._id} del grupo  ${idGroup}`)
+                                res.status(200).type("application/json").json(user)
                             })
                             .catch(err=>{res.status(400).send("Error al añadir usuario al canal")})
                         }
@@ -131,7 +131,7 @@ const ChannelController = {
         .then(user=>{
             Channel.findByIdAndUpdate(idChannel, {$pull:{arrMembers:user._id}}, { new : true })
             .then(channel => {
-                res.status(200).send(`Se elimino al usuario ${email} del canal ${channel._id} del grupo  ${idGroup}`);
+                res.status(200).type("application/json").json(user);
             })
             .catch(err => {
                 res.status(404).send("No se encontró el canal con el id: "+ idChannel + " "+ err);
@@ -156,7 +156,7 @@ const ChannelController = {
                 //se busca el canal a cambiar su nombre 
                 Channel.findByIdAndUpdate(idChannel,{title:newTitle},{ new : true })
                     .then(updatedChannel => {
-                        res.status(200).send(`se ha cambiado el nombre del canal a ${updatedChannel.title}`)
+                        res.status(200).type("application/json").json(updatedChannel)
                     })
                     .catch(error =>{
                         res.status(400).send('No pudo modificarse el nombre del canal')

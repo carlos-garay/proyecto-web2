@@ -19,7 +19,7 @@ router.post('/',express.json(),audioChannelController.createAudioChannel);
  * 
  *    responses:
  *      200:
- *        description: se agrego el canal de audio 
+ *        description:objeto del canal de audio que se creó
  *      404: 
  *        description: no se encontro el grupo con ese id 
  *      500: 
@@ -60,7 +60,7 @@ router.put('/:idChannel/addMember',express.json(),audioChannelController.addMemb
  * 
  *    responses:
  *      200:
- *        description: se agregaron los miembros al canal idChannel del grupo idGroup
+ *        description: objeto del usuario que se agregó al canal de audio
  *      404:
  *        description: No se encontró el canal con el id idChannel
  */
@@ -94,7 +94,7 @@ router.put('/:idChannel/removeMember',express.json(),audioChannelController.remo
  *            { "email": "otro1@test.com"}
  *    responses:
  *      200:
- *        description: se eliminaron los miembros del canal
+ *        description: objeto del usuario que se eliminó del canal de audio
  *      404: 
  *        description: no se encontro el grupo con ese id 
  */
@@ -120,7 +120,7 @@ router.delete('/:idChannel',audioChannelController.deleteAudioChannel);
  *          type: string
  *    responses:
  *      200:
- *        description: se elimino el canal de audio
+ *        description: objeto del canal de audio que se eliminó
  *      404: 
  *        description: no se encontro el grupo con ese id 
  */
@@ -159,7 +159,7 @@ router.put('/:idChannel/enterCall',express.json(),audioChannelController.enterCa
  * 
  *    responses:
  *      200:
- *        description: se agrego el usuario a la llamada
+ *        description: objeto del canal de audio
  *      404:
  *        description: No se encontró el canal con el id idChannel
  */
@@ -197,7 +197,7 @@ router.put('/:idChannel/exitCall',express.json(),audioChannelController.exitCall
  * 
  *    responses:
  *      200:
- *        description: se eliminó al usuario de la llamada
+ *        description: objeto del canal de audio
  *      404:
  *        description: No se encontró el canal con el id idChannel
  */
@@ -243,7 +243,7 @@ router.put('/:idChannel/name',express.json(),audioChannelController.changeChanne
  *              }
  *    responses:
  *      200:
- *        description: se ha cambiado el nombre del canal exitosamente
+ *        description: objeto del canal de audio que se actualizó
  *
  *      400: 
  *        description: no pudo cambiarse el nombre
