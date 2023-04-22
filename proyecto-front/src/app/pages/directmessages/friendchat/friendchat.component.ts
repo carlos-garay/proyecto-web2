@@ -4,6 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Message } from 'src/app/shared/interfaces/message';
 import { TextchannelPopulated } from 'src/app/shared/interfaces/textchannelpopulated';
 import { FriendsService } from 'src/app/shared/services/friends.service';
+import { TextchannelService } from 'src/app/shared/services/textchannel.service';
 
 @Component({
   selector: 'app-friendchat',
@@ -13,7 +14,7 @@ import { FriendsService } from 'src/app/shared/services/friends.service';
 export class FriendchatComponent {
   formSendDM: FormGroup;
   inputValue: string = "";
-  idFriend: string = "";
+  idChannel: string = "";
   channel:TextchannelPopulated={
     _id: '',
     title: '',
@@ -21,24 +22,22 @@ export class FriendchatComponent {
     private:false,
     arrMessages: [] 
   }
-  constructor(private formBuilder:FormBuilder,private route: ActivatedRoute, private friendsService: FriendsService,private router:Router){ 
-    this.formSendDM = formBuilder.group({ 
-      message:''
-    })
-  }
+
+  
+  constructor(private formBuilder:FormBuilder,private route: ActivatedRoute,
+     private friendsService: FriendsService,private router:Router,private txtChannelService: TextchannelService)
+    { 
+      this.formSendDM = formBuilder.group({ 
+        message:''
+      })
+    }
 
     
   ngOnInit(){
     this.route.params.subscribe(params => {
-      this.idFriend = params['idFriend']
-      this.loadChannel();
+      this.idChannel = params['idChannel']
+      this.channel = this.txtChannelService.canalActual
     })
-  }
-
-  loadChannel(){
-      this.friendsService.getDMChannel(this.idFriend).subscribe((response:any)=>{
-        this.channel = response
-      })
   }
 
   onEnter(event: Event) {
@@ -52,9 +51,9 @@ export class FriendchatComponent {
 
   sendMessage(){
       let message:string = this.formSendDM.value.message
-      this.friendsService.sendDM(this.idFriend,message).subscribe((response:any)=>{
+      this.friendsService.sendDM(this.idChannel,message).subscribe((response:any)=>{
         this.inputValue=""
-        this.loadChannel()
+        this.channel.arrMessages.push(response)
     })
   }
 

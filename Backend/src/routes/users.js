@@ -244,7 +244,7 @@ router.get('/:idUser/friends/:idFriend',usersController.loadChannel);
  * 
  *      - in: path
  *        name: idFriend
- *        description: id del usuario amigo del que se quiere obtener el chat 
+ *        description: id del amigo al que buscaremos su chat
  *        schema:
  *          type: string
  * 
@@ -328,7 +328,7 @@ router.get('/:idUser/friends/:idFriend',usersController.loadChannel);
  */
 
 
-router.post('/:idUser/friends/:idFriend/send',express.json(),usersController.sendDM);
+router.post('/:idUser/friends/:idChannel/send',express.json(),usersController.sendDM);
 /**
  * @swagger
  * /users/{idUser}/friends/{idFriend}/send:

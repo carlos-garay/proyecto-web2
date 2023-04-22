@@ -5,7 +5,7 @@ background-size: cover;
 }
 
 .scrollContainer {
-    overflow: auto; /* Make the container scrollable */
+    overflow-y:scroll; /* Make the container scrollable */
     position: relative;
     max-height: 80vh;
     width: 95%;

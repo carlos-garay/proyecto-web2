@@ -60,7 +60,7 @@ export class GrouptextchannelComponent implements OnInit{
       let message:string = this.formSendMessage.value.message
       this.groupService.sendMessage(this.idGroup,this.idChannel,message).subscribe((response:any)=>{
         this.inputValue=""
-        this.loadChannel()
+        this.channel.arrMessages.push(response)
     })
   }
 

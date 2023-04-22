@@ -1,8 +1,10 @@
-import { Component,OnInit,Input } from '@angular/core';
+import { Component,OnInit,Input} from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { User } from 'src/app/shared/interfaces/user';
 import { Router } from '@angular/router';
 import { FriendsService } from 'src/app/shared/services/friends.service';
+import { TextchannelPopulated } from 'src/app/shared/interfaces/textchannelpopulated';
+import { TextchannelService } from 'src/app/shared/services/textchannel.service';
 
 @Component({
   selector: 'app-friendlist',
@@ -10,8 +12,9 @@ import { FriendsService } from 'src/app/shared/services/friends.service';
   styleUrls: ['./friendlist.component.scss']
 })
 export class FriendlistComponent {
+
   arrFriends: User[] = []
-  constructor(private friendsService: FriendsService,private router:Router){ }
+  constructor(private friendsService: FriendsService,private router:Router, private txtChannelService: TextchannelService ){ }
 
   ngOnInit(){
     this.loadFriends();
@@ -24,14 +27,17 @@ export class FriendlistComponent {
   }
 
   goDirectMessage(id:string){
-    let url:string = '/directMessages/'+id
-    this.router.navigate([url])
+    this.friendsService.getDMChannel(id).subscribe((response:any)=>{
+      this.txtChannelService.canalActual = response
+      let url:string = '/directMessages/'+response._id
+      this.router.navigate([url])
+    })
   }
 
-  
   removeFriend(id:string){
     this.friendsService.removeFriend(id).subscribe((response:any)=>{
       this.loadFriends()
     })
   }
+  
 }

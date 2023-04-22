@@ -32,9 +32,9 @@ export class FriendsService {
     return this.httpClient.get(url)
   }
 
-  sendDM(idFriend:string, content:string){
-    let idUser:string = '643aed8b64f01a772cb50353' 
-    //let idUser:string = this.userService.getUser()._id
+  sendDM(idChannel:string, content:string){
+
+    let idUser:string = this.userService.getUser()._id
 
     let UserInfo = {
       idUser:idUser,
@@ -48,7 +48,7 @@ export class FriendsService {
       messageInfo:messageInfo
     }
     const headers = new HttpHeaders().set('Content-Type', 'application/json');
-    const url:string = environment.apiUrl+'users/'+idUser+'/friends/'+idFriend+'/send';
+    const url:string = environment.apiUrl+'users/'+idUser+'/friends/'+idChannel+'/send';
     return this.httpClient.post(url,body,{headers});
   }
 

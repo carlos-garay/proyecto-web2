@@ -98,63 +98,7 @@ const UserController = {
     loadChannel: (req,res) => { 
         let idUser = req.params.idUser;
         let idFriend = req.params.idFriend;
-
-        //Obtenemos al usuario actual
-        User.findById(idUser)
-            .populate("arrDirectMessages")
-            .then(usuario=>{
-                // Buscamos al canal entre amigos
-                let idChannel = usuario.arrDirectMessages.find(({ arrMembers }) => arrMembers.includes(idFriend))._id
-                if(idChannel == undefined){
-                    res.status(404).send("No se encontró el canal entre usuarios");
-                }
-                else{
-                    Channel.findById(idChannel)
-                    .populate("arrMembers")
-                    .then(channel => {
-                        //Poner el titulo del canal segun el nombre de los usuarios
-                        Channel.findByIdAndUpdate(idChannel,{title: "DM " + channel.arrMembers[0].name + " y " + channel.arrMembers[1].name },{new:true})
-                            .populate("arrMembers")
-                            .populate("arrMessages")
-                            .then(newChannel =>{
-                                //Cambiamos el sender de su id a su nombre para que se pueda desplegar en el mensaje
-                                newChannel.arrMessages.map(msg => msg.sender = newChannel.arrMembers.find(({_id}) => _id == msg.sender).name)
-                                res.status(200).type("application/json").json(newChannel);
-                            })
-                            .catch(err=>{
-                                res.status(400).send("Error al cambiar el título del canal: "+idChannel +' '+ err);
-                            })
-                    })
-                    .catch(err => {
-                        res.status(400).send("Error al obtener datos del canal con el id: "+idChannel +' '+ err);
-                    })
-                }
-                    
-            })
-            .catch(error =>{
-                res.status(404).send("No se encontró al usuario " + error)
-            })
-       
-    },
-
-    sendDM: (req,res) => { 
-
-        //dentro del request hay 2 objetos, el user que tenemos, y el mensaje que queremos crear 
-        let object = req.body //trae ambos
-        let idUser = req.params.idUser;
-        let idFriend = req.params.idFriend;
-
-        // object = { //forma del objeto que traera el body 
-        //     UserInfo: {
-        //         idUser:'el id de este men ',
-        //         token:'token'
-                    //atributos extra que para esto no van a importar 
-        //     },
-        //     messageInfo:{
-        //         content:'contenido epico'
-        //     }
-        // }
-
+        console.log(idUser);
         //Obtenemos al usuario actual
         User.findById(idUser)
         .populate("arrDirectMessages")
@@ -168,38 +112,70 @@ const UserController = {
                 Channel.findById(idChannel)
                 .populate("arrMembers")
                 .then(channel => {
-
-                    let temp = { //este objeto es el que va a mandarse a mongo
-                        sender: object.UserInfo.idUser,
-                        content: object.messageInfo.content,
-                        idChannel: channel._id
-                    }
-                    console.log(temp)
-                    //si ya tengo el mensaje creado
-                    Message.create(temp) //mandamos crear mensaje con el objeto anterior
-                    .then(response => { //response aqui es el mensaje creado
-                        let idNewMessage = response._id 
-                        //insertarlo al arrMessages del textChannel al que pertenece 
-                        //modificar channel al que pertenece
-                        Channel.findByIdAndUpdate(idChannel,{$push:{arrMessages:idNewMessage}},{new : true})
-                        .then(canal =>{
-                            res.status(200).type("application/json").json(response);
+                    //Poner el titulo del canal segun el nombre de los usuarios
+                    Channel.findByIdAndUpdate(idChannel,{title: "DM " + channel.arrMembers[0].name + " y " + channel.arrMembers[1].name },{new:true})
+                        .populate("arrMembers")
+                        .populate("arrMessages")
+                        .then(newChannel =>{
+                            //Cambiamos el sender de su id a su nombre para que se pueda desplegar en el mensaje
+                            newChannel.arrMessages.map(msg => msg.sender = newChannel.arrMembers.find(({_id}) => _id == msg.sender).name)
+                            res.status(200).type("application/json").json(newChannel);
                         })
-                        .catch(error =>{
-                            res.status(400).send('No se pudo agregar el mensaje al canal' + error);
+                        .catch(err=>{
+                            res.status(400).send("Error al cambiar el título del canal: "+idChannel +' '+ err);
                         })
-                    })
-                    .catch(error =>{
-                        res.status(400).send('No se pudo crear el mensaje' + error);
-                    })
                 })
-                .catch(error =>{
-                    res.status(404).send('No se encontró el chat entre amigos' + error);
+                .catch(err => {
+                    res.status(400).send("Error al obtener datos del canal con el id: "+idChannel +' '+ err);
                 })
             }
+                
         })
         .catch(error =>{
-            res.status(400).send('no se pudo crear/guardar el mensaje ' + error);
+            res.status(404).send("No se encontró al usuario " + error)
+        })
+       
+    },
+
+    sendDM: (req,res) => { 
+        //dentro del request hay 2 objetos, el user que tenemos, y el mensaje que queremos crear 
+        let object = req.body //trae ambos
+        let idChannel = req.params.idChannel;
+
+        // object = { //forma del objeto que traera el body 
+        //     UserInfo: {
+        //         idUser:'el id de este men ',
+        //         token:'token'
+                    //atributos extra que para esto no van a importar 
+        //     },
+        //     messageInfo:{
+        //         content:'contenido epico'
+        //     }
+        // }
+
+        //Obtenemos al usuario actual
+
+        let temp = { //este objeto es el que va a mandarse a mongo
+            sender: object.UserInfo.idUser,
+            content: object.messageInfo.content,
+            idChannel: idChannel
+        }
+        //si ya tengo el mensaje creado
+        Message.create(temp) //mandamos crear mensaje con el objeto anterior
+        .then(response => { //response aqui es el mensaje creado
+            let idNewMessage = response._id 
+            //insertarlo al arrMessages del textChannel al que pertenece 
+            //modificar channel al que pertenece
+            Channel.findByIdAndUpdate(idChannel,{$push:{arrMessages:idNewMessage}},{new : true})
+            .then(canal =>{
+                res.status(200).type("application/json").json(response);
+            })
+            .catch(error =>{
+                res.status(400).send('No se pudo agregar el mensaje al canal' + error);
+            })
+        })
+        .catch(error =>{
+            res.status(400).send('No se pudo crear el mensaje' + error);
         })
     },
 

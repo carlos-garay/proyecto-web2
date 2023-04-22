@@ -1,6 +1,6 @@
 <h2>{{channel.title}}</h2>
 
-<div class="scrollContainer">
+<div class="scrollContainer" #scrollcontainer [scrollTop]="scrollcontainer.scrollHeight">
     <mat-list>
         <ng-container *ngFor="let item of channel.arrMessages">
 
