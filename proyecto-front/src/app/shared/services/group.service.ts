@@ -77,4 +77,19 @@ export class GroupService {
 
   }
 
+  deleteGroup(idGroup:string){
+    let idUser:string = this.userService.getUser()._id ; //va a ir en el body
+    let body = {
+      idUser : idUser
+    }
+    const options = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+      }),
+      body: body
+    };
+    const url:string = environment.apiUrl+'groups/'+idGroup;
+    return this.httpClient.delete(url,options)
+  }
+
 }

@@ -44,11 +44,13 @@ export class ChannellistComponent{
   }
 
   deleteGroup(){
-    this.grupo._id
+    this.groupService.deleteGroup(this.grupo._id).subscribe((response:any)=>{
+      //mandar recargar el componente padre group
+    })
   }
 
   openNameDialog(){
-
+    
   }
   openTextChannelDialog(){
     
@@ -71,7 +73,9 @@ export class ChannellistComponent{
   changeChannelName(){
 
   }
-
+  removeChannel(){
+    
+  }
   //MANDAR ABRIR EL CANAL 
 
   openChannelMenu(event: MouseEvent, id:string){

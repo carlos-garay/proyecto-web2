@@ -1,1 +1,15 @@
 <p>generic works!</p>
+
+<h1 mat-dialog-title>{{title}}</h1>
+    <form [formGroup]="myForm">  
+        <div mat-dialog-content>
+            <mat-form-field appearance="fill">
+                <mat-label>Correo: </mat-label>
+                <input matInput [type]="type" [placeholder]="placeholder" formControlName="inputField" required>
+            </mat-form-field>
+
+        </div>
+        <div mat-dialog-actions>
+            <button align="end" [disabled]="myForm.invalid" mat-raised-button color="accent" (click)="onButtonClick()">{{buttonText}}</button>
+        </div>
+    </form>
