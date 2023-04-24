@@ -19,7 +19,7 @@ router.post('/',express.json(),audioChannelController.createAudioChannel);
  * 
  *    responses:
  *      200:
- *        description:objeto del canal de audio que se creó
+ *        description: objeto del canal de audio que se creó
  *      404: 
  *        description: no se encontro el grupo con ese id 
  *      500: 
