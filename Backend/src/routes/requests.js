@@ -31,7 +31,17 @@ router.post('/',express.json(),requestsController.crearRequest)
  *            {"friendEmail": "otro2@test.com"}
  *    responses:
  *      200:
- *        description: se creo el request
+ *        description: objeto del request creado
+ *        schema:
+ *            example:
+ *               {
+ *                 "_id": "643b678619262fca193b0fb2",
+ *                 "sender": "Usuario precargado1",
+ *                 "receiver": "Usuario precargado2",
+ *                 "status": 1,
+ *                 "__v": 0,
+ *                 "image": "no image"
+ *               }
  *      400: 
  *        description: no se pudo crear el request
  *      404: 
@@ -116,7 +126,7 @@ router.put('/:reqId/accept',requestsController.acceptRequest)
  *          type: string
  *    responses:
  *      200:
- *        description: se acepto el request correctamente
+ *        description: objeto del request aceptado
  *      400: 
  *        description: no se pudo aceptar correctamente la solicitud
  */
@@ -143,7 +153,7 @@ router.put('/:reqId/decline',requestsController.declineRequest)
  *          type: string
  *    responses:
  *      200:
- *        description: se rechazo el request
+ *        description: objeto del request rechazado
  *      400: 
  *        description: no se pudo rechazar correctamente la solicitud
  */

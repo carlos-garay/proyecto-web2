@@ -39,10 +39,12 @@ router.post('/register',express.json(),usersController.registerUser);
  * 
  *    responses:
  *      201:
- *        description: id del usuario creado
+ *        description: id del usuario creado 
  *        schema:
- *          type: string
- *          example: "643b02446664b9a3efbf1e60"
+ *          example:
+ *            {
+ *               "_id": "643aed8b64f01a772cb50353"
+ *            }
  * 
  *      400:
  *        description: Error en el servidor
@@ -77,8 +79,10 @@ router.post('/login',express.json(),usersController.loginUser);
  *      201:
  *        description: id del usuario que hizo login
  *        schema:
- *          type: string
- *          example: "643b02446664b9a3efbf1e60"
+ *          example:
+ *            {
+ *               "_id": "643aed8b64f01a772cb50353"
+ *            }
  * 
  *      500:
  *        description: Error en el servidor
@@ -244,7 +248,7 @@ router.get('/:idUser/friends/:idFriend',usersController.loadChannel);
  * 
  *      - in: path
  *        name: idFriend
- *        description: id del usuario amigo del que se quiere obtener el chat 
+ *        description: id del amigo al que buscaremos su chat
  *        schema:
  *          type: string
  * 
@@ -331,7 +335,7 @@ router.get('/:idUser/friends/:idFriend',usersController.loadChannel);
 router.post('/:idUser/friends/:idChannel/send',express.json(),usersController.sendDM);
 /**
  * @swagger
- * /users/{idUser}/friends/{idChannel}/send:
+ * /users/{idUser}/friends/{idFriend}/send:
  *  post:
  *    tags:
  *      - User
@@ -345,7 +349,7 @@ router.post('/:idUser/friends/:idChannel/send',express.json(),usersController.se
  * 
  *      - in: path
  *        name: idChannel
- *        description: canal de mensaje directo al que se agregó un mensaje
+ *        description: id del canal de mensaje directo
  *        schema:
  *          type: string
  * 
@@ -367,7 +371,17 @@ router.post('/:idUser/friends/:idChannel/send',express.json(),usersController.se
  * 
  *    responses:
  *      200:
- *        description: Se mando exitosamente el mensaje
+ *        description: objecto del mensaje que se guardo
+ *        schema:
+ *          example:
+ *           {
+ *              "_id": "643c8ed13daee7ca7c75f99b",
+ *               "sender": "Cambio",
+ *               "content": "mensajes",
+ *               "idChannel": "643c832ed2e1ff38399dcc3b",
+ *               "dateTime": "2023-04-17T00:12:01.097Z",
+ *               "__v": 0
+ *           }      
  * 
  *      404:
  *        description: No se encontro el usuario con el id idUSer
@@ -400,7 +414,7 @@ router.put('/:idUser/name',express.json(),usersController.updateUserName);
  *  
  *    responses:
  *      200:
- *        description: mensaje se actualizó el usuario y su nombre nuevo
+ *        description: objeto del usuario actualizado
  *      404:
  *        description: No se encontro el usuario con el id idUSer
  */
@@ -430,7 +444,7 @@ router.put('/:idUser/password',express.json(),usersController.updateUserPassword
  *            {"password":"cambiopassword" } 
  *    responses:
  *      200:
- *        description: mensaje se actualizó el usuario y su password nuevo
+ *        description: objeto del usuario actualizado
  *      404:
  *        description: No se encontro el usuario con el id idUSer
  */
@@ -459,7 +473,7 @@ router.delete('/:idUser/friends/:idFriend/remove',usersController.removeFriend);
  * 
  *    responses:
  *      200:
- *        description: se elimino exitosamente el amigo
+ *        description: objeto del usuario del amigo eliminado
  *      404:
  *        description: error al encontrar el usuario amigo o el chat entre estos
  *      400:

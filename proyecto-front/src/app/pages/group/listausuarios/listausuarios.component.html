@@ -1,0 +1,23 @@
+
+USUARIOS DEL SERVIDOR: 
+<div>
+    <mat-list>
+        <ng-container *ngFor="let item of grupo.arrUsers">
+            <button mat-button (click)="selectUser(item.email)" [matMenuTriggerFor]="menuBorrar" style="height: auto;">
+                <mat-list-item >
+                    <mat-card class="example-card">
+                        <mat-card-header>
+                          <div mat-card-avatar class="example-header-image"></div>
+                          <mat-card-title>{{item.name}}</mat-card-title>
+                          <mat-card-subtitle>{{item.email}}</mat-card-subtitle>
+                        </mat-card-header>
+                    </mat-card>
+                </mat-list-item >
+            </button>
+        </ng-container>
+    </mat-list>
+    <mat-menu #menuBorrar="matMenu">
+        <button mat-menu-item (click)="removeFromChannel()">Eliminar</button>
+    </mat-menu>
+</div>
+

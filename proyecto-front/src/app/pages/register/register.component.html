@@ -1,0 +1,43 @@
+REGISTER
+
+<div class="register">
+    <form [formGroup]="formRegister">
+        <mat-form-field appearance="fill">
+            <mat-label>Ingresa nombre </mat-label>
+            <input matInput placeholder="your name" formControlName="name" required>
+        </mat-form-field>
+        <br>
+        <mat-form-field appearance="fill">
+            <mat-label>Ingresa correo </mat-label>
+            <input matInput type="email" placeholder="pat@example.com" formControlName="email" required>
+        </mat-form-field>
+        <br>
+        <mat-form-field appearance="fill">
+            <mat-label>Password</mat-label>
+            <input matInput type="password" placeholder="x" formControlName="password" required>
+        </mat-form-field>
+        <br>
+        <mat-form-field appearance="fill">
+            <mat-label>Confirm Password</mat-label>
+            <input matInput type="password" placeholder="x" formControlName="confirm" required>
+        </mat-form-field>
+        <br>
+        <mat-checkbox class="example-margin" formControlName="aceptar">Confirm</mat-checkbox>
+        <br>
+        <button [disabled]="formRegister.invalid" mat-raised-button color="primary" (click)="registrarUsuario()">Registrar</button>
+        <br>
+
+        <br>
+        <!--
+
+            nombre: <input type="text" id="nombre" formControlName="name"> <br>
+            correo: <input type="email" id="correo" formControlName="email"><br>
+            password: <input type="password" id="pass1" formControlName="password"><br>
+            confirm password: <input type="password" id="pass2" formControlName="confirm"><br>
+            <input type="checkbox" name="" id="" formControlName="aceptar"> Acepto terminos y condiciones <br>
+        -->
+
+
+    </form>
+
+</div>

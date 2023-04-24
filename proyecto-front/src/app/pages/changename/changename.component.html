@@ -1,0 +1,25 @@
+CAMBIO NOMBRE
+
+<div class="changeName">
+    <form [formGroup]="formName">
+        <mat-form-field appearance="fill">
+            <mat-label>Ingresa nombre </mat-label>
+            <input matInput placeholder="new name" formControlName="name" required>
+        </mat-form-field>
+        <br>
+        <button [disabled]="formName.invalid" mat-raised-button color="primary" (click)="changeName()">Confirmar</button>
+        <br>
+
+        <!--
+
+            nombre: <input type="text" id="nombre" formControlName="name"> <br>
+            correo: <input type="email" id="correo" formControlName="email"><br>
+            password: <input type="password" id="pass1" formControlName="password"><br>
+            confirm password: <input type="password" id="pass2" formControlName="confirm"><br>
+            <input type="checkbox" name="" id="" formControlName="aceptar"> Acepto terminos y condiciones <br>
+        -->
+
+
+    </form>
+
+</div>

@@ -1,0 +1,59 @@
+<div class="nav">
+
+  <mat-list id="listTop">
+        <mat-list-item>
+          <button mat-button class="mat-list-item" routerLink="/directMessages">FRIENDS</button>
+        </mat-list-item>
+  
+        <mat-list-item>
+          <button mat-button class="mat-list-item" routerLink="/requests">Requests</button>
+        </mat-list-item>
+      </mat-list>
+  
+      <mat-divider></mat-divider>
+  
+      <mat-list id="listGroups">
+  
+        <mat-list-item *ngFor="let item of usuario.arrGroups">
+          <button mat-button class="mat-list-item" (click)="goToGroup(item._id)">{{item.title}}</button>
+        </mat-list-item>
+        
+  
+      </mat-list>
+      
+      <mat-divider></mat-divider>
+  
+      <mat-list id="listFixedButtons">
+        <mat-list-item>
+          <!--al picarle al add se muestra un pop up con form de nombre del grupo -->
+  
+          <button mat-mini-fab color="primary" class="mat-list-item" (click)="openGroupDialog()">
+            <mat-icon>add</mat-icon>
+          </button>
+        </mat-list-item>
+        <mat-list-item>
+          <button mat-mini-fab color="primary" class="mat-list-item" [matMenuTriggerFor]="allOptions">
+            <mat-icon >person</mat-icon>
+          </button>
+        </mat-list-item>
+        
+      </mat-list>
+</div>
+
+
+
+  <mat-menu #allOptions="matMenu">
+    <button mat-menu-item [matMenuTriggerFor]="Sesion">Sesion</button>
+    <button mat-menu-item [matMenuTriggerFor]="Modificaciones">Modificaciones</button>
+  </mat-menu>
+  
+  <mat-menu #Sesion="matMenu">
+    <button mat-menu-item routerLink="/login">Login</button>
+    <button mat-menu-item routerLink="/register">Register</button>
+  </mat-menu>
+  
+  <mat-menu #Modificaciones="matMenu">
+    <button mat-menu-item routerLink="/changeName">Cambiar Usuario</button>
+    <button mat-menu-item routerLink="/changePassword">Cambiar Contraseña</button>
+  </mat-menu>
+  

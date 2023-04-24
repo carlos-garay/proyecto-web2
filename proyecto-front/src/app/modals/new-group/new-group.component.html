@@ -1,0 +1,18 @@
+
+<h1 mat-dialog-title>Crear Nuevo Grupo</h1>
+    <form [formGroup]="formNewGroup">  
+        <div mat-dialog-content>
+            <mat-form-field appearance="fill">
+                <mat-label>Nombre Grupo: </mat-label>
+                <input matInput placeholder="nombre" formControlName="nombreGrupo" required>
+            </mat-form-field>
+            <br>
+            <mat-form-field appearance="fill">
+                <mat-label>Imagen: </mat-label>
+                <input matInput placeholder="img" formControlName="imagenGrupo">
+            </mat-form-field>
+        </div>
+        <div mat-dialog-actions>
+            <button align="end" [disabled]="formNewGroup.invalid" mat-raised-button color="accent" (click)="crearNuevoGrupo()">Crear </button>
+        </div>
+    </form>

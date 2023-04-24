@@ -16,7 +16,7 @@ const audioChannelController = {
                 //Intentamos asignar el _id del canal al arreglo de canales de audio del grupo
                 Group.findByIdAndUpdate(idGroup, {$push:{arrAudioChannels: channel._id}}, { new : true })
                 .then(group => {
-                    res.status(200).send(`Se agregó el canal de audio ${channel._id} al grupo  ${group.title}`);
+                    res.status(200).type("application/json").json(channel);
                 })
                 .catch(err => {
                     //Si no se puedo guardar al grupo el canal, hay que eliminarlo de la base de datos de canales
@@ -38,7 +38,7 @@ const audioChannelController = {
         .then(group => {
             audioChannel.findByIdAndDelete(idChannel)
             .then(channel => {
-                res.status(200).send(`Se eliminó el canal de audio ${idChannel} del grupo  ${group.title}`);
+                res.status(200).type("application/json").json(channel);
             })
             .catch(err =>{
                 res.status(404).send("No se encontró el canal de audio con el id: "+ idChannel)});
@@ -73,7 +73,7 @@ const audioChannelController = {
                             channel.arrMembers.push(user._id)
                             channel.save()
                             .then(channel=>{
-                                res.status(200).send(`Se añadio al usuario al canal de audio ${channel._id} del grupo  ${idGroup}`)
+                                res.status(200).type("application/json").json(user)
                             })
                             .catch(err=>{res.status(400).send("Error al añadir usuario al canal de audio")})
                         }
@@ -99,7 +99,7 @@ const audioChannelController = {
         .then(user=>{
             audioChannel.findByIdAndUpdate(idChannel, {$pull:{arrMembers:user._id}}, { new : true })
             .then(channel => {
-                res.status(200).send(`Se eliminó al usuario ${email} del canal de audio ${channel._id} del grupo  ${idGroup}`);
+                res.status(200).type("application/json").json(user);
             })
             .catch(err => {
                 res.status(404).send("No se encontró el canal de audio con el id: "+ idChannel + " "+ err);
@@ -110,6 +110,7 @@ const audioChannelController = {
         })
     },
 
+    //Cambiar a conseguir el objeto del usuario
     enterCall: (req,res)=>{
         let idUser = req.body.idUser;
         let idChannel = req.params.idChannel;
@@ -132,7 +133,7 @@ const audioChannelController = {
                         channel.arrInCall.push(idUser)
                         channel.save()
                         .then(channel=>{
-                            res.status(200).send(`Se añadio a la llamada del canal  ${channel._id} `)
+                            res.status(200).type("application/json").json(channel)
                         })
                         .catch(err=>{res.status(400).send("Error al añadir usuario a la llamada")})
                     }
@@ -144,6 +145,7 @@ const audioChannelController = {
 
     },
 
+    //Cambiar a conseguir el objeto del usuario
     exitCall: (req,res)=>{
         let idUser = req.body.idUser;
         let idChannel = req.params.idChannel;
@@ -160,7 +162,7 @@ const audioChannelController = {
                 channel.arrInCall.splice(index,1);
                 channel.save()
                 .then(channel=>{
-                    res.status(200).send(`Salio el usuaroi ${idUser} del canal ${channel._id} `)
+                    res.status(200).type("application/json").json(channel)
                 })
                 .catch(err=>{res.status(400).send("Error al sacar al usuario de la llamada")})
             }
@@ -183,7 +185,7 @@ const audioChannelController = {
                     //se busca el canal a cambiar su nombre 
                     audioChannel.findByIdAndUpdate(idChannel,{title:newTitle},{ new : true })
                         .then(updatedChannel => {
-                            res.status(200).send(`se ha cambiado el nombre del canal a ${updatedChannel.title}`)
+                            res.status(200).type("application/json").json(updatedChannel)
                         })
                         .catch(error =>{
                             res.status(400).send('No pudo modificarse el nombre del canal')

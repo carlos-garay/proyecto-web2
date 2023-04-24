@@ -36,7 +36,7 @@ const GroupController = {
             //obtener y modificar el usuario agregando el newGroup a la lista de grupos 
             User.findByIdAndUpdate(creatorId,{$push:{arrGroups:newGroup._id}}, { new : true })
                 .then(user => {
-                    res.status(200).send(`el usuario ${user.name} ha creado el grupo ${newGroup.title}`)
+                    res.status(200).type("application/json").json(newGroup)
                 })
                 .catch(error => {
                     res.status(400).send('No pudo agregarse el grupo a la lista del usuario')
@@ -80,7 +80,7 @@ const GroupController = {
                     res.status(400).send('error al eliminar los canales de texto ' + error)
                 })
             })
-            res.status(200).send('se borro todo exitosamente')
+            res.status(200).type("application/json").json(grupo)
         })
         .catch(error =>{
             res.status(404).send('No se encontro el grupo a borrar ' + error)
@@ -108,7 +108,7 @@ const GroupController = {
                                 User.findByIdAndUpdate(user._id,{$push:{arrGroups:grupo._id}}, { new : true })
                                 .then(user =>{
                                     console.log(user);
-                                    res.status(200).send(`el usuario ${user.name} se unió al grupo ${grupo.title}`);
+                                    res.status(200).type("application/json").json(user);
                                 })
                                 .catch(error =>{
                                     res.status(400).send('No te pudiste unir' + error);
@@ -159,7 +159,7 @@ const GroupController = {
                                 grupo.arrUsers.splice(index,1);
                                 grupo.save()
                                 .then(grupo=>{
-                                    res.status(200).send(`el usuario ${user.name} fue sacado del grupo ${grupo.title}`);
+                                    res.status(200).type("application/json").json(user);
                                 })
                                 .catch(error =>{
                                     res.status(400).send("Error al eliminar al usuario de la lista del grupo")
@@ -231,7 +231,7 @@ const GroupController = {
                 //se hace el cambio de nombre 
                 Group.findByIdAndUpdate(idGroup,{title:newTitle},{ new : true })
                 .then(updatedGroup => {
-                    res.status(200).send(`se ha cambiado el nombre del grupo a ${updatedGroup.title}`)
+                    res.status(200).type("application/json").json(updatedGroup)
                 })
                 .catch(error =>{
                     res.status(400).send('No pudo modificarse el nombre del grupo')

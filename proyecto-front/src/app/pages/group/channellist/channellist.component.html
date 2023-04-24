@@ -1,0 +1,63 @@
+
+
+<div class="channelList">
+    <div class="groupName">
+        <mat-list>
+            <mat-list-item>
+                <button [matMenuTriggerFor]="allOptions" id="buttonTitle" mat-stroked-button color="accent" class="mat-list-item">{{grupo.title}}</button>
+            </mat-list-item>
+        </mat-list>
+    </div>
+    <br>
+    <mat-divider></mat-divider>
+    <br>
+    <label class="titulos">Text Channels</label>
+    
+    <mat-list>
+        <mat-list-item *ngFor="let item of grupo.arrChannels">
+            <button (contextmenu)="openChannelMenu($event,item._id)" #menuTrigger="matMenuTrigger" [matMenuTriggerFor]="textChannelUtils"
+             mat-button class="mat-list-item" (click)="goTextChannel(item._id)"><mat-icon>#</mat-icon> {{item.title}}</button>
+        </mat-list-item>
+    </mat-list>
+    
+    
+    <mat-divider></mat-divider>
+    <br>
+    
+    <label class="titulos">Voice Channels</label>
+    <mat-list>
+        <mat-list-item *ngFor="let item of grupo.arrAudioChannels">
+            <button (contextmenu)="openAudioChannel($event,item._id)" #menuTrigger2="matMenuTrigger" [matMenuTriggerFor]="audioChannelUtils"
+            mat-button class="mat-list-item" (click)="goVoiceChannel(item._id)"><mat-icon>volume_up</mat-icon>  {{item.title}}</button>
+        </mat-list-item>
+    </mat-list>
+    
+    <mat-divider></mat-divider>
+</div>
+
+<mat-menu #allOptions="matMenu">
+    <button mat-menu-item (click)="openNameDialog()">Cambiar Nombre</button>
+    <button mat-menu-item (click)="openUserDialog()">Agregar Usuario</button>
+    <button mat-menu-item (click)="addTextChannel()">Agregar Canal Texto</button>
+    <button mat-menu-item (click)="addVoiceChannel()">Agregar Canal Voz</button>
+    <button mat-menu-item (click)="deleteGroup()">Eliminar Grupo</button>
+
+</mat-menu>
+
+<mat-menu #textChannelUtils="matMenu">
+    <button mat-menu-item (click)="openAddTextUserDialog()">Agregar Usuario</button>
+    <button mat-menu-item (click)="openRemoveTextUserDialog()">Quitar usuario</button>
+    <button mat-menu-item (click)="openChangeTextChannelName()">Cambiar nombre</button>
+    <button mat-menu-item (click)="removeTextChannel()">Borrar canal</button>
+</mat-menu>
+
+<mat-menu #audioChannelUtils="matMenu">
+    <button mat-menu-item (click)="openAddAudioUserDialog()">Agregar Usuario -</button>
+    <button mat-menu-item (click)="openRemoveAudioUserDialog()">Quitar usuario -</button>
+    <button mat-menu-item (click)="openChangeAudioChannelName()">Cambiar nombre -</button>
+    <button mat-menu-item (click)="removeAudioChannel()">Borrar canal -</button>
+</mat-menu>
+
+
+<!-- <button mat-button (contextmenu)="openChannelMenu($event,'epicness')" #menuTrigger="matMenuTrigger" [matMenuTriggerFor]="textChannelUtils">...</button>
+ -->

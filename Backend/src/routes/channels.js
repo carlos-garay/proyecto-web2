@@ -100,7 +100,7 @@ router.post('/',express.json(),channelsController.createChannel);
  * 
  *    responses:
  *      200:
- *        description: se agrego el canal idChannel al grupo group.title
+ *        description: objeto del canal creado
  *      404:
  *        description: No se encontró el grupo con el id idGrupo
  *      500: 
@@ -142,7 +142,7 @@ router.put('/:idChannel/addMember',express.json(),channelsController.addMemberTo
  * 
  *    responses:
  *      200:
- *        description: se agregaron los miembros al canal idChannel del grupo idGroup
+ *        description: objeto del usuario que se agrego al canal
  *      404:
  *        description: No se encontró el canal con el id idChannel
  */
@@ -180,7 +180,7 @@ router.put('/:idChannel/removeMember',express.json(),channelsController.removeMe
  * 
  *    responses:
  *      200:
- *        description: se eliminaron los miembros al canal idChannel del grupo idGroup
+ *        description: objeto del usuario que se eliminó del canal
  *      404:
  *        description: No se encontró el canal con el id idChannel
  */
@@ -211,7 +211,7 @@ router.delete('/:idChannel',channelsController.deleteChannel);
  * 
  *    responses:
  *      200:
- *        description: se eliminó el canal idChannel
+ *        description: objeto del canal que se eliminó
  *      404:
  *        description: No se encontró el canal con el id idChannel
  *      400:
@@ -258,7 +258,7 @@ router.put('/:idChannel/name',express.json(),channelsController.changeChannelNam
  *              }
  *    responses:
  *      200:
- *        description: se ha cambiado el nombre del grupo exitosamente
+ *        description: objeto del canal que cambió de nombre
  *
  *      400: 
  *        description: no pudo cambiarse el nombre

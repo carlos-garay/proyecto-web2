@@ -33,8 +33,7 @@ const MessageController = {
                 //modificar channel al que pertenece 
                 Channel.findByIdAndUpdate(req.params.idChannel,{$push:{arrMessages:idNewMessage}},{new : true})
                     .then(canal =>{
-                        res.status(200).send(`Se creo el mensaje ${idNewMessage} y se agrego al canal ${canal.title}`)
-                        //res.status(200).send(response) //mandamos el mensaje creado
+                        res.status(200).send(response)
                     })
                     .catch(error =>{
                         res.status(400).send('No se pudo agregar mensaje al canal')

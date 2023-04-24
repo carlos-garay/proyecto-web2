@@ -43,7 +43,18 @@ router.post('/',express.json(),messagesController.crearMensaje)
  *            }
  *    responses:
  *      200:
- *        description: se creo el mensaje y se agrego al canal
+ *        description: objeto del mensaje creado 
+ *        schema:
+ *          example:
+ *              {
+ *                  "UserInfo": {
+ *                      "idUser": "6420ab210db1252132a4a328",
+ *                      "token": "Undefined"
+ *                  },
+ *                  "messageInfo": {
+ *                      "content": "23"
+ *                  }
+ *               }
  *      400: 
  *        description: no se pudo crear el mensaje 
  */

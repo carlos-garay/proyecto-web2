@@ -1,0 +1,15 @@
+
+
+<h1 mat-dialog-title>Enviar Request</h1>
+    <form [formGroup]="formNewRequest">  
+        <div mat-dialog-content>
+            <mat-form-field appearance="fill">
+                <mat-label>Correo: </mat-label>
+                <input matInput type="email" placeholder="abc@abc" formControlName="email" required>
+            </mat-form-field>
+
+        </div>
+        <div mat-dialog-actions>
+            <button align="end" [disabled]="formNewRequest.invalid" mat-raised-button color="accent" (click)="createNewRequest()">Enviar</button>
+        </div>
+    </form>

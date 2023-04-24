@@ -1,0 +1,90 @@
+
+OOOO
+<br>
+
+<button id="buttonSendRequest" mat-stroked-button color="accent" (click)="openRequestDialog()">Send Request</button>
+
+<br><br>
+Requests Enviados: 
+<mat-list>
+    <ng-container *ngFor="let item of arrRequestsSent">
+        <ng-container *ngIf="item.status==0"> <!--pending -->
+            <mat-list-item>
+                <mat-card class="example-card">
+                    <mat-card-header>
+                      <div mat-card-avatar class="example-header-image"></div>
+                      <mat-card-title>{{item.receiver}}</mat-card-title>
+                      <mat-card-subtitle>Pending</mat-card-subtitle>
+                    </mat-card-header>
+                    
+                </mat-card>
+            </mat-list-item>
+        </ng-container>
+        <ng-container *ngIf="item.status==1"> <!--aceptada -->
+            <mat-list-item>
+                <mat-card class="example-card">
+                    <mat-card-header>
+                      <div mat-card-avatar class="example-header-image"></div>
+                      <mat-card-title>{{item.receiver}}</mat-card-title>
+                      <mat-card-subtitle>Aceptada</mat-card-subtitle>
+                    </mat-card-header>
+                </mat-card>
+            </mat-list-item>
+        </ng-container>
+        <ng-container *ngIf="item.status==2"> <!--rechazada -->
+            <mat-list-item>
+                <mat-card class="example-card">
+                    <mat-card-header>
+                      <div mat-card-avatar class="example-header-image"></div>
+                      <mat-card-title>{{item.receiver}}</mat-card-title>
+                      <mat-card-subtitle>Rechazada</mat-card-subtitle>
+                    </mat-card-header>
+                </mat-card>
+            </mat-list-item>
+        </ng-container>
+
+    </ng-container>
+</mat-list>
+
+Requests Recibidos
+<mat-list>
+    <ng-container *ngFor="let item of arrRequestsReceived">
+        <ng-container *ngIf="item.status==0"> <!--pending -->
+            <mat-list-item class="withButtons">
+                <mat-card class="withButtons">
+                    <mat-card-header>
+                      <div mat-card-avatar class="example-header-image"></div>
+                      <mat-card-title>{{item.sender}}</mat-card-title>
+                      <mat-card-subtitle>Pending</mat-card-subtitle>
+                    </mat-card-header>
+                    <mat-card-actions>
+                        <button mat-button color="accent" (click)="acceptRequest(item._id)">Accept</button>
+                        <button mat-button color="warn" (click)="declineRequest(item._id)">Decline</button>
+                    </mat-card-actions>
+                </mat-card>
+            </mat-list-item>
+        </ng-container>
+        <ng-container *ngIf="item.status==1"> <!--aceptada -->
+            <mat-list-item>
+                <mat-card class="example-card">
+                    <mat-card-header>
+                      <div mat-card-avatar class="example-header-image"></div>
+                      <mat-card-title>{{item.sender}}</mat-card-title>
+                      <mat-card-subtitle>Aceptada</mat-card-subtitle>
+                    </mat-card-header>
+                </mat-card>
+            </mat-list-item>
+        </ng-container>
+        <ng-container *ngIf="item.status==2"> <!--rechazada -->
+            <mat-list-item>
+                <mat-card class="example-card">
+                    <mat-card-header>
+                      <div mat-card-avatar class="example-header-image"></div>
+                      <mat-card-title>{{item.sender}}</mat-card-title>
+                      <mat-card-subtitle>Rechazada</mat-card-subtitle>
+                    </mat-card-header>
+                </mat-card>
+            </mat-list-item>
+        </ng-container>
+    </ng-container>
+</mat-list>
