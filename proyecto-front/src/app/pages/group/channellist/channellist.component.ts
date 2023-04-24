@@ -28,7 +28,8 @@ export class ChannellistComponent{
 
   selectedChannel:string=''
   selectedAudioChannel:string=''
-  @ViewChild('menuTrigger') menuTrigger!: MatMenuTrigger; 
+  @ViewChild('menuTrigger' , { read: MatMenuTrigger }) menuTrigger!: MatMenuTrigger; 
+  @ViewChild('menuTrigger2', { read: MatMenuTrigger }) menuTrigger2!: MatMenuTrigger; 
   
   
   constructor(private route: ActivatedRoute,private router:Router, private groupService:GroupService, public dialog: MatDialog) {   } 
@@ -124,7 +125,33 @@ export class ChannellistComponent{
   removeChannel(){
     
   }
-  //MANDAR ABRIR EL CANAL 
+
+  openAddChannelUserDialog(): void {
+    const dialogRef = this.dialog.open(GenericComponent, {
+      data: {
+        title: 'Agregar Usuario al canal',//titulo modal
+        label: 'correo usuario', //label de entrada
+        buttonText: 'Agregar', //
+        type: 'email',
+        placeholder:'abc@def'
+      },
+    });
+    dialogRef.afterClosed().subscribe(result => {
+      console.log('The dialog was closed');
+      console.log('The result was:', result);
+      if(result != undefined){
+        this.addUserToTextChannel(result); 
+      }
+    });
+  }
+  addUserToTextChannel(email:string){
+    //la llamada al servicio de grupo
+    this.groupService.addUserToGroup(this.grupo._id,email).subscribe((response:any)=>{
+      //recargar componente padre group
+    })
+  }
+
+  //MANDAR ABRIR MODALES
 
   openChannelMenu(event: MouseEvent, id:string){
     console.log(id)
@@ -136,5 +163,14 @@ export class ChannellistComponent{
       this.menuTrigger.openMenu();
     }
   }
+  openAudioChannel(event: MouseEvent, id:string){
+    console.log('audio' + id)
+    event.preventDefault();
+    this.selectedAudioChannel = id;
 
+    //abrir el mat menu
+    if (event.button === 2) { // Right-click
+      this.menuTrigger2.openMenu();
+    }
+  }
 }

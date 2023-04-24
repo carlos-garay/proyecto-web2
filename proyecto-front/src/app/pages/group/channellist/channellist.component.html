@@ -1,4 +1,3 @@
-<p>channellist works!epic</p>
 
 
 <div class="channelList">
@@ -28,7 +27,8 @@
     <label class="titulos">Voice Channels</label>
     <mat-list>
         <mat-list-item *ngFor="let item of grupo.arrAudioChannels">
-            <button mat-button class="mat-list-item" (click)="goVoiceChannel(item._id)"><mat-icon>volume_up</mat-icon>  {{item.title}}</button>
+            <button (contextmenu)="openAudioChannel($event,item._id)" #menuTrigger2="matMenuTrigger" [matMenuTriggerFor]="audioChannelUtils"
+            mat-button class="mat-list-item" (click)="goVoiceChannel(item._id)"><mat-icon>volume_up</mat-icon>  {{item.title}}</button>
         </mat-list-item>
     </mat-list>
     
@@ -49,6 +49,13 @@
     <button mat-menu-item (click)="removeUserFromChannel()">Quitar usuario</button>
     <button mat-menu-item (click)="changeChannelName()">Cambiar nombre</button>
     <button mat-menu-item (click)="removeChannel()">Borrar canal</button>
+</mat-menu>
+
+<mat-menu #audioChannelUtils="matMenu">
+    <button mat-menu-item (click)="addUserToChannel()">Agregar Usuario -</button>
+    <button mat-menu-item (click)="removeUserFromChannel()">Quitar usuario -</button>
+    <button mat-menu-item (click)="changeChannelName()">Cambiar nombre -</button>
+    <button mat-menu-item (click)="removeChannel()">Borrar canal -</button>
 </mat-menu>
 
 

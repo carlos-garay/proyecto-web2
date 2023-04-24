@@ -126,4 +126,7 @@ export class GroupService {
     return this.httpClient.put(url,body,{headers})
   }
 
+  changeNameTextChannel(idGroup:string, idChannel:string){
+    
+  }
 }
