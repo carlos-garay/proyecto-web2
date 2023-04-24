@@ -112,24 +112,21 @@ export class ChannellistComponent{
     })
   }
 
-  addUserToChannel(){
-    console.log('agregando al canal' + this.selectedChannel)
+  removeTextChannel(){
+    this.groupService.removeTextChannel(this.grupo._id,this.selectedChannel).subscribe((response:any)=>{
+      //recargar componente canales
+    })
+  }
+  removeAudioChannel(){
+    this.groupService.removeAudioChannel(this.grupo._id,this.selectedChannel).subscribe((response:any)=>{
+      //recargar componente canales
+    })
   }
 
-  removeUserFromChannel(){
-
-  }
-  changeChannelName(){
-
-  }
-  removeChannel(){
-    
-  }
-
-  openAddChannelUserDialog(): void {
+  openAddTextUserDialog(): void {
     const dialogRef = this.dialog.open(GenericComponent, {
       data: {
-        title: 'Agregar Usuario al canal',//titulo modal
+        title: 'Agregar Usuario a canal texto',//titulo modal
         label: 'correo usuario', //label de entrada
         buttonText: 'Agregar', //
         type: 'email',
@@ -146,13 +143,137 @@ export class ChannellistComponent{
   }
   addUserToTextChannel(email:string){
     //la llamada al servicio de grupo
-    this.groupService.addUserToGroup(this.grupo._id,email).subscribe((response:any)=>{
+    this.groupService.addUserTextChannel(this.grupo._id, this.selectedChannel,email).subscribe((response:any)=>{
       //recargar componente padre group
     })
   }
 
-  //MANDAR ABRIR MODALES
+  openAddAudioUserDialog(): void {
+    const dialogRef = this.dialog.open(GenericComponent, {
+      data: {
+        title: 'Agregar Usuario a canal audio',//titulo modal
+        label: 'correo usuario', //label de entrada
+        buttonText: 'Agregar', //
+        type: 'email',
+        placeholder:'abc@def'
+      },
+    });
+    dialogRef.afterClosed().subscribe(result => {
+      console.log('The dialog was closed');
+      console.log('The result was:', result);
+      if(result != undefined){
+        this.addUserToAudioChannel(result); 
+      }
+    });
+  }
+  addUserToAudioChannel(email:string){
+    //la llamada al servicio de grupo
+    this.groupService.addUserAudioChannel(this.grupo._id, this.selectedAudioChannel,email).subscribe((response:any)=>{
+      //recargar componente padre group
+    })
+  }
 
+  openRemoveTextUserDialog(): void {
+    const dialogRef = this.dialog.open(GenericComponent, {
+      data: {
+        title: 'Eliminar usuario de canal texto',//titulo modal
+        label: 'correo usuario', //label de entrada
+        buttonText: 'Eliminar', //
+        type: 'email',
+        placeholder:'abc@def'
+      },
+    });
+    dialogRef.afterClosed().subscribe(result => {
+      console.log('The dialog was closed');
+      console.log('The result was:', result);
+      if(result != undefined){
+        this.removeUserFromTextChannel(result); 
+      }
+    });
+  }
+  removeUserFromTextChannel(email:string){
+    //la llamada al servicio de grupo
+    this.groupService.removeUserTextChannel(this.grupo._id, this.selectedChannel,email).subscribe((response:any)=>{
+      //recargar componente padre group
+    })
+  }
+
+  openRemoveAudioUserDialog(): void {
+    const dialogRef = this.dialog.open(GenericComponent, {
+      data: {
+        title: 'Eliminar Usuario de canal Audio',//titulo modal
+        label: 'correo usuario', //label de entrada
+        buttonText: 'Eliminar', //
+        type: 'email',
+        placeholder:'abc@def'
+      },
+    });
+    dialogRef.afterClosed().subscribe(result => {
+      console.log('The dialog was closed');
+      console.log('The result was:', result);
+      if(result != undefined){
+        this.removeUserFromAudioChannel(result); 
+      }
+    });
+  }
+  removeUserFromAudioChannel(email:string){
+    //la llamada al servicio de grupo
+    this.groupService.removeUserAudioChannel(this.grupo._id, this.selectedAudioChannel,email).subscribe((response:any)=>{
+      //recargar componente padre group
+    })
+  }
+
+  openChangeTextChannelName(): void {
+    const dialogRef = this.dialog.open(GenericComponent, {
+      data: {
+        title: 'Cambiar nombre canal T',//titulo modal
+        label: 'nuevo nombre', //label de entrada
+        buttonText: 'Guardar', //
+        type: 'text',
+        placeholder:'nuevoNombre'
+      },
+    });
+    dialogRef.afterClosed().subscribe(result => {
+      console.log('The dialog was closed');
+      console.log('The result was:', result);
+      if(result != undefined){
+        this.changeTextChannelName(result); 
+      }
+    });
+  }
+  changeTextChannelName(name:string){
+    //la llamada al servicio de grupo
+    this.groupService.changeNameTextChannel(this.grupo._id,this.selectedChannel,name).subscribe((response:any)=>{
+      //recargar componente padre group
+    })
+  }
+
+  openChangeAudioChannelName(): void {
+    const dialogRef = this.dialog.open(GenericComponent, {
+      data: {
+        title: 'Cambiar nombre canal A',//titulo modal
+        label: 'nuevo nombre', //label de entrada
+        buttonText: 'Guardar', //
+        type: 'text',
+        placeholder:'nuevoNombre'
+      },
+    });
+    dialogRef.afterClosed().subscribe(result => {
+      console.log('The dialog was closed');
+      console.log('The result was:', result);
+      if(result != undefined){
+        this.changeAudioChannelName(result); 
+      }
+    });
+  }
+  changeAudioChannelName(name:string){
+    //la llamada al servicio de grupo
+    this.groupService.changeNameAudioChannel(this.grupo._id,this.selectedAudioChannel,name).subscribe((response:any)=>{
+      //recargar componente padre group
+    })
+  }
+
+  //MANDAR ABRIR MODALES, asignar el id del canal al que se le dio click 
   openChannelMenu(event: MouseEvent, id:string){
     console.log(id)
     event.preventDefault();

@@ -126,7 +126,84 @@ export class GroupService {
     return this.httpClient.put(url,body,{headers})
   }
 
-  changeNameTextChannel(idGroup:string, idChannel:string){
-    
+  changeNameTextChannel(idGroup:string, idChannel:string, title:string){
+    //body tiene UserInfo y channelInfo
+    //channelinfo tiene title 
+    let idUser:string = this.userService.getUser()._id
+    let UserInfo = {
+      idUser:idUser,
+      token:'undefined'
+    }
+    let channelInfo = {
+      title:title
+    }
+    let body = {
+      UserInfo:UserInfo,
+      channelInfo:channelInfo
+    }
+    let url:string = environment.apiUrl+'groups/'+idGroup+'/channels/'+idChannel+'/name';
+    const headers = new HttpHeaders().set('Content-Type', 'application/json');
+    return this.httpClient.put(url,body,{headers})
+  }
+  changeNameAudioChannel(idGroup:string, idChannel:string, title:string){
+    //body tiene UserInfo y channelInfo
+    //channelinfo tiene title 
+    let idUser:string = this.userService.getUser()._id
+    let UserInfo = {
+      idUser:idUser,
+      token:'undefined'
+    }
+    let channelInfo = {
+      title:title
+    }
+    let body = {
+      UserInfo:UserInfo,
+      channelInfo:channelInfo
+    }
+    let url:string = environment.apiUrl+'groups/'+idGroup+'/audioChannels/'+idChannel+'/name';
+    const headers = new HttpHeaders().set('Content-Type', 'application/json');
+    return this.httpClient.put(url,body,{headers})
+  }
+
+  addUserTextChannel(idGroup:string, idChannel:string, email:string){ //agregar usuario a un canal de texto 
+    let body = {
+      email: email
+    }
+    let url:string = environment.apiUrl+'groups/'+idGroup+'/channels/'+idChannel+'addMember';
+    const headers = new HttpHeaders().set('Content-Type', 'application/json');
+    return this.httpClient.put(url,body,{headers})
+  }
+  removeUserTextChannel(idGroup:string, idChannel:string, email:string){
+    let body = {
+      email: email
+    }
+    let url:string = environment.apiUrl+'groups/'+idGroup+'/channels/'+idChannel+'removeMember';
+    const headers = new HttpHeaders().set('Content-Type', 'application/json');
+    return this.httpClient.put(url,body,{headers})
+  }
+  addUserAudioChannel(idGroup:string, idChannel:string, email:string){ //agregar usuario a un canal de texto 
+    let body = {
+      email: email
+    }
+    let url:string = environment.apiUrl+'groups/'+idGroup+'/audioChannels/'+idChannel+'addMember';
+    const headers = new HttpHeaders().set('Content-Type', 'application/json');
+    return this.httpClient.put(url,body,{headers})
+  }
+  removeUserAudioChannel(idGroup:string, idChannel:string, email:string){
+    let body = {
+      email: email
+    }
+    let url:string = environment.apiUrl+'groups/'+idGroup+'/audioChannels/'+idChannel+'removeMember';
+    const headers = new HttpHeaders().set('Content-Type', 'application/json');
+    return this.httpClient.put(url,body,{headers})
+  }
+
+  removeTextChannel(idGroup:string, idChannel:string ){
+    let url:string = environment.apiUrl+'groups/'+idGroup+'/channels/'+idChannel;
+    return this.httpClient.delete(url)
+  }
+  removeAudioChannel(idGroup:string, idChannel:string ){
+    let url:string = environment.apiUrl+'groups/'+idGroup+'/channels/'+idChannel;
+    return this.httpClient.delete(url)
   }
 }
