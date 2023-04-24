@@ -27,7 +27,7 @@ export class RequestsService {
     //post request, donde body es el email
     const headers = new HttpHeaders().set('Content-Type', 'application/json');
     let body = {
-      email:email
+      friendEmail:email
     }
     let url:string = environment.apiUrl+'users/'+idUser+'/requests'
     return this.httpClient.post(url,body,{headers})

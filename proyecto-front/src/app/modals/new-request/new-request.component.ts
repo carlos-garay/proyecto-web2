@@ -22,7 +22,7 @@ export class NewRequestComponent {
     let valores = this.formNewRequest.value
     let email:string = valores.email
     this.requestService.createRequest(email).subscribe((response:any)=>{
-
+      //console.log(response)
     })
 
   }
