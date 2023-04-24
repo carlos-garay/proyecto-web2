@@ -4,7 +4,7 @@
     <form [formGroup]="myForm">  
         <div mat-dialog-content>
             <mat-form-field appearance="fill">
-                <mat-label>Correo: </mat-label>
+                <mat-label>{{label}}</mat-label>
                 <input matInput [type]="type" [placeholder]="placeholder" formControlName="inputField" required>
             </mat-form-field>
 

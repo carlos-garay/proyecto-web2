@@ -63,16 +63,13 @@ export class GroupService {
     return this.httpClient.post(url,body,{headers});
   }
 
-  eliminarUsuarioDegrupo(idGroup:string){
-    let idUser:string = this.userService.getUser()._id ; //va a ir en el body
+  eliminarUsuarioDegrupo(idGroup:string,email:string){
     let body = {
-      idUser : idUser
+      email:email
     }
 
     const headers = new HttpHeaders().set('Content-Type', 'application/json');
-    
     const url:string = environment.apiUrl+'groups/'+idGroup+'/remove';
-
     return this.httpClient.put(url,body,{headers})
 
   }
@@ -90,6 +87,43 @@ export class GroupService {
     };
     const url:string = environment.apiUrl+'groups/'+idGroup;
     return this.httpClient.delete(url,options)
+  }
+
+  changeGroupName(idGroup:string,newTitle:string){
+    let idUser:string = this.userService.getUser()._id
+
+    let UserInfo = {
+      idUser:idUser,
+      token:'undefined'
+    }
+    let groupInfo = {
+      title:newTitle
+    }
+    let body = {
+      UserInfo:UserInfo,
+      groupInfo:groupInfo
+    }
+    const url:string = environment.apiUrl+'groups/'+idGroup+'/name';
+    const headers = new HttpHeaders().set('Content-Type', 'application/json');
+    return this.httpClient.put(url,body,{headers})
+  }
+
+  addTextChannel(idGroup:string){
+    const url:string = environment.apiUrl+'groups/'+idGroup+'/channels';
+    return this.httpClient.post(url,{})
+  }
+  addVoiceChannel(idGroup:string){
+    const url:string = environment.apiUrl+'groups/'+idGroup+'/audioChannels';
+    return this.httpClient.post(url,{})
+  }
+
+  addUserToGroup(idGroup:string, email:string){
+    const url:string = environment.apiUrl+'groups/'+idGroup;
+    let body = {
+      email: email
+    }
+    const headers = new HttpHeaders().set('Content-Type', 'application/json');
+    return this.httpClient.put(url,body,{headers})
   }
 
 }

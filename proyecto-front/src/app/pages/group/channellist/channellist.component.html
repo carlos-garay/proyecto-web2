@@ -37,9 +37,9 @@
 
 <mat-menu #allOptions="matMenu">
     <button mat-menu-item (click)="openNameDialog()">Cambiar Nombre</button>
-    <button mat-menu-item (click)="addUser()">Agregar Usuario</button>
-    <button mat-menu-item (click)="openTextChannelDialog()">Agregar Canal Texto</button>
-    <button mat-menu-item (click)="openVoiceChannelDialog()">Agregar Canal Voz</button>
+    <button mat-menu-item (click)="openUserDialog()">Agregar Usuario</button>
+    <button mat-menu-item (click)="addTextChannel()">Agregar Canal Texto</button>
+    <button mat-menu-item (click)="addVoiceChannel()">Agregar Canal Voz</button>
     <button mat-menu-item (click)="deleteGroup()">Eliminar Grupo</button>
 
 </mat-menu>
@@ -52,5 +52,5 @@
 </mat-menu>
 
 
-<button mat-button (contextmenu)="openChannelMenu($event,'epicness')" #menuTrigger="matMenuTrigger" [matMenuTriggerFor]="textChannelUtils">...</button>
-
+<!-- <button mat-button (contextmenu)="openChannelMenu($event,'epicness')" #menuTrigger="matMenuTrigger" [matMenuTriggerFor]="textChannelUtils">...</button>
+ -->

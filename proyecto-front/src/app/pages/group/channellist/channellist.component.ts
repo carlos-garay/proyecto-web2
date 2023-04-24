@@ -4,7 +4,8 @@ import { ActivatedRoute } from '@angular/router';
 import { Router } from '@angular/router';
 import { GroupService } from 'src/app/shared/services/group.service';
 import { MatMenuTrigger } from '@angular/material/menu';
-
+import { MatDialog } from '@angular/material/dialog';
+import { GenericComponent } from 'src/app/modals/generic/generic.component';
 
 @Component({
   selector: 'app-channellist',
@@ -26,13 +27,11 @@ export class ChannellistComponent{
   }
 
   selectedChannel:string=''
+  selectedAudioChannel:string=''
   @ViewChild('menuTrigger') menuTrigger!: MatMenuTrigger; 
   
   
-  constructor(private route: ActivatedRoute,private router:Router, private groupService:GroupService) { 
-    //mientras no se puedan hacer requests se va a hardcodear para poder forjar la interfaz 
-    
-  } 
+  constructor(private route: ActivatedRoute,private router:Router, private groupService:GroupService, public dialog: MatDialog) {   } 
 
   goTextChannel(id:string){
     let url:string = '/group/'+this.grupo._id+'/text/'+id
@@ -45,22 +44,71 @@ export class ChannellistComponent{
 
   deleteGroup(){
     this.groupService.deleteGroup(this.grupo._id).subscribe((response:any)=>{
-      //mandar recargar el componente padre group
+      //mandar recargar el componente nav
     })
   }
 
-  openNameDialog(){
-    
+  openNameDialog(): void {
+    const dialogRef = this.dialog.open(GenericComponent, {
+      data: {
+        title: 'Cambiar Nombre Grupo',//titulo modal
+        label: 'Nuevo Nombre', //label de entrada
+        buttonText: 'Guardar', //
+        type: 'text',
+        placeholder:'nuevoNombre'
+      },
+    });
+    dialogRef.afterClosed().subscribe(result => {
+      console.log('The dialog was closed');
+      console.log('The result was:', result);
+      if(result != undefined){
+        this.changeGroupName(result); 
+      }
+    });
   }
-  openTextChannelDialog(){
-    
-  }
-  openVoiceChannelDialog(){
-    
+  changeGroupName(name:string){
+    this.groupService.changeGroupName(this.grupo._id,name).subscribe((response:any)=>{
+      //mandar recargar el componente padre
+    })
   }
 
-  addUser(){
+  addTextChannel(){
+    this.groupService.addTextChannel(this.grupo._id).subscribe((response:any)=>{
+      //recargar componente padre 
+      //posiblemente hacer fix local 
+    })
+  }
+  addVoiceChannel(){
+    this.groupService.addVoiceChannel(this.grupo._id).subscribe((response:any)=>{
+      //recargar componente padre 
+      //posiblemente hacer fix local 
+    })
+  }
 
+
+  openUserDialog(): void {
+    const dialogRef = this.dialog.open(GenericComponent, {
+      data: {
+        title: 'Agregar Usuario',//titulo modal
+        label: 'correo usuario', //label de entrada
+        buttonText: 'Agregar', //
+        type: 'email',
+        placeholder:'abc@def'
+      },
+    });
+    dialogRef.afterClosed().subscribe(result => {
+      console.log('The dialog was closed');
+      console.log('The result was:', result);
+      if(result != undefined){
+        this.addUser(result); 
+      }
+    });
+  }
+  addUser(email:string){
+    //la llamada al servicio de grupo
+    this.groupService.addUserToGroup(this.grupo._id,email).subscribe((response:any)=>{
+      //recargar componente padre group
+    })
   }
 
   addUserToChannel(){
