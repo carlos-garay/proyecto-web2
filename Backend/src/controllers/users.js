@@ -24,24 +24,25 @@ const UserController = {
         let password = req.body.password
 
         User.findOne({ email: `${email}` })
-            .then(user => {
-                if(user.password == password){
-                    let objUserId = {_id:user._id}
-                    res.status(201).type("application/json").json(objUserId);
-                } else {
-                    res.status(404).type('text/plain; charset=utf-8').send(`Email o contraseña incorrecta`);
-                }
-            })
-            .catch(err => {
-                res.status(404).type('text/plain; charset=utf-8').send(`Email no registrado`+err);
-            });
+        .then(user => {
+            if(user.password == password){
+                let objUserId = {_id:user._id}
+                res.status(201).type("application/json").json(objUserId);
+            } else {
+                res.status(404).type('text/plain; charset=utf-8').send(`Email o contraseña incorrecta`);
+            }
+        })
+        .catch(err => {
+            res.status(404).type('text/plain; charset=utf-8').send(`Email no registrado`+err);
+        });
     },
 
     //Cambiar el nombre del usuario
     updateUserName: (req,res)=>{
         let nameChange = req.body.name;
         let idUser = req.params.idUser;
-        User.findByIdAndUpdate(idUser, {name: nameChange}, { new : true }).then(user => {
+        User.findByIdAndUpdate(idUser, {name: nameChange}, { new : true })
+        .then(user => {
             res.status(200).type("application/json").json(user);
         })
         .catch(err => {
@@ -67,34 +68,34 @@ const UserController = {
     //Consulta la colección de grupos para cargar los grupos de los que es miembro
     loadUser: (req,res) => { 
         let idUser = req.params.idUser;
-        User.findById(idUser)
-            .populate("arrGroups")
-            .then(usuario => {
-                //Obtenemos por cada id en el arreglo de grupos del usuario el objeto del grupo correspondiente
-                //Para que posteriormente se puedan usar para cargar sus íconos y nombres en la aplicación
-                console.log(usuario);
-                res.status(200).type("application/json").json(usuario);
+        User.findById(idUser,"-password")
+        .populate("arrGroups")
+        .then(usuario => {
+            //Obtenemos por cada id en el arreglo de grupos del usuario el objeto del grupo correspondiente
+            //Para que posteriormente se puedan usar para cargar sus íconos y nombres en la aplicación
+            console.log(usuario);
+            res.status(200).type("application/json").json(usuario);
 
-            })
-            .catch(err => {
-                res.status(404).send("No se encontró el usuario con el id: "+idUser +' '+ err);
-            })
+        })
+        .catch(err => {
+            res.status(404).send("No se encontró el usuario con el id: "+idUser +' '+ err);
+        })
     },
 
     loadFriends: (req,res) => { 
         let idUser = req.params.idUser;
         User.findById(idUser)
-            .populate("arrFriends")
-            .then(usuario => {
-                //Obtenemos por cada id en el arreglo de amigos del usuario el objeto del usuario correspondiente
-                //Para que posteriormente se puedan usar para cargar sus íconos y nombres
-                console.log(usuario);
-                res.status(200).type("application/json").json(usuario.arrFriends);
-               
-            })
-            .catch(err => {
-                res.status(404).send("No se encontró el usuario con el id: "+idUser +' '+ err);
-            })
+        .populate("arrFriends","-password")
+        .then(usuario => {
+            //Obtenemos por cada id en el arreglo de amigos del usuario el objeto del usuario correspondiente
+            //Para que posteriormente se puedan usar para cargar sus íconos y nombres
+            console.log(usuario);
+            res.status(200).type("application/json").json(usuario.arrFriends);
+            
+        })
+        .catch(err => {
+            res.status(404).send("No se encontró el usuario con el id: "+idUser +' '+ err);
+        })
     },
 
     loadChannel: (req,res) => { 
@@ -112,11 +113,11 @@ const UserController = {
             }
             else{
                 Channel.findById(idChannel)
-                .populate("arrMembers")
+                .populate("arrMembers","-password")
                 .then(channel => {
                     //Poner el titulo del canal segun el nombre de los usuarios
                     Channel.findByIdAndUpdate(idChannel,{title: "DM " + channel.arrMembers[0].name + " y " + channel.arrMembers[1].name },{new:true})
-                        .populate("arrMembers")
+                        .populate("arrMembers","-password")
                         .populate("arrMessages")
                         .then(newChannel =>{
                             //Cambiamos el sender de su id a su nombre para que se pueda desplegar en el mensaje

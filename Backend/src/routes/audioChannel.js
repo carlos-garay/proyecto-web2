@@ -17,9 +17,16 @@ router.post('/',express.json(),audioChannelController.createAudioChannel);
  *        schema:
  *          type: string
  * 
+ *      - in: header
+ *        name: user
+ *        description: id del usuario que quiere realizar la acción 
+ * 
+ * 
  *    responses:
  *      200:
  *        description: objeto del canal de audio que se creó
+ *      403:
+ *        description: no eres administrador del grupo
  *      404: 
  *        description: no se encontro el grupo con ese id 
  *      500: 
@@ -58,9 +65,15 @@ router.put('/:idChannel/addMember',express.json(),audioChannelController.addMemb
  *          example:
  *            { "email": "otro1@test.com"}
  * 
+ *      - in: header
+ *        name: user
+ *        description: id del usuario que quiere realizar al acción
+ * 
  *    responses:
  *      200:
  *        description: objeto del usuario que se agregó al canal de audio
+ *      403:
+ *        description: no eres administrador del grupo
  *      404:
  *        description: No se encontró el canal con el id idChannel
  */
@@ -92,9 +105,16 @@ router.put('/:idChannel/removeMember',express.json(),audioChannelController.remo
  *          type: object
  *          example:
  *            { "email": "otro1@test.com"}
+ * 
+ *      - in: header
+ *        name: user
+ *        description: id del usuario que quiere realizar al acción
+ * 
  *    responses:
  *      200:
  *        description: objeto del usuario que se eliminó del canal de audio
+ *      403:
+ *        description: no eres administrador del grupo
  *      404: 
  *        description: no se encontro el grupo con ese id 
  */
@@ -118,11 +138,17 @@ router.delete('/:idChannel',audioChannelController.deleteAudioChannel);
  *        description: el id del canal que vamos a borrar
  *        schema:
  *          type: string
+ *      - in: header
+ *        name: user
+ *        description: id del usuario que quiere realizar la acción
+ * 
  *    responses:
  *      200:
  *        description: objeto del canal de audio que se eliminó
  *      404: 
  *        description: no se encontro el grupo con ese id 
+ *      403:
+ *        description: no eres administrador del grupo
  */
 
 
@@ -157,11 +183,18 @@ router.put('/:idChannel/enterCall',express.json(),audioChannelController.enterCa
  *          example:
  *            { "idUser": "643aed8b64f01a772cb50353"}
  * 
+ *      - in: header
+ *        name: user
+ *        description: id del usuario que quiere realizar la acción
+ * 
  *    responses:
  *      200:
  *        description: objeto del canal de audio
  *      404:
  *        description: No se encontró el canal con el id idChannel
+ *      403: 
+ *        description: no formas parte del canal
+ * 
  */
 
 
@@ -195,9 +228,15 @@ router.put('/:idChannel/exitCall',express.json(),audioChannelController.exitCall
  *          example:
  *            { "idUser": "643aed8b64f01a772cb50353"}
  * 
+ *      - in: header
+ *        name: user
+ *        description: id del usuario que quiere realizar la acción
+ * 
  *    responses:
  *      200:
  *        description: objeto del canal de audio
+ *      403:
+ *        description: no formas parte del canal
  *      404:
  *        description: No se encontró el canal con el id idChannel
  */
@@ -248,7 +287,7 @@ router.put('/:idChannel/name',express.json(),audioChannelController.changeChanne
  *      400: 
  *        description: no pudo cambiarse el nombre
  * 
- *      401: 
+ *      403: 
  *        description: no eres administrador por lo tanto no puedes cambiar el nombre
  *      
  *      404:
