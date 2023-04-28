@@ -80,14 +80,13 @@ export class UserService {
 
   //utiliza el id cargado en session storage despues de iniciar sesion para cargar el usuario actual al servicio
   //siempre que se ocupe informacion del usuario se va a obtener el usuarioActual y de ahi se saca la información necesaria
-  loadUser(){ //esta funcion se llama al haber iniciado sesion
+  loadUser(idUser: string){ //esta funcion se llama al haber iniciado sesion
     //recuperamos el idUser de sessionstorage
-    let idUser:string = ''
     const url:string = environment.apiUrl+'users/'+idUser
     this.httpClient.get(url).subscribe((response:any)=>{
       this.usuarioActual = response
     })
-
+    console.log(this.usuarioActual)
   }
 
   getUser(){

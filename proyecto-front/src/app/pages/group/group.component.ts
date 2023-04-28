@@ -23,10 +23,9 @@ export class GroupComponent{
   constructor(private route: ActivatedRoute,private router:Router, private groupService:GroupService) {}
 
   ngOnInit(){
-    console.log('salu2')
 
     this.route.params.subscribe(params => {
-      const idGrupo = params['idGroup'];
+      const idGrupo = params['idGroup']
       console.log(idGrupo)
       
       //esta incompleto

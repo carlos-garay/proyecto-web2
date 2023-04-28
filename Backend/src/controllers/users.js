@@ -33,7 +33,7 @@ const UserController = {
             }
         })
         .catch(err => {
-            res.status(404).type('text/plain; charset=utf-8').send(`Email no registrado`+err);
+            res.status(404).type('text/plain; charset=utf-8').send(`Email no registrado`);
         });
     },
 
@@ -78,7 +78,7 @@ const UserController = {
 
         })
         .catch(err => {
-            res.status(404).send("No se encontró el usuario con el id: "+idUser +' '+ err);
+            res.status(404).send("No se encontró el usuario con el id: "+idUser);
         })
     },
 
@@ -94,7 +94,7 @@ const UserController = {
             
         })
         .catch(err => {
-            res.status(404).send("No se encontró el usuario con el id: "+idUser +' '+ err);
+            res.status(404).send("No se encontró el usuario con el id: "+idUser);
         })
     },
 
@@ -125,17 +125,17 @@ const UserController = {
                             res.status(200).type("application/json").json(newChannel);
                         })
                         .catch(err=>{
-                            res.status(400).send("Error al cambiar el título del canal: "+idChannel +' '+ err);
+                            res.status(400).send("Error al cambiar el título del canal: "+idChannel);
                         })
                 })
                 .catch(err => {
-                    res.status(400).send("Error al obtener datos del canal con el id: "+idChannel +' '+ err);
+                    res.status(400).send("Error al obtener datos del canal con el id: "+idChannel);
                 })
             }
                 
         })
         .catch(error =>{
-            res.status(404).send("No se encontró al usuario " + error)
+            res.status(404).send("No se encontró al usuario " )
         })
        
     },
@@ -174,11 +174,11 @@ const UserController = {
                 res.status(200).type("application/json").json(response);
             })
             .catch(error =>{
-                res.status(400).send('No se pudo agregar el mensaje al canal' + error);
+                res.status(400).send('No se pudo agregar el mensaje al canal');
             })
         })
         .catch(error =>{
-            res.status(400).send('No se pudo crear el mensaje' + error);
+            res.status(400).send('No se pudo crear el mensaje');
         })
     },
 
@@ -223,16 +223,16 @@ const UserController = {
                         res.status(200).type("application/json").json(user2);
                     })
                     .catch(error =>{
-                        res.status(400).send("No se pudo eliminar desde usuario 2 " + error)
+                        res.status(400).send("No se pudo eliminar desde usuario 2 ")
                     })
                 })
                 .catch(error =>{
-                    res.status(400).send("No se pudo eliminar desde usuario 1 " + error)
+                    res.status(400).send("No se pudo eliminar desde usuario 1 ")
                 })
             }
         })
         .catch(error =>{
-            res.status(404).send("No se encontró al usuario " + error)
+            res.status(404).send("No se encontró al usuario ")
         })
 
     }   

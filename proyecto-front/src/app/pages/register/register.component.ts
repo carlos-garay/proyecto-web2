@@ -32,12 +32,13 @@ export class RegisterComponent {
     if(password == confirm){
       this.userService.registerUser(name,email,password).subscribe((response:any)=>{ //al hacer login nos regresa el id del nuevo usuario
         //si se registro correcto te lleva a la pagina del login 
-        this.router.navigate(['/login'])
+        this.userService.loadUser(response._id)
+        this.router.navigate(['/'])
       })
     }
     //si no no se hace nada 
     //mandar mensajes de error mayb 
-    
-    
+        
   }
+
 }

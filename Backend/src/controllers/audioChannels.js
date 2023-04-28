@@ -28,7 +28,7 @@ const audioChannelController = {
                     });
                 })
                 .catch(err =>{
-                    res.status(500).send("Error en el servidor " + err);
+                    res.status(500).send("Error en el servidor ");
                 })
             }
             else{
@@ -138,11 +138,11 @@ const audioChannelController = {
                         res.status(200).type("application/json").json(user);
                     })
                     .catch(err => {
-                        res.status(404).send("No se encontró el canal de audio con el id: "+ idChannel + " "+ err);
+                        res.status(404).send("No se encontró el canal de audio con el id: "+ idChannel + " ");
                     });
                 })
                 .catch(err =>{
-                    res.status(404).send("No se encontró el usuario con el email "+ email + " "+err );
+                    res.status(404).send("No se encontró el usuario con el email "+ email + " " );
                 })
             }
             else{

@@ -24,24 +24,33 @@ const MessageController = {
             idChannel: req.params.idChannel
         }
 
-        Message.create(temp) //mandamos crear mensaje con el objeto anterior
-            .then(response => { //response aqui es el mensaje creado
-                //si ya tengo el mensaje creado
-                let idNewMessage = response._id 
-                
-                //insertarlo al arrMessages del textChannel al que pertenece 
-                //modificar channel al que pertenece 
-                Channel.findByIdAndUpdate(req.params.idChannel,{$push:{arrMessages:idNewMessage}},{new : true})
-                    .then(canal =>{
-                        res.status(200).send(response)
-                    })
-                    .catch(error =>{
-                        res.status(400).send('No se pudo agregar mensaje al canal')
-                    })
-            })
-            .catch(error =>{
-                res.status(400).send('no se pudo crear/guardar el mensaje ')
-            })
+        Channel.findById(req.params.idChannel)
+        .then(channel =>{
+            if(channel.arrMembers.includes(object.UserInfo.idUser)){
+                Message.create(temp) //mandamos crear mensaje con el objeto anterior
+                .then(response => { //response aqui es el mensaje creado
+                    //si ya tengo el mensaje creado
+                    let idNewMessage = response._id 
+                    
+                    //insertarlo al arrMessages del textChannel al que pertenece 
+                    //modificar channel al que pertenece 
+                    Channel.findByIdAndUpdate(req.params.idChannel,{$push:{arrMessages:idNewMessage}},{new : true})
+                        .then(canal =>{
+                            res.status(200).send(response)
+                        })
+                        .catch(error =>{
+                            res.status(400).send('No se pudo agregar mensaje al canal')
+                        })
+                })
+                .catch(error =>{
+                    res.status(400).send('No se pudo crear/guardar el mensaje ')
+                })
+            }
+            else{
+                res.status(403).send('No eres parte del canal')
+            }
+
+        })
     }
 }
 

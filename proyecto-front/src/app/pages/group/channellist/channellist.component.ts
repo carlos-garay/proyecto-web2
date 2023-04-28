@@ -35,10 +35,12 @@ export class ChannellistComponent{
   constructor(private route: ActivatedRoute,private router:Router, private groupService:GroupService, public dialog: MatDialog) {   } 
 
   goTextChannel(id:string){
+    this.menuTrigger.closeMenu();
     let url:string = '/group/'+this.grupo._id+'/text/'+id
     this.router.navigate([url])
   }
   goVoiceChannel(id:string){
+    this.menuTrigger2.closeMenu();
     let url:string = '/group/'+this.grupo._id+'/voice/'+id
     this.router.navigate([url])
   }
@@ -278,10 +280,12 @@ export class ChannellistComponent{
     console.log(id)
     event.preventDefault();
     this.selectedChannel = id;
-
+    console.log(event.button)
     //abrir el mat menu
     if (event.button === 2) { // Right-click
       this.menuTrigger.openMenu();
+    }else{
+      
     }
   }
   openAudioChannel(event: MouseEvent, id:string){

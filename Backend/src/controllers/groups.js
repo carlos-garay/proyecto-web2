@@ -43,7 +43,7 @@ const GroupController = {
                 })
         })
         .catch(error =>{
-            res.status(400).send('No pudo crearse el nuevo grupo ' + error)
+            res.status(400).send('No pudo crearse el nuevo grupo ')
         })
     },
 
@@ -60,14 +60,14 @@ const GroupController = {
                         //de cada usuario que pertenecia al grupo, vamos a eliminar el grupo de su arrGroups
                         User.findByIdAndUpdate(usuario,{ $pull: { arrGroups: grupo._id}}, { new : true })
                         .catch(error =>{
-                            res.status(400).send('error al encontrar el usuario para eliminar grupo de su ARR ' + error);
+                            res.status(400).send('error al encontrar el usuario para eliminar grupo de su ARR ');
                         })
                     })
         
                     // eliminar canales de audio
                     audioChannel.deleteMany({_id: { $in: grupo.arrAudioChannels }}, {new: true})
                     .catch(error =>{
-                        res.status(400).send('no se pudo eliminar los canales de audio ' + error);
+                        res.status(400).send('no se pudo eliminar los canales de audio ');
                     })
                     
                     //Eliminar canales de texto y mensajes incluidos
@@ -77,17 +77,17 @@ const GroupController = {
                             //borrar todos los mensajes que estan en el arreglo 
                             Message.deleteMany({ _id: { $in: removedChannel.arrMessages}})
                             .catch(error => {
-                                res.status(400).send('error al eliminar los mensajes del canal ' + error)
+                                res.status(400).send('error al eliminar los mensajes del canal ')
                             })
                         })
                         .catch(error => {
-                            res.status(400).send('error al eliminar los canales de texto ' + error)
+                            res.status(400).send('error al eliminar los canales de texto ')
                         })
                     })
                     res.status(200).type("application/json").json(grupo)
                 })
                 .catch(error =>{
-                    res.status(404).send('No se encontro el grupo a borrar ' + error)
+                    res.status(404).send('No se encontro el grupo a borrar ')
                 })
             }else{
                 res.status(403).send('No eres administrador del grupo')
@@ -95,7 +95,7 @@ const GroupController = {
 
         })
         .catch(error =>{
-            res.status(404).send('No se encontro el grupo a borrar ' + error);
+            res.status(404).send('No se encontro el grupo a borrar ');
         })
        
     },
@@ -118,11 +118,11 @@ const GroupController = {
                         .then(grupo => {  
                             Channel.updateMany({_id: {$in: grupo.arrChannels}},{$push:{arrMembers:user._id}},{new:true})
                             .catch(error =>{
-                                res.status(500).send('Error al actualizar canales de texto '+error);
+                                res.status(500).send('Error al actualizar canales de texto ');
                             })
                             audioChannel.updateMany({_id: {$in: grupo.arrAudioChannels}},{$push:{arrMembers:user._id}},{new:true})
                             .catch(error =>{
-                                res.status(500).send('Error al actualizar canales de audio '+error)
+                                res.status(500).send('Error al actualizar canales de audio ')
                             })
 
                             User.findByIdAndUpdate(user._id,{$push:{arrGroups:grupo._id}}, { new : true })
@@ -131,11 +131,11 @@ const GroupController = {
                                 res.status(200).type("application/json").json(user);
                             })
                             .catch(error =>{
-                                res.status(400).send('No te pudiste unir' + error);
+                                res.status(400).send('No te pudiste unir');
                             })
                         })
                         .catch(error =>{
-                            res.status(400).send('No te pudieron agregar '+error );
+                            res.status(400).send('No te pudieron agregar ' );
                         })
                     }
                 }
@@ -144,11 +144,11 @@ const GroupController = {
                 }
             })
             .catch(error =>{
-                res.status(404).send('No se encontró al grupo ' +error);
+                res.status(404).send('No se encontró al grupo ');
             })
         })
         .catch(error =>{
-            res.status(404).send('No se encontró al usuario ' + error );
+            res.status(404).send('No se encontró al usuario ' );
         })
     },
 
@@ -167,12 +167,12 @@ const GroupController = {
                         //Si un canal del grupo contiene al usuario a eliminar, quitarlo
                         Channel.updateMany({arrMembers: user._id,  _id: {$in: grupo.arrChannels}} ,{$pull:{arrMembers:user._id}},{new:true})
                         .catch(error =>{
-                            res.status(500).send('Error al actualizar canales de texto '+error);
+                            res.status(500).send('Error al actualizar canales de texto ');
                         })
                         //Tambien eliminarlo de los canales de audio 
                         audioChannel.updateMany({arrMembers: user._id, _id: {$in: grupo.arrAudioChannels}},{$pull:{arrMembers:user._id}},{new:true})
                         .catch(error =>{
-                            res.status(500).send('Error al actualizar canales de audio '+error)
+                            res.status(500).send('Error al actualizar canales de audio ')
                         })
                         User.findByIdAndUpdate(user._id,{$pull:{arrGroups:grupo._id}}, { new : true })
                         .then(user =>{
@@ -187,7 +187,7 @@ const GroupController = {
                             })
                         })
                         .catch(error =>{
-                            res.status(400).send('No te pudiste unir' + error);
+                            res.status(400).send('No te pudiste unir');
                         })
 
                     }
@@ -200,11 +200,11 @@ const GroupController = {
                 }
             })
             .catch(error =>{
-                res.status(404).send('No se encontró al grupo ' +error);
+                res.status(404).send('No se encontró al grupo ');
             })
         })
         .catch(error =>{
-            res.status(404).send("No se encontró el usuario con el email "+ email + " "+error );
+            res.status(404).send("No se encontró el usuario con el email "+ email );
         })
     },
 
@@ -225,7 +225,7 @@ const GroupController = {
                         grupo.arrAdmins.push(idToAdmin)
                         grupo.save()
                         .then(grupo =>{
-                            res.status(200).send("El usuario se ha vuelto administrador del grupo")
+                            res.status(200).send({})
                         })
                         .catch(error =>{
                             res.status(500).send("error al hacer al usuario administrador");
@@ -240,11 +240,11 @@ const GroupController = {
                 }
             })
             .catch(error =>{
-                res.status(404).send('No se encontró al grupo ' +error);
+                res.status(404).send('No se encontró al grupo ');
             })
         })
         .catch(error =>{
-            res.status(404).send("No se encontró el usuario con el email "+ email + " "+error );
+            res.status(404).send("No se encontró el usuario con el email "+ email);
         })
 
     },
@@ -259,15 +259,15 @@ const GroupController = {
         .then(user=>{
             Group.findById(idGroup)
             .then(grupo =>{
-                //Solo un usuario administrador puede quitar las propiedades de administrador a otro
-                if(grupo.arrAdmins.includes(idAdmin)){
+                //Solo un usuario administrador puede quitar las propiedades de administrador a otro y no a si mismo
+                if(grupo.arrAdmins.includes(idAdmin) && idAdmin!=idRevokeAdmin){
                     //Si el usuario estaba en la lista de administradores se le quita este permiso 
                     if(grupo.arrAdmins.includes(idRevokeAdmin)){
-                        index = grupo.arrAdmins.indexOf(user._id);
+                        index = grupo.arrAdmins.indexOf(idRevokeAdmin);
                         grupo.arrAdmins.splice(index,1);
                         grupo.save()
                         .then(grupo =>{
-                            res.status(200).send("El usuario se ha vuelto administrador del grupo")
+                            res.status(200).send({})
                         })
                         .catch(error =>{
                             res.status(500).send("error al hacer al usuario administrador");
@@ -278,15 +278,15 @@ const GroupController = {
                     }
                 }
                 else{
-                    res.status(403).send('No eres administrador del grupo')
+                    res.status(403).send('No eres administrador del grupo o te estas intentado quitar privilegios de administrador a ti mismo')
                 }
             })
             .catch(error =>{
-                res.status(404).send('No se encontró al grupo ' +error);
+                res.status(404).send('No se encontró al grupo ');
             })
         })
         .catch(error =>{
-            res.status(404).send("No se encontró el usuario con el email "+ email + " "+error );
+            res.status(404).send("No se encontró el usuario con el email "+ email);
         })
 
     },
@@ -308,7 +308,7 @@ const GroupController = {
 
             })
             .catch(error =>{
-                res.status(404).send('No se encontro ese grupo '+error)
+                res.status(404).send('No se encontro ese grupo ')
             })
     },
     

@@ -24,12 +24,12 @@ export class LoginComponent {
     let email:string = valores.email
     let password: string= valores.password
     this.userService.loginUser(email,password).subscribe((response:any)=>{
-
+      
       //la response va a traer el usuario y va a traer el token
       
       //subimos a sessionStorage el valor del ID 
       //se llama loadUser desde el servicio para que traiga el usuario actual, el ID que usa el servicio ya va a estar en el session storage
-      this.userService.loadUser()
+      this.userService.loadUser(response._id)
       //hacer que desde nav se ejecute la funcion getUser 
     })
   }

@@ -47,7 +47,7 @@ const RequestController = {
                                 })
                         })
                         .catch(error =>{
-                            res.status(400).send('No se pudo crear este request '+ error)
+                            res.status(400).send('No se pudo crear este request ')
                         })
                 }
             }
@@ -97,7 +97,7 @@ const RequestController = {
 
             })
             .catch(err => {
-                res.status(404).send("No se encontró el usuario con el id: "+idUser +' '+ err);
+                res.status(404).send("No se encontró el usuario con el id: "+idUser);
             })
  
     },

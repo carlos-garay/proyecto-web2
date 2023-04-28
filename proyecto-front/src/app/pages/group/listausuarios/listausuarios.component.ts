@@ -3,6 +3,8 @@ import { Grouppopulated } from 'src/app/shared/interfaces/grouppopulated';
 import { ActivatedRoute } from '@angular/router';
 import { Router } from '@angular/router';
 import { GroupService } from 'src/app/shared/services/group.service';
+import { User } from 'src/app/shared/interfaces/user';
+import { Group } from 'src/app/shared/interfaces/group';
 
 @Component({
   selector: 'app-listausuarios',
@@ -19,20 +21,40 @@ export class ListausuariosComponent {
     arrChannels: [],
     arrAudioChannels: []
   }
-  selectedUser:string= ''
+  selectedUserEmail:string= ''
+  selectedUserId:string = ''
 
   constructor(private groupService : GroupService){ }
 
-  selectUser(id:string){
-    this.selectedUser = id
+  selectUser(email:string, id:string){
+    this.selectedUserEmail = email
+    this.selectedUserId = id
   }
+
   removeFromChannel(){
     //eliminar usuarios del canal 
     //hacer la llamada al servicio de grupo 
-    this.groupService.eliminarUsuarioDegrupo(this.grupo._id,this.selectedUser).subscribe((response:any)=>{
+    this.groupService.eliminarUsuarioDegrupo(this.grupo._id,this.selectedUserEmail).subscribe((response:any)=>{
 
     })
-    console.log('eliminar' + this.selectedUser)
+    console.log('eliminar' + this.selectedUserEmail)
+  }
+
+  findAdmin(group: Grouppopulated, idUser: string){
+    return group.arrAdmins.find(({_id}) => _id == idUser)
+  }
+
+  makeAdmin(){
+    console.log(this.selectedUserId)
+    this.groupService.makeUserAdmin(this.grupo._id, this.selectedUserId).subscribe((response:any)=>{
+
+    })
+  }
+
+  revokeAdmin(){
+    this.groupService.revokeUserAdmin(this.grupo._id, this.selectedUserId).subscribe((response:any)=>{
+      
+    })
   }
 
 

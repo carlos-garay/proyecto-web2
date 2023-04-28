@@ -47,4 +47,6 @@ export class NavComponent implements OnInit {
   openGroupDialog(){
     this.matDialog.open(NewGroupComponent,{})
   }
+
+  
 }

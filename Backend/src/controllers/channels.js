@@ -31,7 +31,7 @@ const ChannelController = {
             }
         })
         .catch(err => {
-            res.status(404).send("Error al obtener datos del canal con el id: "+idChannel +' '+ err);
+            res.status(404).send("Error al obtener datos del canal con el id: "+idChannel);
         })
 
     },
@@ -57,14 +57,14 @@ const ChannelController = {
                     });
                 })
                 .catch(err =>{
-                    res.status(500).send("Error en el servidor " + err);
+                    res.status(500).send("Error en el servidor ");
                 })
             }
             else{
                 res.status(403).send('No eres administrador del grupo')
             }
         }).catch(err=>{
-            res.status(404).send("Error al encontrar el grupo "+err)
+            res.status(404).send("Error al encontrar el grupo ")
         })
     },
 
@@ -172,11 +172,11 @@ const ChannelController = {
                         res.status(200).type("application/json").json(user);
                     })
                     .catch(err => {
-                        res.status(404).send("No se encontró el canal con el id: "+ idChannel + " "+ err);
+                        res.status(404).send("No se encontró el canal con el id: "+ idChannel);
                     });
                 })
                 .catch(err =>{
-                    res.status(404).send("No se encontró el usuario con el email "+ email + " "+err );
+                    res.status(404).send("No se encontró el usuario con el email "+ email);
                 })
             }
             else{
