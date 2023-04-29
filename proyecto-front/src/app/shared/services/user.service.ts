@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { Userpopulated } from '../interfaces/userpopulated';
+import { BehaviorSubject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -9,6 +10,7 @@ import { Userpopulated } from '../interfaces/userpopulated';
 export class UserService {
 
   //temporalmente vamos a hardcodear este usuario desde aqui en lugar de obtenerlo con el login 
+  observableUser: BehaviorSubject<Userpopulated>
   usuarioActual:Userpopulated = {
     _id: '',
     name: '',
@@ -22,54 +24,60 @@ export class UserService {
   }
 
   constructor(private httpClient : HttpClient){
+    this.observableUser = new BehaviorSubject(this.usuarioActual)
+    let idUser = localStorage.getItem('idUser');
+    if(idUser){
+      this.loadUser(idUser);
+    }
+
     //mientras no tenemos la sesion y la conexion entre componentes SE HARDCODEA
     
-    this.usuarioActual._id="643aed8b64f01a772cb50353"
-    this.usuarioActual.arrFriends=[]
-    this.usuarioActual.arrGroups=[
-      {
-        "_id": "643d910ee3f376459277de77",
-        "title": "grupo1",
-        "image": "noimage",
-        "arrUsers": [
-          "643aed8b64f01a772cb50353",
-          "643aed8b64f01a772cb50353",
-          "643af5d692b9f9f15fb1544b",
-          "643b02446664b9a3efbf1e60"
-        ],
-        "arrAdmins": [
-          "643aed8b64f01a772cb50353"
-        ],
-        "arrChannels": [
-          "643dab07cd8ff99e26bc3f56",
-          "643dbf0527bc80c7910407c9"
-        ],
-        "arrAudioChannels": [],
-        "__v": 0
-      },
-      {
-        "_id": "643dbbb427bc80c7910407c4",
-        "title": "grupo2",
-        "image": "noimage",
-        "arrUsers": [
-          "643aed8b64f01a772cb50353",
-          "643af5d692b9f9f15fb1544b"
-        ],
-        "arrAdmins": [
-          "643aed8b64f01a772cb50353"
-        ],
-        "arrChannels": [
-          "643dbf1c27bc80c7910407cc"
-        ],
-        "arrAudioChannels": [],
-        "__v": 0
-      }
-    ]
-    this.usuarioActual.arrRequestsReceived=[]
-    this.usuarioActual.arrRequestsSent=[]
-    this.usuarioActual.name="Usuario precargado1"
-    this.usuarioActual.email="otro1@test.com"
-    this.usuarioActual.password="password"
+    // this.usuarioActual._id="643aed8b64f01a772cb50353"
+    // this.usuarioActual.arrFriends=[]
+    // this.usuarioActual.arrGroups=[
+    //   {
+    //     "_id": "643d910ee3f376459277de77",
+    //     "title": "grupo1",
+    //     "image": "noimage",
+    //     "arrUsers": [
+    //       "643aed8b64f01a772cb50353",
+    //       "643aed8b64f01a772cb50353",
+    //       "643af5d692b9f9f15fb1544b",
+    //       "643b02446664b9a3efbf1e60"
+    //     ],
+    //     "arrAdmins": [
+    //       "643aed8b64f01a772cb50353"
+    //     ],
+    //     "arrChannels": [
+    //       "643dab07cd8ff99e26bc3f56",
+    //       "643dbf0527bc80c7910407c9"
+    //     ],
+    //     "arrAudioChannels": [],
+    //     "__v": 0
+    //   },
+    //   {
+    //     "_id": "643dbbb427bc80c7910407c4",
+    //     "title": "grupo2",
+    //     "image": "noimage",
+    //     "arrUsers": [
+    //       "643aed8b64f01a772cb50353",
+    //       "643af5d692b9f9f15fb1544b"
+    //     ],
+    //     "arrAdmins": [
+    //       "643aed8b64f01a772cb50353"
+    //     ],
+    //     "arrChannels": [
+    //       "643dbf1c27bc80c7910407cc"
+    //     ],
+    //     "arrAudioChannels": [],
+    //     "__v": 0
+    //   }
+    // ]
+    // this.usuarioActual.arrRequestsReceived=[]
+    // this.usuarioActual.arrRequestsSent=[]
+    // this.usuarioActual.name="Usuario precargado1"
+    // this.usuarioActual.email="otro1@test.com"
+    // this.usuarioActual.password="password"
     
   }
 
@@ -85,8 +93,9 @@ export class UserService {
     const url:string = environment.apiUrl+'users/'+idUser
     this.httpClient.get(url).subscribe((response:any)=>{
       this.usuarioActual = response
+      this.observableUser.next(this.usuarioActual);
     })
-    console.log(this.usuarioActual)
+
   }
 
   getUser(){
@@ -95,6 +104,7 @@ export class UserService {
 
   setUser(user : Userpopulated){
     this.usuarioActual = user
+    this.observableUser.next(this.usuarioActual);
   }
 
   //FUNCIONES DE LOGIN, REGISTRO Y MODIFICACIONES

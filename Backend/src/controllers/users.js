@@ -3,11 +3,14 @@ const Group = require('../models/groups');
 const Request = require('../models/requests');
 const Channel = require('../models/channels');
 const Message = require('../models/messages');
+const bcrypt = require('bcrypt');
+
 
 const UserController = {
 
     //registrar usuario, se tendrán cambios cuando se tenga implementación de tokens
     registerUser: (req,res)=>{
+        console.log(req.body)
         let user = User(req.body);
         user.save().then((user) =>{
             let objUserId = {_id:user._id}
@@ -25,7 +28,7 @@ const UserController = {
 
         User.findOne({ email: `${email}` })
         .then(user => {
-            if(user.password == password){
+            if (bcrypt.compareSync(password, user.password)) {
                 let objUserId = {_id:user._id}
                 res.status(201).type("application/json").json(objUserId);
             } else {
@@ -33,7 +36,7 @@ const UserController = {
             }
         })
         .catch(err => {
-            res.status(404).type('text/plain; charset=utf-8').send(`Email no registrado`);
+            res.status(404).type('text/plain; charset=utf-8').send(`Email o contraseña incorrecta`);
         });
     },
 

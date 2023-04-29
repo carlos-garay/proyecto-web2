@@ -9,6 +9,6 @@
 
         </div>
         <div mat-dialog-actions>
-            <button align="end" [disabled]="myForm.invalid" mat-raised-button color="accent" (click)="onButtonClick()">{{buttonText}}</button>
+            <button align="end" [disabled]="myForm.invalid" mat-raised-button color="accent" mat-dialog-close (click)="onButtonClick()">{{buttonText}}</button>
         </div>
     </form>

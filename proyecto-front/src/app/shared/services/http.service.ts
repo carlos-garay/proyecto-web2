@@ -14,6 +14,7 @@ export class HttpService {
   get(url: string): Observable<any> {
     const headers= new HttpHeaders({
       'user': this.userService.usuarioActual._id
+      
     });
     return this.httpClient.get(url,{headers});
   }

@@ -6,6 +6,8 @@ import { GroupService } from 'src/app/shared/services/group.service';
 import { MatMenuTrigger } from '@angular/material/menu';
 import { MatDialog } from '@angular/material/dialog';
 import { GenericComponent } from 'src/app/modals/generic/generic.component';
+import { UserService } from 'src/app/shared/services/user.service';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-channellist',
@@ -32,7 +34,7 @@ export class ChannellistComponent{
   @ViewChild('menuTrigger2', { read: MatMenuTrigger }) menuTrigger2!: MatMenuTrigger; 
   
   
-  constructor(private route: ActivatedRoute,private router:Router, private groupService:GroupService, public dialog: MatDialog) {   } 
+  constructor(private route: ActivatedRoute,private router:Router, private groupService:GroupService, public dialog: MatDialog, private userService: UserService) {   } 
 
   goTextChannel(id:string){
     this.menuTrigger.closeMenu();
@@ -46,8 +48,20 @@ export class ChannellistComponent{
   }
 
   deleteGroup(){
-    this.groupService.deleteGroup(this.grupo._id).subscribe((response:any)=>{
-      //mandar recargar el componente nav
+    this.groupService.deleteGroup(this.grupo._id).subscribe({
+      next: (response:any)=>{
+        let arrGroups = this.userService.usuarioActual.arrGroups
+        let foundGroup = arrGroups.find(({_id}) => _id == this.grupo._id)
+        if(foundGroup){
+          let index = arrGroups.indexOf(foundGroup);
+          arrGroups.splice(index,1);
+          this.router.navigate(['/'])
+        }
+
+    },
+      error: (err:HttpErrorResponse)=>{
+        console.error(err);
+      }
     })
   }
 
@@ -70,8 +84,18 @@ export class ChannellistComponent{
     });
   }
   changeGroupName(name:string){
-    this.groupService.changeGroupName(this.grupo._id,name).subscribe((response:any)=>{
-      //mandar recargar el componente padre
+    this.groupService.changeGroupName(this.grupo._id,name).subscribe({
+      next: (response:any)=>{
+        let arrGroups = this.userService.usuarioActual.arrGroups
+        let foundGroup = arrGroups.find(({_id}) => _id == this.grupo._id)
+        if(foundGroup){
+          let index = arrGroups.indexOf(foundGroup);
+          arrGroups[index] = response;
+        }
+      },
+      error: (err:HttpErrorResponse)=>{
+        console.log(err)
+      }
     })
   }
 

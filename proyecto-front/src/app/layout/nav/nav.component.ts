@@ -14,19 +14,14 @@ import { NewGroupComponent } from 'src/app/modals/new-group/new-group.component'
   styleUrls: ['./nav.component.scss']
 })
 export class NavComponent implements OnInit {
-  public usuario:Userpopulated = {
-    _id: '',
-    name: '',
-    email: '',
-    password: '',
-    arrGroups: [],
-    arrFriends: [],
-    arrRequestsSent: [],
-    arrRequestsReceived: [],
-    arrDirectMessages:[]
-  }
+  public usuario:Userpopulated 
   //aqui llamamos al user controller y cargamos el valor 
-  constructor(private userService:UserService,private router: Router, private matDialog:MatDialog){  }
+  constructor(private userService:UserService,private router: Router, private matDialog:MatDialog){ 
+    this.usuario = userService.getUser();
+    userService.observableUser.subscribe((user : Userpopulated)=>{
+      this.usuario = user;
+    })
+  }
 
   ngOnInit(): void {
     //traer el usuario 
@@ -35,6 +30,8 @@ export class NavComponent implements OnInit {
 
   traerUsuario(){
     //debe ser desde el servicio el sessionman
+    let user = localStorage.getItem('idUser') || '';
+    this.userService.loadUser(user);
     this.usuario = this.userService.getUser()
   }
 

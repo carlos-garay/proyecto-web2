@@ -1,4 +1,5 @@
 const {Schema, model} = require('mongoose')
+const bcrypt = require('bcrypt');
 
 const userSchema = new Schema({
     name: {
@@ -66,6 +67,13 @@ const userSchema = new Schema({
         required: true
     }
 
+});
+
+
+
+userSchema.pre('save', function(next) {
+    this.password = bcrypt.hashSync(this.password, 10);
+    next();
 });
 
 

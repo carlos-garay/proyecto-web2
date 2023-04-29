@@ -15,7 +15,6 @@ export class GroupService {
     
     //let url:string = 'http://localhost:3000/groups/'+idGroup
     let url:string = environment.apiUrl+'groups/'+idGroup
-    console.log(url)
     return this.httpService.get(url)
   }
 

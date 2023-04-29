@@ -12,7 +12,7 @@ import { UserService} from 'src/app/shared/services/user.service'
 export class LoginComponent {
   formLogin: FormGroup
   constructor(private formBuilder:FormBuilder,private userService:UserService,private router: Router){
-    this.formLogin = formBuilder.group({ //lleva this el formBuilder?
+    this.formLogin = formBuilder.group({ 
       email:['',[Validators.required, Validators.email]],
       password:['',[Validators.required]]
     })
@@ -23,8 +23,11 @@ export class LoginComponent {
     let valores = this.formLogin.value
     let email:string = valores.email
     let password: string= valores.password
+
     this.userService.loginUser(email,password).subscribe((response:any)=>{
-      
+      console.log(response)
+      localStorage.setItem('idUser',response._id);
+
       //la response va a traer el usuario y va a traer el token
       
       //subimos a sessionStorage el valor del ID 
