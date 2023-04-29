@@ -16,6 +16,7 @@ export class UserService {
     name: '',
     email: '',
     password: '',
+    token: '',
     arrGroups: [],
     arrFriends: [],
     arrRequestsSent: [],
@@ -93,6 +94,9 @@ export class UserService {
     const url:string = environment.apiUrl+'users/'+idUser
     this.httpClient.get(url).subscribe((response:any)=>{
       this.usuarioActual = response
+      console.log('Load user')
+      console.log(sessionStorage.getItem('token'))
+      this.usuarioActual.token = sessionStorage.getItem('token') || '';
       this.observableUser.next(this.usuarioActual);
     })
 
@@ -114,7 +118,9 @@ export class UserService {
       email: email,
       password: password
     }
-    const headers = new HttpHeaders().set('Content-Type', 'application/json');
+    const headers = new HttpHeaders().set('Content-Type', 'application/json')
+    .set('user',this.usuarioActual._id )
+    .set('token',this.usuarioActual.token);
     //body va a traer los valores recuperados del form
     let url:string = environment.apiUrl+'users/register'
     return this.httpClient.post(url, body, { headers })
@@ -125,7 +131,9 @@ export class UserService {
       email: email,
       password: password
     }
-    const headers = new HttpHeaders().set('Content-Type', 'application/json');
+    const headers = new HttpHeaders().set('Content-Type', 'application/json')
+    .set('user',this.usuarioActual._id )
+    .set('token',this.usuarioActual.token);
     //body va a traer los valores recuperados del form 
     //el id debe subirse al sessionman desde aqui cuando se obtiene, lo que se retorna sera el id 
     let url:string = environment.apiUrl+'users/login'
@@ -137,7 +145,9 @@ export class UserService {
       password: password
     }
     let idUser:string = this.usuarioActual._id //Este men se va a traer del session storage
-    const headers = new HttpHeaders().set('Content-Type', 'application/json');
+    const headers = new HttpHeaders().set('Content-Type', 'application/json')
+    .set('user',this.usuarioActual._id )
+    .set('token',this.usuarioActual.token);;
     let url:string = environment.apiUrl+'users/'+idUser+'/password'
     return this.httpClient.put(url,body,{headers})
   }
@@ -147,7 +157,9 @@ export class UserService {
       name: name
     }
     let idUser:string = this.usuarioActual._id //Este men se va a traer del session storage
-    const headers = new HttpHeaders().set('Content-Type', 'application/json');
+    const headers = new HttpHeaders().set('Content-Type', 'application/json')
+    .set('user',this.usuarioActual._id )
+    .set('token',this.usuarioActual.token);;
     let url:string = environment.apiUrl+'users/'+idUser+'/name'
     return this.httpClient.put(url,body,{headers})
   }

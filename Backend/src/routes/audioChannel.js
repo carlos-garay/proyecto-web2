@@ -1,8 +1,9 @@
 const express = require('express')
 const router = express.Router({mergeParams: true})
 const audioChannelController = require('../controllers/audioChannels')
+const auth = require('../middlewares/auth')
 
-router.post('/',express.json(),audioChannelController.createAudioChannel);
+router.post('/',auth,express.json(),audioChannelController.createAudioChannel);
 /**
  * @swagger
  * /groups/{idGroup}/audioChannels:
@@ -21,10 +22,16 @@ router.post('/',express.json(),audioChannelController.createAudioChannel);
  *        name: user
  *        description: id del usuario que quiere realizar la acción 
  * 
+ *      - in: header
+ *        name: token
+ *        description: el token del usuario actual
+ * 
  * 
  *    responses:
  *      200:
  *        description: objeto del canal de audio que se creó
+ *      401:
+ *        description: token invalido
  *      403:
  *        description: no eres administrador del grupo
  *      404: 
@@ -35,7 +42,7 @@ router.post('/',express.json(),audioChannelController.createAudioChannel);
 
 
 
-router.put('/:idChannel/addMember',express.json(),audioChannelController.addMemberToAudioChannel);
+router.put('/:idChannel/addMember',auth,express.json(),audioChannelController.addMemberToAudioChannel);
 /**
  * @swagger
  * /groups/{idGroup}/audioChannels/{idChannel}/addMember:
@@ -56,6 +63,13 @@ router.put('/:idChannel/addMember',express.json(),audioChannelController.addMemb
  *        schema:
  *          type: string
  * 
+ *      - in: header
+ *        name: token
+ *        description: el token del usuario actual
+ *
+ *      - in: header
+ *        name: user
+ *        description: id del usuario que quiere realizar al acción
  * 
  *      - in: body
  *        name: email
@@ -65,13 +79,13 @@ router.put('/:idChannel/addMember',express.json(),audioChannelController.addMemb
  *          example:
  *            { "email": "otro1@test.com"}
  * 
- *      - in: header
- *        name: user
- *        description: id del usuario que quiere realizar al acción
+ *
  * 
  *    responses:
  *      200:
  *        description: objeto del usuario que se agregó al canal de audio
+ *      401:
+ *        description: token invalido
  *      403:
  *        description: no eres administrador del grupo
  *      404:
@@ -79,7 +93,7 @@ router.put('/:idChannel/addMember',express.json(),audioChannelController.addMemb
  */
 
 
-router.put('/:idChannel/removeMember',express.json(),audioChannelController.removeMemberFromAudioChannel);
+router.put('/:idChannel/removeMember',auth,express.json(),audioChannelController.removeMemberFromAudioChannel);
 /**
  * @swagger
  * /groups/{idGroup}/audioChannels/{idChannel}/removeMember:
@@ -98,6 +112,15 @@ router.put('/:idChannel/removeMember',express.json(),audioChannelController.remo
  *        description: el id del canal donde eliminaremos al miembro
  *        schema:
  *          type: string
+ * 
+ *      - in: header
+ *        name: user
+ *        description: id del usuario que quiere realizar al acción
+ * 
+ *      - in: header
+ *        name: token
+ *        description: el token del usuario actual
+ * 
  *      - in: body
  *        name: email
  *        description: email del usuario a eliminar del canal
@@ -106,20 +129,19 @@ router.put('/:idChannel/removeMember',express.json(),audioChannelController.remo
  *          example:
  *            { "email": "otro1@test.com"}
  * 
- *      - in: header
- *        name: user
- *        description: id del usuario que quiere realizar al acción
  * 
  *    responses:
  *      200:
  *        description: objeto del usuario que se eliminó del canal de audio
+ *      401:
+ *        description: token invalido
  *      403:
  *        description: no eres administrador del grupo
  *      404: 
  *        description: no se encontro el grupo con ese id 
  */
 
-router.delete('/:idChannel',audioChannelController.deleteAudioChannel);
+router.delete('/:idChannel',auth,audioChannelController.deleteAudioChannel);
 /**
  * @swagger
  * /groups/{idGroup}/audioChannels/{idChannel}:
@@ -142,9 +164,15 @@ router.delete('/:idChannel',audioChannelController.deleteAudioChannel);
  *        name: user
  *        description: id del usuario que quiere realizar la acción
  * 
+ *      - in: header
+ *        name: token
+ *        description: el token del usuario actual
+ * 
  *    responses:
  *      200:
  *        description: objeto del canal de audio que se eliminó
+ *      401:
+ *        description: token invalido
  *      404: 
  *        description: no se encontro el grupo con ese id 
  *      403:
@@ -153,7 +181,7 @@ router.delete('/:idChannel',audioChannelController.deleteAudioChannel);
 
 
 
-router.put('/:idChannel/enterCall',express.json(),audioChannelController.enterCall);
+router.put('/:idChannel/enterCall',auth,express.json(),audioChannelController.enterCall);
 /**
  * @swagger
  * /groups/{idGroup}/audioChannels/{idChannel}/enterCall:
@@ -174,6 +202,13 @@ router.put('/:idChannel/enterCall',express.json(),audioChannelController.enterCa
  *        schema:
  *          type: string
  * 
+ *      - in: header
+ *        name: user
+ *        description: id del usuario que quiere realizar la acción
+ * 
+ *      - in: header
+ *        name: token
+ *        description: el token del usuario actual
  * 
  *      - in: body
  *        name: idUser
@@ -183,13 +218,12 @@ router.put('/:idChannel/enterCall',express.json(),audioChannelController.enterCa
  *          example:
  *            { "idUser": "643aed8b64f01a772cb50353"}
  * 
- *      - in: header
- *        name: user
- *        description: id del usuario que quiere realizar la acción
  * 
  *    responses:
  *      200:
  *        description: objeto del canal de audio
+ *      401:
+ *        description: token invalido
  *      404:
  *        description: No se encontró el canal con el id idChannel
  *      403: 
@@ -198,7 +232,7 @@ router.put('/:idChannel/enterCall',express.json(),audioChannelController.enterCa
  */
 
 
-router.put('/:idChannel/exitCall',express.json(),audioChannelController.exitCall);
+router.put('/:idChannel/exitCall',auth,express.json(),audioChannelController.exitCall);
 /**
  * @swagger
  * /groups/{idGroup}/audioChannels/{idChannel}/exitCall:
@@ -219,6 +253,13 @@ router.put('/:idChannel/exitCall',express.json(),audioChannelController.exitCall
  *        schema:
  *          type: string
  * 
+ *      - in: header
+ *        name: user
+ *        description: id del usuario que quiere realizar la acción
+ * 
+ *      - in: header
+ *        name: token
+ *        description: el token del usuario actual
  * 
  *      - in: body
  *        name: idUser
@@ -228,13 +269,12 @@ router.put('/:idChannel/exitCall',express.json(),audioChannelController.exitCall
  *          example:
  *            { "idUser": "643aed8b64f01a772cb50353"}
  * 
- *      - in: header
- *        name: user
- *        description: id del usuario que quiere realizar la acción
  * 
  *    responses:
  *      200:
  *        description: objeto del canal de audio
+ *      401:
+ *        description: token invalido
  *      403:
  *        description: no formas parte del canal
  *      404:
@@ -242,7 +282,7 @@ router.put('/:idChannel/exitCall',express.json(),audioChannelController.exitCall
  */
 
 
-router.put('/:idChannel/name',express.json(),audioChannelController.changeChannelName);
+router.put('/:idChannel/name',auth,express.json(),audioChannelController.changeChannelName);
 
 /**
  * @swagger
@@ -264,6 +304,11 @@ router.put('/:idChannel/name',express.json(),audioChannelController.changeChanne
  *        description: el id del canal al que queremos cambiar el nombre 
  *        schema:
  *          type: string
+ * 
+ *      - in: header
+ *        name: token
+ *        description: el token del usuario actual
+ * 
  *
  *      - in: body
  *        name: bodyInfo
@@ -286,6 +331,9 @@ router.put('/:idChannel/name',express.json(),audioChannelController.changeChanne
  *
  *      400: 
  *        description: no pudo cambiarse el nombre
+ * 
+ *      401:
+ *        description: token invalido
  * 
  *      403: 
  *        description: no eres administrador por lo tanto no puedes cambiar el nombre

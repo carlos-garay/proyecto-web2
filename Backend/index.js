@@ -27,11 +27,11 @@ mongoose.connect(mongoUrl,{autoIndex: false})
 const port = process.env.PORT
 
 app.use((req,res,next)=>{
-  res.setHeader('Access-Control-Allow-Origin', 'http://localhost:4200');
+  res.setHeader('Access-Control-Allow-Origin', '*');
 
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, DELETE');
 
-  res.setHeader('Access-Control-Allow-Headers', 'Content-type, Authorization, auth, user');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-type, Authorization, auth, user,token');
 
   next();
 });

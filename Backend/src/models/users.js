@@ -18,7 +18,7 @@ const userSchema = new Schema({
     token: { //A implementar en el futuro
         type: String, 
         required: true,
-        default: "undefined"
+        default: ""
     },
     //También contará con foto de perfil ya que se determine como se manejarán las imágenes
     image: {

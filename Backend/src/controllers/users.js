@@ -4,6 +4,7 @@ const Request = require('../models/requests');
 const Channel = require('../models/channels');
 const Message = require('../models/messages');
 const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 
 
 const UserController = {
@@ -11,26 +12,40 @@ const UserController = {
     //registrar usuario, se tendrán cambios cuando se tenga implementación de tokens
     registerUser: (req,res)=>{
         console.log(req.body)
-        let user = User(req.body);
+        let objectUser = req.body
+        objectUser['token']= 'placeholder'
+        let user = User(objectUser);
         user.save().then((user) =>{
-            let objUserId = {_id:user._id}
+            console.log(process.env.TOKEN_KEY)
+            console.log("still good")
+            token = jwt.sign({email:req.body.email},process.env.TOKEN_KEY,{expiresIn: "5h"})
+            let objUserId = {_id:user._id, token:token}
             res.status(201).type("application/json").json(objUserId);
         })
         .catch(err =>{
-            res.status(400).send('email incorrecto '+err);
+            res.status(400).send('email incorrecto '+ err);
         });
     },
 
-    //evaluar que concuerden las contraseñas CAMBIOS CUANDO SE ENCRIPTEN Y SE USEN TOKENS
+    //evaluar que concuerden las contraseñas 
     loginUser: (req,res)=>{
         let email = req.body.email
         let password = req.body.password
 
         User.findOne({ email: `${email}` })
         .then(user => {
+            // cuando concuerdan generamos el token que se guardará en el localstorage
             if (bcrypt.compareSync(password, user.password)) {
-                let objUserId = {_id:user._id}
-                res.status(201).type("application/json").json(objUserId);
+                try{
+                    console.log(process.env.TOKEN_KEY)
+                    token = jwt.sign({email:email},process.env.TOKEN_KEY,{expiresIn: "5h"})
+                    let objUserId = {_id:user._id, token:token}
+                    res.status(201).type("application/json").json(objUserId);
+                }
+                catch(err){
+                    res.status(500).send("No se pudo iniciar sesión")
+                }
+
             } else {
                 res.status(404).type('text/plain; charset=utf-8').send(`Email o contraseña incorrecta`);
             }
@@ -76,7 +91,6 @@ const UserController = {
         .then(usuario => {
             //Obtenemos por cada id en el arreglo de grupos del usuario el objeto del grupo correspondiente
             //Para que posteriormente se puedan usar para cargar sus íconos y nombres en la aplicación
-            console.log(usuario);
             res.status(200).type("application/json").json(usuario);
 
         })

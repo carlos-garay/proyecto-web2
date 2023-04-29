@@ -1,6 +1,7 @@
 const express = require('express')
 const router = express.Router()
 const usersController = require('../controllers/users')
+const auth = require('../middlewares/auth')
 
 //las rutas de los requests
 const rutasRequests = require('./requests')
@@ -48,6 +49,7 @@ router.post('/register',express.json(),usersController.registerUser);
  * 
  *      400:
  *        description: Error en el servidor
+ * 
  */
 
 
@@ -102,6 +104,10 @@ router.get('/:idUser',usersController.loadUser);
  *        description: id del usuario a obtener
  *        schema:
  *          type: string
+ * 
+ *      - in: header
+ *        name: token
+ *        description: el token del usuario actual
  * 
  *    responses:
  *      200:
@@ -179,12 +185,14 @@ router.get('/:idUser',usersController.loadUser);
  *                       "__v": 0,
  *                       "image": "no image"
  *                   }
+ *      401:
+ *        description: token invalido
  *      404:
  *        description: No se encontro el usuario con el id idUSer
  */
 
 
-router.get('/:idUser/friends',usersController.loadFriends);
+router.get('/:idUser/friends',auth,usersController.loadFriends);
 /**
  * @swagger
  * /users/{idUser}/friends:
@@ -198,6 +206,10 @@ router.get('/:idUser/friends',usersController.loadFriends);
  *        description: id del usuario que inicio sesión
  *        schema:
  *          type: string
+ * 
+ *      - in: header
+ *        name: token
+ *        description: el token del usuario actual
  * 
  *    responses:
  *      200:
@@ -227,11 +239,14 @@ router.get('/:idUser/friends',usersController.loadFriends);
  *                      "__v": 0
  *                  }
  *              ]
+ * 
+ *      401:
+ *        description: token invalido
  *      404:
  *        description: No se encontro el usuario con el id idUSer
  */
 
-router.get('/:idUser/friends/:idFriend',usersController.loadChannel);
+router.get('/:idUser/friends/:idFriend',auth,usersController.loadChannel);
 /**
  * @swagger
  * /users/{idUser}/friends/{idFriend}:
@@ -251,6 +266,10 @@ router.get('/:idUser/friends/:idFriend',usersController.loadChannel);
  *        description: id del amigo al que buscaremos su chat
  *        schema:
  *          type: string
+ * 
+ *      - in: header
+ *        name: token
+ *        description: el token del usuario actual
  * 
  *    responses:
  *      200:
@@ -325,6 +344,8 @@ router.get('/:idUser/friends/:idFriend',usersController.loadChannel);
  *              ],
  *              "__v": 0
  *              }
+ *      401:
+ *        description: token invalido
  *      404:
  *        description: No se encontro el usuario con el id idUSer
  *      400:
@@ -332,7 +353,7 @@ router.get('/:idUser/friends/:idFriend',usersController.loadChannel);
  */
 
 
-router.post('/:idUser/friends/:idChannel/send',express.json(),usersController.sendDM);
+router.post('/:idUser/friends/:idChannel/send',express.json(),auth,usersController.sendDM);
 /**
  * @swagger
  * /users/{idUser}/friends/{idFriend}/send:
@@ -352,6 +373,10 @@ router.post('/:idUser/friends/:idChannel/send',express.json(),usersController.se
  *        description: id del canal de mensaje directo
  *        schema:
  *          type: string
+ * 
+ *      - in: header
+ *        name: token
+ *        description: el token del usuario actual
  * 
  *      - in: body
  *        name: bodyInfo
@@ -382,14 +407,15 @@ router.post('/:idUser/friends/:idChannel/send',express.json(),usersController.se
  *               "dateTime": "2023-04-17T00:12:01.097Z",
  *               "__v": 0
  *           }      
- * 
+ *      401:
+ *        description: token invalido
  *      404:
  *        description: No se encontro el usuario con el id idUSer
  */
 
 
 
-router.put('/:idUser/name',express.json(),usersController.updateUserName);
+router.put('/:idUser/name',express.json(),auth,usersController.updateUserName);
 /**
  * @swagger
  * /users/{idUser}/name:
@@ -404,6 +430,10 @@ router.put('/:idUser/name',express.json(),usersController.updateUserName);
  *        schema:
  *          type: string
  * 
+ *      - in: header
+ *        name: token
+ *        description: el token del usuario actual
+ * 
  *      - in: body
  *        name: name
  *        description: nombre del usuario a cambiar
@@ -415,12 +445,14 @@ router.put('/:idUser/name',express.json(),usersController.updateUserName);
  *    responses:
  *      200:
  *        description: objeto del usuario actualizado
+ *      401:
+ *        description: token invalido
  *      404:
  *        description: No se encontro el usuario con el id idUSer
  */
 
 
-router.put('/:idUser/password',express.json(),usersController.updateUserPassword);
+router.put('/:idUser/password',express.json(),auth,usersController.updateUserPassword);
 /**
  * @swagger
  * /users/{idUser}/password:
@@ -435,6 +467,10 @@ router.put('/:idUser/password',express.json(),usersController.updateUserPassword
  *        schema:
  *          type: string
  * 
+ *      - in: header
+ *        name: token
+ *        description: el token del usuario actual
+ * 
  *      - in: body
  *        name: name
  *        description: pasword del usuario a cambiar
@@ -445,11 +481,13 @@ router.put('/:idUser/password',express.json(),usersController.updateUserPassword
  *    responses:
  *      200:
  *        description: objeto del usuario actualizado
+ *      401:
+ *        description: token invalido
  *      404:
  *        description: No se encontro el usuario con el id idUSer
  */
 
-router.delete('/:idUser/friends/:idFriend/remove',usersController.removeFriend);
+router.delete('/:idUser/friends/:idFriend/remove',auth,usersController.removeFriend);
 //users/:idUser/friends/:idFriend/remove      
 
 /**
@@ -471,9 +509,15 @@ router.delete('/:idUser/friends/:idFriend/remove',usersController.removeFriend);
  *        schema:
  *          type: string
  * 
+ *      - in: header
+ *        name: token
+ *        description: el token del usuario actual
+ * 
  *    responses:
  *      200:
  *        description: objeto del usuario del amigo eliminado
+ *      401:
+ *        description: token invalido
  *      404:
  *        description: error al encontrar el usuario amigo o el chat entre estos
  *      400:

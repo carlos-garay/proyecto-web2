@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import {FormGroup,FormBuilder,Validators} from '@angular/forms'
 import { Router } from '@angular/router';
+import { AuthService } from 'src/app/shared/services/auth.service';
 
 import { UserService} from 'src/app/shared/services/user.service'
 
@@ -11,7 +12,7 @@ import { UserService} from 'src/app/shared/services/user.service'
 })
 export class RegisterComponent {
   formRegister: FormGroup
-  constructor(private formBuilder:FormBuilder,private userService:UserService,private router: Router){
+  constructor(private formBuilder:FormBuilder,private userService:UserService,private router: Router, private authService: AuthService){
     this.formRegister = formBuilder.group({ //lleva this el formBuilder?
       name:['',Validators.required],
       email:['',[Validators.required, Validators.email]],
@@ -31,6 +32,9 @@ export class RegisterComponent {
     let confirm: string=valores.confirm
     if(password == confirm){
       this.userService.registerUser(name,email,password).subscribe((response:any)=>{ //al hacer login nos regresa el id del nuevo usuario
+        localStorage.setItem('idUser',response._id);
+        this.authService.setToken(response.token);
+
         //si se registro correcto te lleva a la pagina del login 
         this.userService.loadUser(response._id)
         this.router.navigate(['/'])

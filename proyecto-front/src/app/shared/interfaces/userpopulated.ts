@@ -6,7 +6,7 @@ export interface Userpopulated {
     name:string,
     email:string,
     password?:string,
-    token?:string,
+    token:string,
     arrGroups:Group[], //este es grupo en lugar de string
     arrFriends:string[],
     arrRequestsSent:string[],

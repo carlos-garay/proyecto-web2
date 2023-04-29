@@ -5,7 +5,7 @@ export interface User {
     name:string,
     email:string,
     password?:string,
-    token?:string,
+    token:string,
     arrGroups:string[],
     arrFriends:string[],
     arrRequestsSent:string[],
