@@ -147,7 +147,7 @@ export class UserService {
     let idUser:string = this.usuarioActual._id //Este men se va a traer del session storage
     const headers = new HttpHeaders().set('Content-Type', 'application/json')
     .set('user',this.usuarioActual._id )
-    .set('token',this.usuarioActual.token);;
+    .set('token',localStorage.getItem('token') || '');
     let url:string = environment.apiUrl+'users/'+idUser+'/password'
     return this.httpClient.put(url,body,{headers})
   }
@@ -159,7 +159,7 @@ export class UserService {
     let idUser:string = this.usuarioActual._id //Este men se va a traer del session storage
     const headers = new HttpHeaders().set('Content-Type', 'application/json')
     .set('user',this.usuarioActual._id )
-    .set('token',this.usuarioActual.token);;
+    .set('token',localStorage.getItem('token') || '');
     let url:string = environment.apiUrl+'users/'+idUser+'/name'
     return this.httpClient.put(url,body,{headers})
   }

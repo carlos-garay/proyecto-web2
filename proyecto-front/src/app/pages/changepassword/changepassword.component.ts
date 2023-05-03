@@ -19,7 +19,7 @@ export class ChangepasswordComponent {
   }
 
   updatePassword(){
-    //llamar al servicio de usuario que tiene el metodo de actulizar el password del usuario 
+    //llamar al servicio de usuario que tiene el metodo de actualizar el password del usuario 
     //si son iguales 
     let valores = this.formPassword.value
     let password: string=valores.password
@@ -28,8 +28,7 @@ export class ChangepasswordComponent {
       this.userService.updatePassword(password).subscribe((Response:any)=>{
         //mostrar que fue exitoso con algun pop up o algo maybe
   
-        //mandarte a otra pagina, provisionalmente a la de los mensajes 
-        this.router.navigate(['/directMessages'])
+        this.router.navigate(['/'])
       })
     }
     //si no son iguales no sucede nada 

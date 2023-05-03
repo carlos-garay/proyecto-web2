@@ -23,8 +23,7 @@ export class ChangenameComponent {
     let name:string =valores.name
     this.userService.updateName(name).subscribe((Response:any)=>{
 
-      //mandarte a otra pagina, provisionalmente a la de los mensajes 
-      this.router.navigate(['/directMessages'])
+      this.router.navigate(['/'])
     })
   }
 }

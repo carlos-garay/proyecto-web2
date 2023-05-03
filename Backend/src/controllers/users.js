@@ -71,7 +71,7 @@ const UserController = {
 
     //Cambiar el password del usuario, se modificará cuando se incluya la encripción 
     updateUserPassword: (req,res)=>{
-        let passwordChange = req.body.password;
+        let passwordChange = bcrypt.hashSync(req.body.password, 10);
         let idUser = req.params.idUser;
         console.log(req.params);
         User.findByIdAndUpdate(idUser, {password: passwordChange}, { new : true })
