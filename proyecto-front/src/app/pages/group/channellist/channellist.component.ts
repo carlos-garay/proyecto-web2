@@ -1,5 +1,7 @@
-import { Component, OnInit, Input, ViewChild } from '@angular/core';
+import { Component, OnInit, Input, ViewChild, Output, EventEmitter } from '@angular/core';
 import { Grouppopulated } from 'src/app/shared/interfaces/grouppopulated';
+import { TextchannelPopulated } from 'src/app/shared/interfaces/textchannelpopulated';
+
 import { ActivatedRoute } from '@angular/router';
 import { Router } from '@angular/router';
 import { GroupService } from 'src/app/shared/services/group.service';
@@ -8,6 +10,10 @@ import { MatDialog } from '@angular/material/dialog';
 import { GenericComponent } from 'src/app/modals/generic/generic.component';
 import { UserService } from 'src/app/shared/services/user.service';
 import { HttpErrorResponse } from '@angular/common/http';
+import { User } from 'src/app/shared/interfaces/user';
+import { Textchannel } from 'src/app/shared/interfaces/textchannel';
+import { Audiochannel } from 'src/app/shared/interfaces/audiochannel';
+import { Group } from 'src/app/shared/interfaces/group';
 
 @Component({
   selector: 'app-channellist',
@@ -16,7 +22,19 @@ import { HttpErrorResponse } from '@angular/common/http';
 })
 export class ChannellistComponent{
   //grupo :grouppopulated
+  //Eventos para canales de texto
+  @Output() addChannelEvent = new EventEmitter<Textchannel>();
+  @Output() removeChannelEvent = new EventEmitter<Textchannel>();
+  @Output() changeChannelNameEvent = new EventEmitter<Textchannel>();
 
+  //Eventos para canales de audio
+  @Output() addAudioChannelEvent = new EventEmitter<Audiochannel>();
+  @Output() removeAudioChannelEvent = new EventEmitter<Audiochannel>();
+  @Output() changeAudioChannelNameEvent = new EventEmitter<Audiochannel>();
+
+  //Eventos en botón de grupo
+  @Output() changeGroupNameEvent = new EventEmitter<Group>();
+  @Output() addUserEvent = new EventEmitter<User>();
 
   @Input() grupo:Grouppopulated = {
     _id: '',
@@ -90,7 +108,8 @@ export class ChannellistComponent{
         let foundGroup = arrGroups.find(({_id}) => _id == this.grupo._id)
         if(foundGroup){
           let index = arrGroups.indexOf(foundGroup);
-          arrGroups[index] = response;
+          arrGroups[index].title = response.title
+          this.changeGroupNameEvent.emit(response)
         }
       },
       error: (err:HttpErrorResponse)=>{
@@ -100,15 +119,14 @@ export class ChannellistComponent{
   }
 
   addTextChannel(){
+    //Como respuesta tiene el nuevo canal creado
     this.groupService.addTextChannel(this.grupo._id).subscribe((response:any)=>{
-      //recargar componente padre 
-      //posiblemente hacer fix local 
+      this.addChannelEvent.emit(response);
     })
   }
   addVoiceChannel(){
     this.groupService.addVoiceChannel(this.grupo._id).subscribe((response:any)=>{
-      //recargar componente padre 
-      //posiblemente hacer fix local 
+      this.addAudioChannelEvent.emit(response);
     })
   }
 
@@ -134,18 +152,19 @@ export class ChannellistComponent{
   addUser(email:string){
     //la llamada al servicio de grupo
     this.groupService.addUserToGroup(this.grupo._id,email).subscribe((response:any)=>{
-      //recargar componente padre group
+      this.addUserEvent.emit(response)
     })
   }
 
   removeTextChannel(){
     this.groupService.removeTextChannel(this.grupo._id,this.selectedChannel).subscribe((response:any)=>{
-      //recargar componente canales
+      console.log(response);
+      this.removeChannelEvent.emit(response);
     })
   }
   removeAudioChannel(){
-    this.groupService.removeAudioChannel(this.grupo._id,this.selectedChannel).subscribe((response:any)=>{
-      //recargar componente canales
+    this.groupService.removeAudioChannel(this.grupo._id,this.selectedAudioChannel).subscribe((response:any)=>{
+      this.removeAudioChannelEvent.emit(response);
     })
   }
 
@@ -267,10 +286,11 @@ export class ChannellistComponent{
       }
     });
   }
+  
   changeTextChannelName(name:string){
     //la llamada al servicio de grupo
     this.groupService.changeNameTextChannel(this.grupo._id,this.selectedChannel,name).subscribe((response:any)=>{
-      //recargar componente padre group
+      this.changeChannelNameEvent.emit(response)
     })
   }
 
@@ -295,11 +315,10 @@ export class ChannellistComponent{
   changeAudioChannelName(name:string){
     //la llamada al servicio de grupo
     this.groupService.changeNameAudioChannel(this.grupo._id,this.selectedAudioChannel,name).subscribe((response:any)=>{
-      //recargar componente padre group
+      this.changeAudioChannelNameEvent.emit(response)
     })
   }
 
-  //MANDAR ABRIR MODALES, asignar el id del canal al que se le dio click 
   openChannelMenu(event: MouseEvent, id:string){
     console.log(id)
     event.preventDefault();

@@ -126,8 +126,8 @@ const GroupController = {
                             })
 
                             User.findByIdAndUpdate(user._id,{$push:{arrGroups:grupo._id}}, { new : true })
+                            .select('-password')
                             .then(user =>{
-                                console.log(user);
                                 res.status(200).type("application/json").json(user);
                             })
                             .catch(error =>{
@@ -157,7 +157,7 @@ const GroupController = {
         let email = req.body.email
         let idAdmin = req.headers.user
 
-        User.findOne({email: email})
+        User.findOne({email: email},"-password")
         .then(user=>{
             Group.findById(idGroup)
             .then(grupo =>{
@@ -175,6 +175,7 @@ const GroupController = {
                             res.status(500).send('Error al actualizar canales de audio ')
                         })
                         User.findByIdAndUpdate(user._id,{$pull:{arrGroups:grupo._id}}, { new : true })
+                        .select('-password')
                         .then(user =>{
                             index = grupo.arrUsers.indexOf(user._id);
                             grupo.arrUsers.splice(index,1);
@@ -214,7 +215,7 @@ const GroupController = {
         let idToAdmin = req.body._id
         let idAdmin = req.headers.user
 
-        User.findById(idAdmin)
+        User.findById(idAdmin,"-password")
         .then(user=>{
             Group.findById(idGroup)
             .then(grupo =>{
@@ -225,7 +226,7 @@ const GroupController = {
                         grupo.arrAdmins.push(idToAdmin)
                         grupo.save()
                         .then(grupo =>{
-                            res.status(200).send({})
+                            res.status(200).send({id:idToAdmin})
                         })
                         .catch(error =>{
                             res.status(500).send("error al hacer al usuario administrador");
@@ -255,7 +256,7 @@ const GroupController = {
         let idRevokeAdmin = req.body._id
         let idAdmin = req.headers.user
 
-        User.findById(idAdmin)
+        User.findById(idAdmin,"-password")
         .then(user=>{
             Group.findById(idGroup)
             .then(grupo =>{
@@ -267,7 +268,7 @@ const GroupController = {
                         grupo.arrAdmins.splice(index,1);
                         grupo.save()
                         .then(grupo =>{
-                            res.status(200).send({})
+                            res.status(200).send({id:idRevokeAdmin})
                         })
                         .catch(error =>{
                             res.status(500).send("error al hacer al usuario administrador");

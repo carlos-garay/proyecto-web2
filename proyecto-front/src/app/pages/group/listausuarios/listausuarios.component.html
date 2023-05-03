@@ -1,5 +1,5 @@
 
-USUARIOS DEL SERVIDOR: 
+<label class="titulos">USUARIOS DEL SERVIDOR: </label>
 <div>
     <mat-list>
         <ng-container *ngFor="let item of grupo.arrUsers">
@@ -30,7 +30,7 @@ USUARIOS DEL SERVIDOR:
         </ng-container>
     </mat-list>
     <mat-menu #menuBorrar="matMenu">
-        <button mat-menu-item (click)="removeFromChannel()">Eliminar</button>
+        <button mat-menu-item (click)="removeFromGroup()">Eliminar</button>
         <button mat-menu-item (click)="makeAdmin()">Hacer admin</button>
         <button mat-menu-item (click)="revokeAdmin()">Revocar admin</button>
     </mat-menu>

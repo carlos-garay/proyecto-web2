@@ -60,6 +60,7 @@ const UserController = {
         let nameChange = req.body.name;
         let idUser = req.params.idUser;
         User.findByIdAndUpdate(idUser, {name: nameChange}, { new : true })
+        .select('-password')
         .then(user => {
             res.status(200).type("application/json").json(user);
         })
@@ -73,7 +74,9 @@ const UserController = {
         let passwordChange = req.body.password;
         let idUser = req.params.idUser;
         console.log(req.params);
-        User.findByIdAndUpdate(idUser, {password: passwordChange}, { new : true }).then(user => {
+        User.findByIdAndUpdate(idUser, {password: passwordChange}, { new : true })
+        .select('-password')
+        .then(user => {
             res.status(200).type("application/json").json(user);
         })
         .catch(err => {
@@ -218,7 +221,6 @@ const UserController = {
                 //Borramos este canal
                 Channel.findByIdAndDelete(idChannel)
                 .then(channel => {
-                    console.log(channel);
                     //borrar los mensajes que contenía el chat
                     Message.deleteMany({_id:{$in: channel.arrMessages}})
                     .then(
@@ -235,7 +237,8 @@ const UserController = {
                 //quitamos los amigos de la lista y quitamos el id del canal del arreglo de mensajes directos
                 User.findByIdAndUpdate(idUser,{ $pull: { arrFriends: idFriend, arrDirectMessages:idChannel}},{new:true}) 
                 .then(user1 =>{
-                    User.findByIdAndUpdate(idFriend,{ $pull: { arrFriends: idUser, arrDirectMessages:idChannel}},{new:true}) 
+                    User.findByIdAndUpdate(idFriend,{ $pull: { arrFriends: idUser, arrDirectMessages:idChannel}},{new:true})
+                    .select('-password') 
                     .then(user2 =>{
                         res.status(200).type("application/json").json(user2);
                     })

@@ -77,7 +77,7 @@ const audioChannelController = {
 
 
         //Obtener id con el email
-        User.findOne({email: email})
+        User.findOne({email: email},"-password")
         .then(user=>{
             Group.findById(idGroup)
             .then(group=>{
@@ -131,7 +131,7 @@ const audioChannelController = {
         Group.findById(idGroup)
         .then(group=>{
             if(group.arrAdmins.includes(idAdmin)){
-                User.findOne({email: email})
+                User.findOne({email: email},"-password")
                 .then(user=>{
                     audioChannel.findByIdAndUpdate(idChannel, {$pull:{arrMembers:user._id}}, { new : true })
                     .then(channel => {

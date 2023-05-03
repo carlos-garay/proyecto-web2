@@ -183,7 +183,7 @@ export class GroupService {
     return this.httpService.delete(url)
   }
   removeAudioChannel(idGroup:string, idChannel:string ){
-    let url:string = environment.apiUrl+'groups/'+idGroup+'/channels/'+idChannel;
+    let url:string = environment.apiUrl+'groups/'+idGroup+'/audioChannels/'+idChannel;
     return this.httpService.delete(url)
   }
 

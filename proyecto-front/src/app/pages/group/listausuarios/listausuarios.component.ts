@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { Grouppopulated } from 'src/app/shared/interfaces/grouppopulated';
 import { ActivatedRoute } from '@angular/router';
 import { Router } from '@angular/router';
@@ -12,6 +12,11 @@ import { Group } from 'src/app/shared/interfaces/group';
   styleUrls: ['./listausuarios.component.scss']
 })
 export class ListausuariosComponent {
+
+  @Output() removeUserEvent = new EventEmitter<User>();
+  @Output() makeAdminEvent = new EventEmitter<any>();
+  @Output() revokeAdminEvent = new EventEmitter<any>();
+
   @Input() grupo:Grouppopulated = {
     _id: '',
     title: '',
@@ -31,13 +36,11 @@ export class ListausuariosComponent {
     this.selectedUserId = id
   }
 
-  removeFromChannel(){
-    //eliminar usuarios del canal 
+  removeFromGroup(){
     //hacer la llamada al servicio de grupo 
     this.groupService.eliminarUsuarioDegrupo(this.grupo._id,this.selectedUserEmail).subscribe((response:any)=>{
-
+      this.removeUserEvent.emit(response)
     })
-    console.log('eliminar' + this.selectedUserEmail)
   }
 
   findAdmin(group: Grouppopulated, idUser: string){
@@ -45,15 +48,14 @@ export class ListausuariosComponent {
   }
 
   makeAdmin(){
-    console.log(this.selectedUserId)
     this.groupService.makeUserAdmin(this.grupo._id, this.selectedUserId).subscribe((response:any)=>{
-
+      this.makeAdminEvent.emit(response);
     })
   }
 
   revokeAdmin(){
     this.groupService.revokeUserAdmin(this.grupo._id, this.selectedUserId).subscribe((response:any)=>{
-      
+      this.revokeAdminEvent.emit(response);
     })
   }
 

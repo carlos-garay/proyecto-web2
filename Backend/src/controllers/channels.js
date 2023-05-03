@@ -114,7 +114,7 @@ const ChannelController = {
         let idAdmin = req.headers.user;
         
         //Obtener id con el email
-        User.findOne({email: email})
+        User.findOne({email: email},"-password")
         .then(user=>{
             Group.findById(idGroup)
             .then(group=>{
@@ -162,7 +162,7 @@ const ChannelController = {
         let idGroup = req.params.idGroup;
         let idAdmin = req.headers.user;
 
-        Group.findById(idGroup)
+        Group.findById(idGroup,"-password")
         .then(group=>{
             if(group.arrAdmins.includes(idAdmin)){
                 User.findOne({email: email})
