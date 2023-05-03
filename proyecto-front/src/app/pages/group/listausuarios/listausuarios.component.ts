@@ -5,6 +5,8 @@ import { Router } from '@angular/router';
 import { GroupService } from 'src/app/shared/services/group.service';
 import { User } from 'src/app/shared/interfaces/user';
 import { Group } from 'src/app/shared/interfaces/group';
+import { HttpErrorResponse } from '@angular/common/http';
+import { ShowErrorService } from 'src/app/shared/services/show-error.service';
 
 @Component({
   selector: 'app-listausuarios',
@@ -29,7 +31,7 @@ export class ListausuariosComponent {
   selectedUserEmail:string= ''
   selectedUserId:string = ''
 
-  constructor(private groupService : GroupService){ }
+  constructor(private groupService : GroupService, private showErrorService:ShowErrorService){ }
 
   selectUser(email:string, id:string){
     this.selectedUserEmail = email
@@ -38,8 +40,13 @@ export class ListausuariosComponent {
 
   removeFromGroup(){
     //hacer la llamada al servicio de grupo 
-    this.groupService.eliminarUsuarioDegrupo(this.grupo._id,this.selectedUserEmail).subscribe((response:any)=>{
-      this.removeUserEvent.emit(response)
+    this.groupService.eliminarUsuarioDegrupo(this.grupo._id,this.selectedUserEmail).subscribe({
+      next:(response:any)=>{
+        this.removeUserEvent.emit(response)
+      },
+      error: (err: HttpErrorResponse)=>{
+        this.showErrorService.openError(err.error)
+      }
     })
   }
 
@@ -48,14 +55,30 @@ export class ListausuariosComponent {
   }
 
   makeAdmin(){
-    this.groupService.makeUserAdmin(this.grupo._id, this.selectedUserId).subscribe((response:any)=>{
-      this.makeAdminEvent.emit(response);
+    // this.groupService.makeUserAdmin(this.grupo._id, this.selectedUserId).subscribe((response:any)=>{
+    //   this.makeAdminEvent.emit(response);
+    // })
+    this.groupService.makeUserAdmin(this.grupo._id, this.selectedUserId).subscribe({
+      next:(response:any)=>{
+        this.makeAdminEvent.emit(response);
+      },
+      error: (err: HttpErrorResponse)=>{
+        this.showErrorService.openError(err.error)
+      }
     })
   }
 
   revokeAdmin(){
-    this.groupService.revokeUserAdmin(this.grupo._id, this.selectedUserId).subscribe((response:any)=>{
-      this.revokeAdminEvent.emit(response);
+    // this.groupService.revokeUserAdmin(this.grupo._id, this.selectedUserId).subscribe((response:any)=>{
+    //   this.revokeAdminEvent.emit(response);
+    // })
+    this.groupService.revokeUserAdmin(this.grupo._id, this.selectedUserId).subscribe({
+      next:(response:any)=>{
+        this.revokeAdminEvent.emit(response);
+      },
+      error: (err: HttpErrorResponse)=>{
+        this.showErrorService.openError(err.error)
+      }
     })
   }
 

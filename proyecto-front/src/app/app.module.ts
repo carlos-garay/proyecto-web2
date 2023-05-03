@@ -26,6 +26,7 @@ import { ListausuariosComponent } from './pages/group/listausuarios/listausuario
 import { NewGroupComponent } from './modals/new-group/new-group.component';
 import { NewRequestComponent } from './modals/new-request/new-request.component';
 import { GenericComponent } from './modals/generic/generic.component';
+import { ErrorDialogComponent } from './modals/error-dialog/error-dialog.component';
 
 @NgModule({
   declarations: [
@@ -47,7 +48,8 @@ import { GenericComponent } from './modals/generic/generic.component';
     ListausuariosComponent,
     NewGroupComponent,
     NewRequestComponent,
-    GenericComponent
+    GenericComponent,
+    ErrorDialogComponent
   ],
   imports: [
     BrowserModule,
