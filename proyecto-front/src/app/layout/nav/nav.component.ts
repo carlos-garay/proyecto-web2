@@ -45,5 +45,9 @@ export class NavComponent implements OnInit {
     this.matDialog.open(NewGroupComponent,{})
   }
 
-  
+  logOut(){
+    //por implementar
+    this.userService.logoutUser()
+    this.router.navigate(['/'])
+  }
 }

@@ -3,6 +3,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { Userpopulated } from '../interfaces/userpopulated';
 import { BehaviorSubject } from 'rxjs';
+import { AuthService } from './auth.service';
 
 @Injectable({
   providedIn: 'root'
@@ -24,7 +25,7 @@ export class UserService {
     arrDirectMessages: []
   }
 
-  constructor(private httpClient : HttpClient){
+  constructor(private httpClient : HttpClient, private authService:AuthService){
     this.observableUser = new BehaviorSubject(this.usuarioActual)
     let idUser = localStorage.getItem('idUser');
     if(idUser){
@@ -138,6 +139,26 @@ export class UserService {
     //el id debe subirse al sessionman desde aqui cuando se obtiene, lo que se retorna sera el id 
     let url:string = environment.apiUrl+'users/login'
     return this.httpClient.post(url, body, { headers })
+  }
+
+  logoutUser(){
+    //eliminar token y idDeUsuario
+    this.authService.deleteToken()
+    //cargar un usuario vacio al observable 
+    localStorage.removeItem('idUser')
+    this.usuarioActual = {
+      _id: '',
+      name: '',
+      email: '',
+      token: '',
+      arrGroups: [],
+      arrFriends: [],
+      arrRequestsSent: [],
+      arrRequestsReceived: [],
+      arrDirectMessages: []
+    }
+    this.observableUser.next(this.usuarioActual);
+
   }
 
   updatePassword(password:string){

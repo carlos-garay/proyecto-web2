@@ -43,6 +43,9 @@
 
 
   <mat-menu #allOptions="matMenu">
+    <div class="userName">
+      User: {{usuario.name}}
+    </div>
     <button mat-menu-item [matMenuTriggerFor]="Sesion">Sesion</button>
     <button mat-menu-item [matMenuTriggerFor]="Modificaciones">Modificaciones</button>
   </mat-menu>
@@ -50,6 +53,7 @@
   <mat-menu #Sesion="matMenu">
     <button mat-menu-item routerLink="/login">Login</button>
     <button mat-menu-item routerLink="/register">Register</button>
+    <button mat-menu-item (click)="logOut()">Cerrar Sesion</button>
   </mat-menu>
   
   <mat-menu #Modificaciones="matMenu">
