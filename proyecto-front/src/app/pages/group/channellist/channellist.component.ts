@@ -14,6 +14,7 @@ import { User } from 'src/app/shared/interfaces/user';
 import { Textchannel } from 'src/app/shared/interfaces/textchannel';
 import { Audiochannel } from 'src/app/shared/interfaces/audiochannel';
 import { Group } from 'src/app/shared/interfaces/group';
+import { ShowErrorService } from 'src/app/shared/services/show-error.service';
 
 @Component({
   selector: 'app-channellist',
@@ -52,7 +53,9 @@ export class ChannellistComponent{
   @ViewChild('menuTrigger2', { read: MatMenuTrigger }) menuTrigger2!: MatMenuTrigger; 
   
   
-  constructor(private route: ActivatedRoute,private router:Router, private groupService:GroupService, public dialog: MatDialog, private userService: UserService) {   } 
+  constructor(private route: ActivatedRoute,private router:Router, private groupService:GroupService, 
+    public dialog: MatDialog, private userService: UserService,
+    private showErrorService:ShowErrorService) {   } 
 
   goTextChannel(id:string){
     this.menuTrigger.closeMenu();
@@ -79,6 +82,7 @@ export class ChannellistComponent{
     },
       error: (err:HttpErrorResponse)=>{
         console.error(err);
+        this.showErrorService.openError(err.error)
       }
     })
   }
@@ -114,20 +118,38 @@ export class ChannellistComponent{
       },
       error: (err:HttpErrorResponse)=>{
         console.log(err)
+        this.showErrorService.openError(err.error)
       }
     })
   }
 
   addTextChannel(){
     //Como respuesta tiene el nuevo canal creado
-    this.groupService.addTextChannel(this.grupo._id).subscribe((response:any)=>{
-      this.addChannelEvent.emit(response);
+    // this.groupService.addTextChannel(this.grupo._id).subscribe((response:any)=>{
+    //   this.addChannelEvent.emit(response);
+    // })
+    this.groupService.addTextChannel(this.grupo._id).subscribe({
+      next:(response:any)=>{
+        this.addChannelEvent.emit(response);
+      },
+      error: (err: HttpErrorResponse)=>{
+        this.showErrorService.openError(err.error)
+      }
     })
   }
   addVoiceChannel(){
-    this.groupService.addVoiceChannel(this.grupo._id).subscribe((response:any)=>{
-      this.addAudioChannelEvent.emit(response);
+    // this.groupService.addVoiceChannel(this.grupo._id).subscribe((response:any)=>{
+    //   this.addAudioChannelEvent.emit(response);
+    // })
+    this.groupService.addVoiceChannel(this.grupo._id).subscribe({
+      next:(response:any)=>{
+        this.addAudioChannelEvent.emit(response);
+      },
+      error: (err: HttpErrorResponse)=>{
+        this.showErrorService.openError(err.error)
+      }
     })
+
   }
 
 
@@ -151,20 +173,44 @@ export class ChannellistComponent{
   }
   addUser(email:string){
     //la llamada al servicio de grupo
-    this.groupService.addUserToGroup(this.grupo._id,email).subscribe((response:any)=>{
-      this.addUserEvent.emit(response)
+    // this.groupService.addUserToGroup(this.grupo._id,email).subscribe((response:any)=>{
+    //   this.addUserEvent.emit(response)
+    // })
+    this.groupService.addUserToGroup(this.grupo._id,email).subscribe({
+      next:(response:any)=>{
+        this.addUserEvent.emit(response)
+      },
+      error: (err: HttpErrorResponse)=>{
+        this.showErrorService.openError(err.error)
+      }
     })
   }
 
   removeTextChannel(){
-    this.groupService.removeTextChannel(this.grupo._id,this.selectedChannel).subscribe((response:any)=>{
-      console.log(response);
-      this.removeChannelEvent.emit(response);
+    // this.groupService.removeTextChannel(this.grupo._id,this.selectedChannel).subscribe((response:any)=>{
+    //   console.log(response);
+    //   this.removeChannelEvent.emit(response);
+    // })
+    this.groupService.removeTextChannel(this.grupo._id,this.selectedChannel).subscribe({
+      next:(response:any)=>{
+        this.removeChannelEvent.emit(response);
+      },
+      error: (err: HttpErrorResponse)=>{
+        this.showErrorService.openError(err.error)
+      }
     })
   }
   removeAudioChannel(){
-    this.groupService.removeAudioChannel(this.grupo._id,this.selectedAudioChannel).subscribe((response:any)=>{
-      this.removeAudioChannelEvent.emit(response);
+    // this.groupService.removeAudioChannel(this.grupo._id,this.selectedAudioChannel).subscribe((response:any)=>{
+    //   this.removeAudioChannelEvent.emit(response);
+    // })
+    this.groupService.removeAudioChannel(this.grupo._id,this.selectedAudioChannel).subscribe({
+      next:(response:any)=>{
+        this.removeAudioChannelEvent.emit(response);
+      },
+      error: (err: HttpErrorResponse)=>{
+        this.showErrorService.openError(err.error)
+      }
     })
   }
 
@@ -187,9 +233,16 @@ export class ChannellistComponent{
     });
   }
   addUserToTextChannel(email:string){
-    //la llamada al servicio de grupo
-    this.groupService.addUserTextChannel(this.grupo._id, this.selectedChannel,email).subscribe((response:any)=>{
-      //recargar componente padre group
+    // this.groupService.addUserTextChannel(this.grupo._id, this.selectedChannel,email).subscribe((response:any)=>{
+      
+    // })
+    this.groupService.addUserTextChannel(this.grupo._id, this.selectedChannel,email).subscribe({
+      next:(response:any)=>{
+        
+      },
+      error: (err: HttpErrorResponse)=>{
+        this.showErrorService.openError(err.error)
+      }
     })
   }
 
@@ -213,8 +266,16 @@ export class ChannellistComponent{
   }
   addUserToAudioChannel(email:string){
     //la llamada al servicio de grupo
-    this.groupService.addUserAudioChannel(this.grupo._id, this.selectedAudioChannel,email).subscribe((response:any)=>{
-      //recargar componente padre group
+    // this.groupService.addUserAudioChannel(this.grupo._id, this.selectedAudioChannel,email).subscribe((response:any)=>{
+      
+    // })
+    this.groupService.addUserAudioChannel(this.grupo._id, this.selectedAudioChannel,email).subscribe({
+      next:(response:any)=>{
+        
+      },
+      error: (err: HttpErrorResponse)=>{
+        this.showErrorService.openError(err.error)
+      }
     })
   }
 
@@ -238,8 +299,16 @@ export class ChannellistComponent{
   }
   removeUserFromTextChannel(email:string){
     //la llamada al servicio de grupo
-    this.groupService.removeUserTextChannel(this.grupo._id, this.selectedChannel,email).subscribe((response:any)=>{
-      //recargar componente padre group
+    // this.groupService.removeUserTextChannel(this.grupo._id, this.selectedChannel,email).subscribe((response:any)=>{
+      
+    // })
+    this.groupService.removeUserTextChannel(this.grupo._id, this.selectedChannel,email).subscribe({
+      next:(response:any)=>{
+        
+      },
+      error: (err: HttpErrorResponse)=>{
+        this.showErrorService.openError(err.error)
+      }
     })
   }
 
@@ -263,8 +332,16 @@ export class ChannellistComponent{
   }
   removeUserFromAudioChannel(email:string){
     //la llamada al servicio de grupo
-    this.groupService.removeUserAudioChannel(this.grupo._id, this.selectedAudioChannel,email).subscribe((response:any)=>{
-      //recargar componente padre group
+    // this.groupService.removeUserAudioChannel(this.grupo._id, this.selectedAudioChannel,email).subscribe((response:any)=>{
+      
+    // })
+    this.groupService.removeUserAudioChannel(this.grupo._id, this.selectedAudioChannel,email).subscribe({
+      next:(response:any)=>{
+        
+      },
+      error: (err: HttpErrorResponse)=>{
+        this.showErrorService.openError(err.error)
+      }
     })
   }
 
@@ -289,8 +366,16 @@ export class ChannellistComponent{
   
   changeTextChannelName(name:string){
     //la llamada al servicio de grupo
-    this.groupService.changeNameTextChannel(this.grupo._id,this.selectedChannel,name).subscribe((response:any)=>{
-      this.changeChannelNameEvent.emit(response)
+    // this.groupService.changeNameTextChannel(this.grupo._id,this.selectedChannel,name).subscribe((response:any)=>{
+    //   this.changeChannelNameEvent.emit(response)
+    // })
+    this.groupService.changeNameTextChannel(this.grupo._id,this.selectedChannel,name).subscribe({
+      next:(response:any)=>{
+        this.changeChannelNameEvent.emit(response)
+      },
+      error: (err: HttpErrorResponse)=>{
+        this.showErrorService.openError(err.error)
+      }
     })
   }
 
@@ -314,8 +399,16 @@ export class ChannellistComponent{
   }
   changeAudioChannelName(name:string){
     //la llamada al servicio de grupo
-    this.groupService.changeNameAudioChannel(this.grupo._id,this.selectedAudioChannel,name).subscribe((response:any)=>{
-      this.changeAudioChannelNameEvent.emit(response)
+    // this.groupService.changeNameAudioChannel(this.grupo._id,this.selectedAudioChannel,name).subscribe((response:any)=>{
+    //   this.changeAudioChannelNameEvent.emit(response)
+    // })
+    this.groupService.changeNameAudioChannel(this.grupo._id,this.selectedAudioChannel,name).subscribe({
+      next:(response:any)=>{
+        this.changeAudioChannelNameEvent.emit(response)
+      },
+      error: (err: HttpErrorResponse)=>{
+        this.showErrorService.openError(err.error)
+      }
     })
   }
 

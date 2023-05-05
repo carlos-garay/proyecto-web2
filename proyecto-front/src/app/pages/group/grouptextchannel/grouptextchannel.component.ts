@@ -4,6 +4,8 @@ import { GroupService } from 'src/app/shared/services/group.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { UserService } from 'src/app/shared/services/user.service';
+import { ShowErrorService } from 'src/app/shared/services/show-error.service';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-grouptextchannel',
@@ -23,7 +25,8 @@ export class GrouptextchannelComponent implements OnInit{
     arrMessages: [] 
   }
 
-  constructor(private formBuilder:FormBuilder, private groupService: GroupService, private route: ActivatedRoute, private userService: UserService){
+  constructor(private formBuilder:FormBuilder, private groupService: GroupService, private route: ActivatedRoute, 
+    private userService: UserService, private showErrorService: ShowErrorService){
     this.formSendMessage = formBuilder.group({
       message:''
     })
@@ -42,11 +45,22 @@ export class GrouptextchannelComponent implements OnInit{
   }
 
   loadChannel(){
-    this.groupService.getTextChannel(this.idGroup,this.idChannel).subscribe((response:any)=>{
-      console.log(response)
-      this.channel = response
+    // this.groupService.getTextChannel(this.idGroup,this.idChannel).subscribe((response:any)=>{
+    //   console.log(response)
+    //   this.channel = response
+    // })
+    this.groupService.getTextChannel(this.idGroup,this.idChannel).subscribe({
+      next:(response:any)=>{
+        console.log(response)
+        this.channel = response
+      },
+      error: (err: HttpErrorResponse)=>{
+        this.showErrorService.openError(err.error)
+      }
     })
   }
+
+  
 
   onEnter(event: Event) {
     if(event instanceof KeyboardEvent){
