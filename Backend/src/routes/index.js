@@ -3,6 +3,8 @@ const router = require('express').Router()
 const rutasGroups = require('./groups')
 //const rutasMessages = require('./messages')
 const rutasUsers = require('./users')
+const auth = require('../middlewares/auth')
+
 
 router.use('/users',rutasUsers)
 //router.use('/channels',rutasChannels)

@@ -1,6 +1,7 @@
 const express = require('express')
 const router = express.Router({mergeParams: true})
 const groupsController = require('../controllers/groups')
+const auth = require('../middlewares/auth')
 
 
 //rutas de channels
@@ -12,7 +13,7 @@ router.use('/:idGroup/audioChannels',rutasAudioChannels)
 
 //endpoints
 
-router.post('/',express.json(),groupsController.createGroup)
+router.post('/',auth,express.json(),groupsController.createGroup)
 /**
  * @swagger
  * /groups:
@@ -21,6 +22,11 @@ router.post('/',express.json(),groupsController.createGroup)
  *      - groups
  *    description: crear un grupo y añadir al usuario que lo crea como admin
  *    parameters:
+ * 
+ *      - in: header
+ *        name: token
+ *        description: el token del usuario actual
+ * 
  *      - in: body
  *        name: bodyInfo
  *        description: objeto información de usuario e informacion del grupo con titulo e imagen
@@ -39,13 +45,14 @@ router.post('/',express.json(),groupsController.createGroup)
  *    responses:
  *      200:
  *        description: el usuario ha creado el grupo exitosamente
- *
+ *      401:
+ *        description: token invalido
  *      400: 
  *        description: no pudo crearse el nuevo grupo 
  */
 
 
-router.delete('/:idGroup',groupsController.deleteGroup)
+router.delete('/:idGroup',auth,groupsController.deleteGroup)
 /**
  * @swagger
  * /groups/{idGroup}:
@@ -59,14 +66,28 @@ router.delete('/:idGroup',groupsController.deleteGroup)
  *        description: el id del grupo que queremos borrar 
  *        schema:
  *          type: string
+ *      - in: header
+ *        name: user
+ *        description: el id del usuario intentando hacer la acción
+ * 
+ *      - in: header
+ *        name: token
+ *        description: el token del usuario actual
+ * 
  *    responses:
  *      200:
  *        description: objeto del grupo eliminado
  *      400: 
- *        description: no pudo borrares el grupo 
+ *        description: no se pudo borrar el grupo 
+ *      401:
+ *        description: token invalido
+ *      404: 
+ *        description: no se encontro el grupo
+ *      403:
+ *        description: no tienes permisos para borrar el grupo
  */
 
-router.put('/:idGroup',express.json(),groupsController.addUserToGroup) //el body va a traer el user que quieres agregar 
+router.put('/:idGroup',auth,express.json(),groupsController.addUserToGroup) //el body va a traer el user que quieres agregar 
 /**
  * @swagger
  * /groups/{idGroup}:
@@ -77,12 +98,20 @@ router.put('/:idGroup',express.json(),groupsController.addUserToGroup) //el body
  *    parameters:
  *      - in: path
  *        name: idGroup
- *        description: el id del grupo al que queremos unirnos
+ *        description: el id del grupo al que se le agregará un miembro
  *        schema:
  *          type: string
+ *      - in: header
+ *        name: user
+ *        description: El id del usuario que está intentando hacer la acción 
+ * 
+ *      - in: header
+ *        name: token
+ *        description: el token del usuario actual
+ * 
  *      - in: body
- *        name: idUser
- *        description: objeto que contiene el correo del user que quiere unirse al grupo
+ *        name: email
+ *        description: objeto que contiene el correo del user que queremos agregar
  *        schema:
  *          type: object
  *          example:
@@ -94,11 +123,15 @@ router.put('/:idGroup',express.json(),groupsController.addUserToGroup) //el body
  *        description: objeto del usuario que se agregó al grupo
  *      400: 
  *        description: no se pudo agregar al grupo
+ *      401:
+ *        description: token invalido
+ *      403:
+ *        description: no eres administrador del grupo
  */
 
 
 
-router.put('/:idGroup/remove',express.json(),groupsController.removeUserFromGroup) //el body va a traer el user que quieres agregar 
+router.put('/:idGroup/remove',auth,express.json(),groupsController.removeUserFromGroup) //el body va a traer el user que quieres agregar 
 /**
  * @swagger
  * /groups/{idGroup}/remove:
@@ -112,8 +145,16 @@ router.put('/:idGroup/remove',express.json(),groupsController.removeUserFromGrou
  *        description: el id del grupo donde se sacará al usuario
  *        schema:
  *          type: string
+ *      - in: header
+ *        name: user
+ *        description: el id del usuario que está intentando hacer la acción
+ * 
+ *      - in: header
+ *        name: token
+ *        description: el token del usuario actual
+ * 
  *      - in: body
- *        name: idUser
+ *        name: email
  *        description: objeto que contiene el correo del user que queremos sacar del grupo
  *        schema:
  *          type: object
@@ -126,6 +167,10 @@ router.put('/:idGroup/remove',express.json(),groupsController.removeUserFromGrou
  *        description: objeto del usuario que fue sacado del grupo
  *      400: 
  *        description: no se pudo eliminar el usuario del grupo
+ *      401:
+ *        description: token invalido
+ *      403:
+ *        description: no eres administrador del grupo
  *      500:
  *        description: error al actualizar datos en las colecciones
  *      404:
@@ -134,7 +179,102 @@ router.put('/:idGroup/remove',express.json(),groupsController.removeUserFromGrou
 
 
 
-router.get('/:idGroup',groupsController.getGroup) //traer todo lo de ese grupo, usamos populate 
+
+router.put('/:idGroup/makeAdmin',auth,express.json(),groupsController.makeUserAdmin) 
+/**
+ * @swagger
+ * /groups/{idGroup}/makeAdmin:
+ *  put:
+ *    tags:
+ *      - groups
+ *    description: hacer un usuario un administrador del grupo
+ *    parameters:
+ *      - in: path
+ *        name: idGroup
+ *        description: el id del grupo en el que está el usuario a hacer admin
+ *        schema:
+ *          type: string
+ *      - in: header
+ *        name: user
+ *        description: El id del usuario que está intentando hacer la acción 
+ * 
+ *      - in: header
+ *        name: token
+ *        description: el token del usuario actual
+ * 
+ *      - in: body
+ *        name: idUser
+ *        description: objeto que contiene el id del user que queremos hacer admin
+ *        schema:
+ *          type: object
+ *          example:
+ *            {
+ *              "_id":"643aed8b64f01a772cb50353"
+ *            }
+ *    responses:
+ *      200:
+ *        description: el usuario se ha agregado a la lista de administradores
+ *      400: 
+ *        description: no se pudo revocar permisos de administrador
+ *      401:
+ *        description: token invalido
+ *      403:
+ *        description: no eres administrador del grupo
+ *      404:
+ *        description: no se encontro al grupo o al usuario
+ *      500:
+ *        description: error al quitar al usuario del arreglo de admins
+ */
+
+
+router.put('/:idGroup/revokeAdmin',auth,express.json(),groupsController.revokeUserAdmin) 
+/**
+ * @swagger
+ * /groups/{idGroup}/revokeAdmin:
+ *  put:
+ *    tags:
+ *      - groups
+ *    description: quitar permiso de administrador a un usuario del grupo
+ *    parameters:
+ *      - in: path
+ *        name: idGroup
+ *        description: el id del grupo en el que está el usuario a quitar de la lista de admins
+ *        schema:
+ *          type: string
+ *      - in: header
+ *        name: user
+ *        description: El id del usuario que está intentando hacer la acción 
+ * 
+ *      - in: header
+ *        name: token
+ *        description: el token del usuario actual
+ * 
+ *      - in: body
+ *        name: idUser
+ *        description: objeto que contiene el id del user al que queremos quitar de la lista de admins
+ *        schema:
+ *          type: object
+ *          example:
+ *            {
+ *              "_id":"643aed8b64f01a772cb50353"
+ *            }
+ *    responses:
+ *      200:
+ *        description: el usuario se ha eliminado de la lista de administradores
+ *      400: 
+ *        description: no se pudo volver administrador
+ *      401:
+ *        description: token invalido
+ *      403:
+ *        description: no eres administrador del grupo
+ *      404:
+ *        description: no se encontro al grupo o al usuario
+ *      500:
+ *        description: error al hacer al usuario admin
+ */
+
+
+router.get('/:idGroup',auth,groupsController.getGroup) //traer todo lo de ese grupo, usamos populate 
 
 /**
  * @swagger
@@ -149,6 +289,16 @@ router.get('/:idGroup',groupsController.getGroup) //traer todo lo de ese grupo, 
  *        description: el id del grupo que queremos recuperar 
  *        schema:
  *          type: string
+ *      - in: header
+ *        name: user
+ *        description: id del usuario que inició sesión
+ *        schema:
+ *          type: string
+ * 
+ *      - in: header
+ *        name: token
+ *        description: el token del usuario actual
+ * 
  *    responses:
  *      200:
  *        description: objeto que contiene grupo con sus arreglos poblados con los objetos correspondientes
@@ -229,12 +379,13 @@ router.get('/:idGroup',groupsController.getGroup) //traer todo lo de ese grupo, 
  *                  ],
  *                  "__v": 0
  *              }
- *        
+ *      401:
+ *        description: token invalido
  *      404: 
  *        description: no se encontro ese grupo 
  */
 
-router.put('/:idGroup/name',express.json(),groupsController.changeGroupName) // el body va a traer un atribuo llamado nombreGrupo
+router.put('/:idGroup/name',auth,express.json(),groupsController.changeGroupName) // el body va a traer un atribuo llamado nombreGrupo
 
 /**
  * @swagger
@@ -250,6 +401,10 @@ router.put('/:idGroup/name',express.json(),groupsController.changeGroupName) // 
  *        description: el id del grupo al que queremos cambiar su nombre 
  *        schema:
  *          type: string
+ * 
+ *      - in: header
+ *        name: token
+ *        description: el token del usuario actual
  *
  *      - in: body
  *        name: bodyInfo
@@ -272,12 +427,13 @@ router.put('/:idGroup/name',express.json(),groupsController.changeGroupName) // 
  *
  *      400: 
  *        description: no pudo cambiarse el nombre
- * 
- *      401: 
+ *      401:
+ *        description: token invalido
+ *      403: 
  *        description: no eres administrador por lo tanto no puedes cambiar el nombre
  *      
  *      404:
- *        description: no se encontro al grupo 
+ *        description: no se encontró al grupo 
  */
 
 

@@ -43,165 +43,273 @@ const GroupController = {
                 })
         })
         .catch(error =>{
-            res.status(400).send('No pudo crearse el nuevo grupo ' + error)
+            res.status(400).send('No pudo crearse el nuevo grupo ')
         })
     },
 
     
-    deleteGroup : (req,res)=>{ // borrar el grupo de todos los arreglos de los usuarios, 
-        Group.findByIdAndDelete(req.params.idGroup)
+    deleteGroup : (req,res)=>{ 
+        let idUser = req.headers.user
+        Group.findById(req.params.idGroup)
         .then(grupo =>{
-            //ya quitamos el grupo de los arreglos de los usuarios 
-            grupo.arrUsers.forEach(usuario =>{
-                //de cada usuario que pertenecia al grupo, vamos a eliminar el grupo de su arrGroups
-                User.findByIdAndUpdate(usuario,{ $pull: { arrGroups: grupo._id}}, { new : true })
+            if(grupo.arrAdmins.includes(idUser)){
+                Group.findByIdAndDelete(req.params.idGroup)
+                .then(grupo =>{
+                    //ya quitamos el grupo de los arreglos de los usuarios 
+                    grupo.arrUsers.forEach(usuario =>{
+                        //de cada usuario que pertenecia al grupo, vamos a eliminar el grupo de su arrGroups
+                        User.findByIdAndUpdate(usuario,{ $pull: { arrGroups: grupo._id}}, { new : true })
+                        .catch(error =>{
+                            res.status(400).send('error al encontrar el usuario para eliminar grupo de su ARR ');
+                        })
+                    })
+        
+                    // eliminar canales de audio
+                    audioChannel.deleteMany({_id: { $in: grupo.arrAudioChannels }}, {new: true})
                     .catch(error =>{
-                        res.status(400).send('error al encontrar el usuario para eliminar grupo de su ARR ' + error);
+                        res.status(400).send('no se pudo eliminar los canales de audio ');
                     })
-            })
-
-            // eliminar canales de audio, se podría hacer tambien con deleteMany
-            audioChannel.deleteMany({_id: { $in: grupo.arrAudioChannels }}, {new: true})
+                    
+                    //Eliminar canales de texto y mensajes incluidos
+                    grupo.arrChannels.forEach(canalTexto =>{
+                        Channel.findByIdAndDelete(canalTexto)
+                        .then(removedChannel =>{
+                            //borrar todos los mensajes que estan en el arreglo 
+                            Message.deleteMany({ _id: { $in: removedChannel.arrMessages}})
+                            .catch(error => {
+                                res.status(400).send('error al eliminar los mensajes del canal ')
+                            })
+                        })
+                        .catch(error => {
+                            res.status(400).send('error al eliminar los canales de texto ')
+                        })
+                    })
+                    res.status(200).type("application/json").json(grupo)
+                })
                 .catch(error =>{
-                    res.status(400).send('no se pudo eliminar los canales de audio ' + error);
+                    res.status(404).send('No se encontro el grupo a borrar ')
                 })
-            
-            //Eliminar canales de texto y mensajes incluidos
-            grupo.arrChannels.forEach(canalTexto =>{
-                Channel.findByIdAndDelete(canalTexto)
-                .then(removedChannel =>{
-                    //borrar todos los mensajes que estan en el arreglo 
-                    Message.deleteMany({ _id: { $in: removedChannel.arrMessages}})
-                    .catch(error => {
-                        res.status(400).send('error al eliminar los mensajes del canal ' + error)
-                    })
-                })
-                .catch(error => {
-                    res.status(400).send('error al eliminar los canales de texto ' + error)
-                })
-            })
-            res.status(200).type("application/json").json(grupo)
+            }else{
+                res.status(403).send('No eres administrador del grupo')
+            }
+
         })
         .catch(error =>{
-            res.status(404).send('No se encontro el grupo a borrar ' + error)
+            res.status(404).send('No se encontro el grupo a borrar ');
         })
+       
     },
 
     addUserToGroup : (req,res)=>{ 
         let idGroup = req.params.idGroup
         let email = req.body.email
+        let idAdmin = req.headers.user
         User.findOne({email: email})
         .then(user=>{
             Group.findById(idGroup)
             .then(grupo =>{
-                if(grupo.arrUsers.includes(user._id)){
-                    res.status(400).send('Ya esta agregado el usuario al grupo');
-                }
-                else{
-                    grupo.arrUsers.push(user._id)
-                    grupo.save()
-                    .then(grupo => {  
-                        Channel.updateMany({_id: {$in: grupo.arrChannels}},{$push:{arrMembers:user._id}},{new:true})
-                        .then(channel =>{
+                if(grupo.arrAdmins.includes(idAdmin)){
+                    if(grupo.arrUsers.includes(user._id)){
+                        res.status(400).send('Ya esta agregado el usuario al grupo');
+                    }
+                    else{
+                        grupo.arrUsers.push(user._id)
+                        grupo.save()
+                        .then(grupo => {  
+                            Channel.updateMany({_id: {$in: grupo.arrChannels}},{$push:{arrMembers:user._id}},{new:true})
+                            .catch(error =>{
+                                res.status(500).send('Error al actualizar canales de texto ');
+                            })
                             audioChannel.updateMany({_id: {$in: grupo.arrAudioChannels}},{$push:{arrMembers:user._id}},{new:true})
-                            .then(audiochannel =>{
-                                User.findByIdAndUpdate(user._id,{$push:{arrGroups:grupo._id}}, { new : true })
-                                .then(user =>{
-                                    console.log(user);
-                                    res.status(200).type("application/json").json(user);
-                                })
-                                .catch(error =>{
-                                    res.status(400).send('No te pudiste unir' + error);
-                                })
+                            .catch(error =>{
+                                res.status(500).send('Error al actualizar canales de audio ')
+                            })
+
+                            User.findByIdAndUpdate(user._id,{$push:{arrGroups:grupo._id}}, { new : true })
+                            .select('-password')
+                            .then(user =>{
+                                res.status(200).type("application/json").json(user);
                             })
                             .catch(error =>{
-                                res.status(500).send('Error al actualizar canales de audio')
+                                res.status(400).send('No te pudiste unir');
                             })
                         })
                         .catch(error =>{
-                            res.status(500).send('Error al actualizar canales de texto');
+                            res.status(400).send('No te pudieron agregar ' );
                         })
-                           
-                    })
-                    .catch(error =>{
-                        res.status(400).send('No te pudieron agregar '+error );
-                    })
+                    }
+                }
+                else{
+                    res.status(403).send('No eres administrador del grupo')
                 }
             })
             .catch(error =>{
-                res.status(404).send('No se encontró al grupo ' +error);
+                res.status(404).send('No se encontró al grupo ');
             })
         })
         .catch(error =>{
-            res.status(404).send('No se encontró al usuario ' + error );
+            res.status(404).send('No se encontró al usuario ' );
+        })
+    },
+
+    removeUserFromGroup: (req,res)=>{
+        let idGroup = req.params.idGroup
+        let email = req.body.email
+        let idAdmin = req.headers.user
+
+        User.findOne({email: email},"-password")
+        .then(user=>{
+            Group.findById(idGroup)
+            .then(grupo =>{
+                if(grupo.arrAdmins.includes(idAdmin)){
+
+                    if(grupo.arrUsers.includes(user._id)){
+                        //Si un canal del grupo contiene al usuario a eliminar, quitarlo
+                        Channel.updateMany({arrMembers: user._id,  _id: {$in: grupo.arrChannels}} ,{$pull:{arrMembers:user._id}},{new:true})
+                        .catch(error =>{
+                            res.status(500).send('Error al actualizar canales de texto ');
+                        })
+                        //Tambien eliminarlo de los canales de audio 
+                        audioChannel.updateMany({arrMembers: user._id, _id: {$in: grupo.arrAudioChannels}},{$pull:{arrMembers:user._id}},{new:true})
+                        .catch(error =>{
+                            res.status(500).send('Error al actualizar canales de audio ')
+                        })
+                        User.findByIdAndUpdate(user._id,{$pull:{arrGroups:grupo._id}}, { new : true })
+                        .select('-password')
+                        .then(user =>{
+                            index = grupo.arrUsers.indexOf(user._id);
+                            grupo.arrUsers.splice(index,1);
+                            grupo.save()
+                            .then(grupo=>{
+                                res.status(200).type("application/json").json(user);
+                            })
+                            .catch(error =>{
+                                res.status(400).send("Error al eliminar al usuario de la lista del grupo")
+                            })
+                        })
+                        .catch(error =>{
+                            res.status(400).send('No te pudiste unir');
+                        })
+
+                    }
+                    else{
+                        res.status(400).send('El usuario no forma parte del grupo ');
+                    }
+                }
+                else{
+                    res.status(403).send('No eres administrador del grupo')
+                }
+            })
+            .catch(error =>{
+                res.status(404).send('No se encontró al grupo ');
+            })
+        })
+        .catch(error =>{
+            res.status(404).send("No se encontró el usuario con el email "+ email );
         })
     },
 
 
-    removeUserFromGroup: (req,res)=>{
-
+    makeUserAdmin: (req,res)=>{
         let idGroup = req.params.idGroup
-        let email = req.body.email
-        User.findOne({email: email})
+        let idToAdmin = req.body._id
+        let idAdmin = req.headers.user
+
+        User.findById(idAdmin,"-password")
         .then(user=>{
             Group.findById(idGroup)
             .then(grupo =>{
-                if(grupo.arrUsers.includes(user._id)){
-                    //Si un canal del grupo contiene al usuario a eliminar, quitarlo
-                    Channel.updateMany({arrMembers: user._id,  _id: {$in: grupo.arrChannels}} ,{$pull:{arrMembers:user._id}},{new:true})
-                    .then(channel =>{
-                        //Tambien eliminarlo de los canales de audio 
-                        audioChannel.updateMany({arrMembers: user._id, _id: {$in: grupo.arrAudioChannels}},{$pull:{arrMembers:user._id}},{new:true})
-                        .then(audiochannel =>{
-                            User.findByIdAndUpdate(user._id,{$pull:{arrGroups:grupo._id}}, { new : true })
-                            .then(user =>{
-                                index = grupo.arrUsers.indexOf(user._id);
-                                grupo.arrUsers.splice(index,1);
-                                grupo.save()
-                                .then(grupo=>{
-                                    res.status(200).type("application/json").json(user);
-                                })
-                                .catch(error =>{
-                                    res.status(400).send("Error al eliminar al usuario de la lista del grupo")
-                                })
-
-                            })
-                            .catch(error =>{
-                                res.status(400).send('No te pudiste unir' + error);
-                            })
+                //Solo un usuario administrador puede hacer administrador a otro
+                if(grupo.arrAdmins.includes(idAdmin)){
+                    //Si el usuario ya es admin no se agrega de nuevo al arreglo de administradores
+                    if(!grupo.arrAdmins.includes(idToAdmin)){
+                        grupo.arrAdmins.push(idToAdmin)
+                        grupo.save()
+                        .then(grupo =>{
+                            res.status(200).send({id:idToAdmin})
                         })
                         .catch(error =>{
-                            res.status(500).send('Error al actualizar canales de audio '+error)
+                            res.status(500).send("error al hacer al usuario administrador");
                         })
-                    })
-                    .catch(error =>{
-                        res.status(500).send('Error al actualizar canales de texto '+error);
-                    })
+                    }
+                    else{
+                        res.status(400).send('El usuario ya es administrador');
+                    }
                 }
                 else{
-                    res.status(400).send('El usuario no forma parte del grupo ');
+                    res.status(403).send('No eres administrador del grupo')
                 }
             })
             .catch(error =>{
-                res.status(404).send('No se encontró al grupo ' +error);
+                res.status(404).send('No se encontró al grupo ');
             })
         })
         .catch(error =>{
-            res.status(404).send("No se encontró el usuario con el email "+ email + " "+error );
+            res.status(404).send("No se encontró el usuario con el email "+ email);
         })
+
+    },
+
+
+    revokeUserAdmin: (req,res)=>{
+        let idGroup = req.params.idGroup
+        let idRevokeAdmin = req.body._id
+        let idAdmin = req.headers.user
+
+        User.findById(idAdmin,"-password")
+        .then(user=>{
+            Group.findById(idGroup)
+            .then(grupo =>{
+                //Solo un usuario administrador puede quitar las propiedades de administrador a otro y no a si mismo
+                if(grupo.arrAdmins.includes(idAdmin) && idAdmin!=idRevokeAdmin){
+                    //Si el usuario estaba en la lista de administradores se le quita este permiso 
+                    if(grupo.arrAdmins.includes(idRevokeAdmin)){
+                        index = grupo.arrAdmins.indexOf(idRevokeAdmin);
+                        grupo.arrAdmins.splice(index,1);
+                        grupo.save()
+                        .then(grupo =>{
+                            res.status(200).send({id:idRevokeAdmin})
+                        })
+                        .catch(error =>{
+                            res.status(500).send("error al hacer al usuario administrador");
+                        })
+                    }
+                    else{
+                        res.status(400).send('El no era administrador');
+                    }
+                }
+                else{
+                    res.status(403).send('No eres administrador del grupo o te estas intentado quitar privilegios de administrador a ti mismo')
+                }
+            })
+            .catch(error =>{
+                res.status(404).send('No se encontró al grupo ');
+            })
+        })
+        .catch(error =>{
+            res.status(404).send("No se encontró el usuario con el email "+ email);
+        })
+
     },
 
     getGroup: (req,res)=>{ 
+        let idUser = req.headers.user
         Group.findById(req.params.idGroup)
-            .populate("arrUsers")
-            .populate("arrAdmins")
+            .populate("arrUsers","-password")
+            .populate("arrAdmins","-password")
             .populate("arrChannels")
             .populate("arrAudioChannels")
             .then(grupo =>{
-                res.status(200).send(grupo)
+                if(grupo.arrUsers.find(({_id}) => _id == idUser)){
+                    res.status(200).send(grupo)
+                }
+                else{
+                    res.status(403).send('No perteneces a este grupo')
+                }
+
             })
             .catch(error =>{
-                res.status(404).send('No se encontro ese grupo')
+                res.status(404).send('No se encontro ese grupo ')
             })
     },
     
@@ -225,8 +333,6 @@ const GroupController = {
         Group.findById(idGroup)
         .then(group => {
 
-            console.log(group.arrAdmins);
-            console.log(idUser);
             if (group.arrAdmins.includes(idUser)){ //si esta en arreglo de administradores
                 //se hace el cambio de nombre 
                 Group.findByIdAndUpdate(idGroup,{title:newTitle},{ new : true })
@@ -238,7 +344,7 @@ const GroupController = {
                 })
             }
             else{
-                res.status(401).send('No tienes permisos para cambiar el nombre')
+                res.status(403).send('No tienes permisos para cambiar el nombre')
             }
         })
         .catch(error => {

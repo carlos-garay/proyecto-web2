@@ -11,22 +11,23 @@ import { DirectmessagesComponent } from './pages/directmessages/directmessages.c
 import { ChangenameComponent } from './pages/changename/changename.component';
 import { ChangepasswordComponent } from './pages/changepassword/changepassword.component';
 import { FriendchatComponent } from './pages/directmessages/friendchat/friendchat.component';
+import { AuthGuard } from './shared/guards/auth.guard';
 
 const routes: Routes = [
   {path: '',component:HomeComponent},
   {path: 'login',component:LoginComponent},
   {path: 'register',component:RegisterComponent},
-  {path: 'requests',component:RequestsComponent},
-  {path: 'directMessages',component:DirectmessagesComponent,
+  {path: 'requests',component:RequestsComponent,canActivate: [AuthGuard]},
+  {path: 'directMessages',component:DirectmessagesComponent,canActivate: [AuthGuard],
     children:[
-      {path:':idChannel',component:FriendchatComponent}
+      {path:':idChannel',component:FriendchatComponent,canActivate: [AuthGuard]}
     ]}, 
-  {path: 'changeName', component:ChangenameComponent},
-  {path: 'changePassword', component:ChangepasswordComponent},
-  {path: 'group/:idGroup',component:GroupComponent,
+  {path: 'changeName', component:ChangenameComponent,canActivate: [AuthGuard]},
+  {path: 'changePassword', component:ChangepasswordComponent,canActivate: [AuthGuard]},
+  {path: 'group/:idGroup',component:GroupComponent,canActivate: [AuthGuard],
     children:[
-      {path:'text/:idChannel',component:GrouptextchannelComponent},
-      {path:'voice/:idChannel',component:GroupvoicechannelComponent}
+      {path:'text/:idChannel',component:GrouptextchannelComponent,canActivate: [AuthGuard]},
+      {path:'voice/:idChannel',component:GroupvoicechannelComponent,canActivate: [AuthGuard]}
     ]},
   {path: '*',component:HomeComponent}
 ];

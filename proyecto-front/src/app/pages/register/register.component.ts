@@ -1,8 +1,13 @@
 import { Component } from '@angular/core';
 import {FormGroup,FormBuilder,Validators} from '@angular/forms'
 import { Router } from '@angular/router';
+import { HttpErrorResponse } from '@angular/common/http';
 
+import { AuthService } from 'src/app/shared/services/auth.service';
+import { ShowErrorService } from 'src/app/shared/services/show-error.service';
 import { UserService} from 'src/app/shared/services/user.service'
+
+
 
 @Component({
   selector: 'app-register',
@@ -11,7 +16,8 @@ import { UserService} from 'src/app/shared/services/user.service'
 })
 export class RegisterComponent {
   formRegister: FormGroup
-  constructor(private formBuilder:FormBuilder,private userService:UserService,private router: Router){
+  constructor(private formBuilder:FormBuilder,private userService:UserService,private router: Router, 
+    private authService: AuthService, private showErrorService:ShowErrorService){
     this.formRegister = formBuilder.group({ //lleva this el formBuilder?
       name:['',Validators.required],
       email:['',[Validators.required, Validators.email]],
@@ -30,14 +36,31 @@ export class RegisterComponent {
     let password: string=valores.password
     let confirm: string=valores.confirm
     if(password == confirm){
-      this.userService.registerUser(name,email,password).subscribe((response:any)=>{ //al hacer login nos regresa el id del nuevo usuario
-        //si se registro correcto te lleva a la pagina del login 
-        this.router.navigate(['/login'])
+      // this.userService.registerUser(name,email,password).subscribe((response:any)=>{ //al hacer login nos regresa el id del nuevo usuario
+      //   localStorage.setItem('idUser',response._id);
+      //   this.authService.setToken(response.token);
+
+      //   //si se registro correcto te lleva a la pagina del login 
+      //   this.userService.loadUser(response._id)
+      //   this.router.navigate(['/'])
+      // })
+      this.userService.registerUser(name,email,password).subscribe({
+        next:(response:any)=>{
+          this.userService.setId(response._id)
+          this.authService.setToken(response.token);
+          this.userService.loadUser(response._id)
+          this.router.navigate(['/'])
+        },
+        error: (err: HttpErrorResponse)=>{
+          this.showErrorService.openError(err.error)
+        }
       })
     }
-    //si no no se hace nada 
-    //mandar mensajes de error mayb 
-    
-    
+    else{
+      //indicar que no son iguales las contraseñas 
+      this.showErrorService.openError('Deben ser iguales los passwords')
+    }
+        
   }
+
 }

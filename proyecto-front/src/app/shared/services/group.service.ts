@@ -1,21 +1,21 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { UserService } from './user.service';
+import { HttpService } from './http.service';
+
 
 @Injectable({
   providedIn: 'root'
 })
 export class GroupService {
 
-  constructor(private httpClient : HttpClient, private userService:UserService) { }
+  constructor(private httpService: HttpService, private userService:UserService) { }
 
   getGroup(idGroup:string){
     
     //let url:string = 'http://localhost:3000/groups/'+idGroup
     let url:string = environment.apiUrl+'groups/'+idGroup
-    console.log(url)
-    return this.httpClient.get(url)
+    return this.httpService.get(url)
   }
 
   createGroup(name:string,img:string){
@@ -31,16 +31,15 @@ export class GroupService {
       UserInfo:UserInfo,
       groupInfo:groupInfo
     }
-    const headers = new HttpHeaders().set('Content-Type', 'application/json');
     let url: string = environment.apiUrl+'groups'
-    return this.httpClient.post(url,body,{headers})
+    return this.httpService.post(url,body)
   }
 
   getTextChannel(idGroup:string, idChannel:string){
     //groups/:idGroup/channels/:idChannel
 
     let url: string = environment.apiUrl+'groups/'+idGroup+'/channels/'+idChannel
-    return this.httpClient.get(url)
+    return this.httpService.get(url)
   }
 
   sendMessage(idGroup:string, idChannel:string,content:string){
@@ -58,9 +57,8 @@ export class GroupService {
       UserInfo:UserInfo,
       messageInfo:messageInfo
     }
-    const headers = new HttpHeaders().set('Content-Type', 'application/json');
     const url:string = environment.apiUrl+'groups/'+idGroup+'/channels/'+idChannel+'/messages';
-    return this.httpClient.post(url,body,{headers});
+    return this.httpService.post(url,body);
   }
 
   eliminarUsuarioDegrupo(idGroup:string,email:string){
@@ -68,25 +66,15 @@ export class GroupService {
       email:email
     }
 
-    const headers = new HttpHeaders().set('Content-Type', 'application/json');
     const url:string = environment.apiUrl+'groups/'+idGroup+'/remove';
-    return this.httpClient.put(url,body,{headers})
+    return this.httpService.put(url,body)
 
   }
 
   deleteGroup(idGroup:string){
     let idUser:string = this.userService.getUser()._id ; //va a ir en el body
-    let body = {
-      idUser : idUser
-    }
-    const options = {
-      headers: new HttpHeaders({
-        'Content-Type': 'application/json',
-      }),
-      body: body
-    };
     const url:string = environment.apiUrl+'groups/'+idGroup;
-    return this.httpClient.delete(url,options)
+    return this.httpService.delete(url)
   }
 
   changeGroupName(idGroup:string,newTitle:string){
@@ -104,17 +92,16 @@ export class GroupService {
       groupInfo:groupInfo
     }
     const url:string = environment.apiUrl+'groups/'+idGroup+'/name';
-    const headers = new HttpHeaders().set('Content-Type', 'application/json');
-    return this.httpClient.put(url,body,{headers})
+    return this.httpService.put(url,body)
   }
 
   addTextChannel(idGroup:string){
     const url:string = environment.apiUrl+'groups/'+idGroup+'/channels';
-    return this.httpClient.post(url,{})
+    return this.httpService.post(url,{})
   }
   addVoiceChannel(idGroup:string){
     const url:string = environment.apiUrl+'groups/'+idGroup+'/audioChannels';
-    return this.httpClient.post(url,{})
+    return this.httpService.post(url,{})
   }
 
   addUserToGroup(idGroup:string, email:string){
@@ -122,8 +109,7 @@ export class GroupService {
     let body = {
       email: email
     }
-    const headers = new HttpHeaders().set('Content-Type', 'application/json');
-    return this.httpClient.put(url,body,{headers})
+    return this.httpService.put(url,body)
   }
 
   changeNameTextChannel(idGroup:string, idChannel:string, title:string){
@@ -142,8 +128,7 @@ export class GroupService {
       channelInfo:channelInfo
     }
     let url:string = environment.apiUrl+'groups/'+idGroup+'/channels/'+idChannel+'/name';
-    const headers = new HttpHeaders().set('Content-Type', 'application/json');
-    return this.httpClient.put(url,body,{headers})
+    return this.httpService.put(url,body)
   }
   changeNameAudioChannel(idGroup:string, idChannel:string, title:string){
     //body tiene UserInfo y channelInfo
@@ -161,49 +146,56 @@ export class GroupService {
       channelInfo:channelInfo
     }
     let url:string = environment.apiUrl+'groups/'+idGroup+'/audioChannels/'+idChannel+'/name';
-    const headers = new HttpHeaders().set('Content-Type', 'application/json');
-    return this.httpClient.put(url,body,{headers})
+    return this.httpService.put(url,body)
   }
 
   addUserTextChannel(idGroup:string, idChannel:string, email:string){ //agregar usuario a un canal de texto 
     let body = {
       email: email
     }
-    let url:string = environment.apiUrl+'groups/'+idGroup+'/channels/'+idChannel+'addMember';
-    const headers = new HttpHeaders().set('Content-Type', 'application/json');
-    return this.httpClient.put(url,body,{headers})
+    let url:string = environment.apiUrl+'groups/'+idGroup+'/channels/'+idChannel+'/addMember';
+    return this.httpService.put(url,body)
   }
   removeUserTextChannel(idGroup:string, idChannel:string, email:string){
     let body = {
       email: email
     }
-    let url:string = environment.apiUrl+'groups/'+idGroup+'/channels/'+idChannel+'removeMember';
-    const headers = new HttpHeaders().set('Content-Type', 'application/json');
-    return this.httpClient.put(url,body,{headers})
+    let url:string = environment.apiUrl+'groups/'+idGroup+'/channels/'+idChannel+'/removeMember';
+    return this.httpService.put(url,body)
   }
   addUserAudioChannel(idGroup:string, idChannel:string, email:string){ //agregar usuario a un canal de texto 
     let body = {
       email: email
     }
-    let url:string = environment.apiUrl+'groups/'+idGroup+'/audioChannels/'+idChannel+'addMember';
-    const headers = new HttpHeaders().set('Content-Type', 'application/json');
-    return this.httpClient.put(url,body,{headers})
+    let url:string = environment.apiUrl+'groups/'+idGroup+'/audioChannels/'+idChannel+'/addMember';
+    return this.httpService.put(url,body)
   }
   removeUserAudioChannel(idGroup:string, idChannel:string, email:string){
     let body = {
       email: email
     }
-    let url:string = environment.apiUrl+'groups/'+idGroup+'/audioChannels/'+idChannel+'removeMember';
-    const headers = new HttpHeaders().set('Content-Type', 'application/json');
-    return this.httpClient.put(url,body,{headers})
+    let url:string = environment.apiUrl+'groups/'+idGroup+'/audioChannels/'+idChannel+'/removeMember';
+    return this.httpService.put(url,body)
   }
 
   removeTextChannel(idGroup:string, idChannel:string ){
     let url:string = environment.apiUrl+'groups/'+idGroup+'/channels/'+idChannel;
-    return this.httpClient.delete(url)
+    return this.httpService.delete(url)
   }
   removeAudioChannel(idGroup:string, idChannel:string ){
-    let url:string = environment.apiUrl+'groups/'+idGroup+'/channels/'+idChannel;
-    return this.httpClient.delete(url)
+    let url:string = environment.apiUrl+'groups/'+idGroup+'/audioChannels/'+idChannel;
+    return this.httpService.delete(url)
+  }
+
+  makeUserAdmin(idGroup:string, idToAdmin:string){
+    let body = {_id: idToAdmin}
+    let url:string = environment.apiUrl+'groups/'+idGroup+'/makeAdmin';
+    return this.httpService.put(url,body)
+  }
+
+  revokeUserAdmin(idGroup:string, idToAdmin:string){
+    let body = {_id: idToAdmin}
+    let url:string = environment.apiUrl+'groups/'+idGroup+'/revokeAdmin';
+    return this.httpService.put(url,body)
   }
 }

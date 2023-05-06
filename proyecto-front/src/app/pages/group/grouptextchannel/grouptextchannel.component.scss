@@ -2,12 +2,17 @@
 .example-header-image {
     background-image: url('https://material.angular.io/assets/img/examples/shiba1.jpg');
     background-size: cover;
-    }
-    
+}
+
+.chatContainer {
+    height: 95vh;
+}
+
+
 .scrollContainer {
     overflow: auto; /* Make the container scrollable */
     position: relative;
-    max-height: 80vh;
+    max-height: 73vh;
     width: 95%;
 }
 

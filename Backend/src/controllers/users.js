@@ -3,45 +3,65 @@ const Group = require('../models/groups');
 const Request = require('../models/requests');
 const Channel = require('../models/channels');
 const Message = require('../models/messages');
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
+
 
 const UserController = {
 
     //registrar usuario, se tendrán cambios cuando se tenga implementación de tokens
     registerUser: (req,res)=>{
-        let user = User(req.body);
+        console.log(req.body)
+        let objectUser = req.body
+        objectUser['token']= 'placeholder'
+        let user = User(objectUser);
         user.save().then((user) =>{
-            let objUserId = {_id:user._id}
+            console.log(process.env.TOKEN_KEY)
+            console.log("still good")
+            token = jwt.sign({email:req.body.email},process.env.TOKEN_KEY,{expiresIn: "5h"})
+            let objUserId = {_id:user._id, token:token}
             res.status(201).type("application/json").json(objUserId);
         })
         .catch(err =>{
-            res.status(400).send('email incorrecto '+err);
+            res.status(400).send('email incorrecto '+ err);
         });
     },
 
-    //evaluar que concuerden las contraseñas CAMBIOS CUANDO SE ENCRIPTEN Y SE USEN TOKENS
+    //evaluar que concuerden las contraseñas 
     loginUser: (req,res)=>{
         let email = req.body.email
         let password = req.body.password
 
         User.findOne({ email: `${email}` })
-            .then(user => {
-                if(user.password == password){
-                    let objUserId = {_id:user._id}
+        .then(user => {
+            // cuando concuerdan generamos el token que se guardará en el localstorage
+            if (bcrypt.compareSync(password, user.password)) {
+                try{
+                    console.log(process.env.TOKEN_KEY)
+                    token = jwt.sign({email:email},process.env.TOKEN_KEY,{expiresIn: "5h"})
+                    let objUserId = {_id:user._id, token:token}
                     res.status(201).type("application/json").json(objUserId);
-                } else {
-                    res.status(404).type('text/plain; charset=utf-8').send(`Email o contraseña incorrecta`);
                 }
-            })
-            .catch(err => {
-                res.status(404).type('text/plain; charset=utf-8').send(`Email no registrado`+err);
-            });
+                catch(err){
+                    res.status(500).send("No se pudo iniciar sesión")
+                }
+
+            } else {
+                res.status(404).type('text/plain; charset=utf-8').send(`Email o contraseña incorrecta`);
+            }
+        })
+        .catch(err => {
+            res.status(404).type('text/plain; charset=utf-8').send(`Email o contraseña incorrecta`);
+        });
     },
 
     //Cambiar el nombre del usuario
     updateUserName: (req,res)=>{
         let nameChange = req.body.name;
         let idUser = req.params.idUser;
-        User.findByIdAndUpdate(idUser, {name: nameChange}, { new : true }).then(user => {
+        User.findByIdAndUpdate(idUser, {name: nameChange}, { new : true })
+        .select('-password')
+        .then(user => {
             res.status(200).type("application/json").json(user);
         })
         .catch(err => {
@@ -51,10 +71,12 @@ const UserController = {
 
     //Cambiar el password del usuario, se modificará cuando se incluya la encripción 
     updateUserPassword: (req,res)=>{
-        let passwordChange = req.body.password;
+        let passwordChange = bcrypt.hashSync(req.body.password, 10);
         let idUser = req.params.idUser;
         console.log(req.params);
-        User.findByIdAndUpdate(idUser, {password: passwordChange}, { new : true }).then(user => {
+        User.findByIdAndUpdate(idUser, {password: passwordChange}, { new : true })
+        .select('-password')
+        .then(user => {
             res.status(200).type("application/json").json(user);
         })
         .catch(err => {
@@ -67,34 +89,33 @@ const UserController = {
     //Consulta la colección de grupos para cargar los grupos de los que es miembro
     loadUser: (req,res) => { 
         let idUser = req.params.idUser;
-        User.findById(idUser)
-            .populate("arrGroups")
-            .then(usuario => {
-                //Obtenemos por cada id en el arreglo de grupos del usuario el objeto del grupo correspondiente
-                //Para que posteriormente se puedan usar para cargar sus íconos y nombres en la aplicación
-                console.log(usuario);
-                res.status(200).type("application/json").json(usuario);
+        User.findById(idUser,"-password")
+        .populate("arrGroups")
+        .then(usuario => {
+            //Obtenemos por cada id en el arreglo de grupos del usuario el objeto del grupo correspondiente
+            //Para que posteriormente se puedan usar para cargar sus íconos y nombres en la aplicación
+            res.status(200).type("application/json").json(usuario);
 
-            })
-            .catch(err => {
-                res.status(404).send("No se encontró el usuario con el id: "+idUser +' '+ err);
-            })
+        })
+        .catch(err => {
+            res.status(404).send("No se encontró el usuario con el id: "+idUser);
+        })
     },
 
     loadFriends: (req,res) => { 
         let idUser = req.params.idUser;
         User.findById(idUser)
-            .populate("arrFriends")
-            .then(usuario => {
-                //Obtenemos por cada id en el arreglo de amigos del usuario el objeto del usuario correspondiente
-                //Para que posteriormente se puedan usar para cargar sus íconos y nombres
-                console.log(usuario);
-                res.status(200).type("application/json").json(usuario.arrFriends);
-               
-            })
-            .catch(err => {
-                res.status(404).send("No se encontró el usuario con el id: "+idUser +' '+ err);
-            })
+        .populate("arrFriends","-password")
+        .then(usuario => {
+            //Obtenemos por cada id en el arreglo de amigos del usuario el objeto del usuario correspondiente
+            //Para que posteriormente se puedan usar para cargar sus íconos y nombres
+            console.log(usuario);
+            res.status(200).type("application/json").json(usuario.arrFriends);
+            
+        })
+        .catch(err => {
+            res.status(404).send("No se encontró el usuario con el id: "+idUser);
+        })
     },
 
     loadChannel: (req,res) => { 
@@ -112,11 +133,11 @@ const UserController = {
             }
             else{
                 Channel.findById(idChannel)
-                .populate("arrMembers")
+                .populate("arrMembers","-password")
                 .then(channel => {
                     //Poner el titulo del canal segun el nombre de los usuarios
                     Channel.findByIdAndUpdate(idChannel,{title: "DM " + channel.arrMembers[0].name + " y " + channel.arrMembers[1].name },{new:true})
-                        .populate("arrMembers")
+                        .populate("arrMembers","-password")
                         .populate("arrMessages")
                         .then(newChannel =>{
                             //Cambiamos el sender de su id a su nombre para que se pueda desplegar en el mensaje
@@ -124,17 +145,17 @@ const UserController = {
                             res.status(200).type("application/json").json(newChannel);
                         })
                         .catch(err=>{
-                            res.status(400).send("Error al cambiar el título del canal: "+idChannel +' '+ err);
+                            res.status(400).send("Error al cambiar el título del canal: "+idChannel);
                         })
                 })
                 .catch(err => {
-                    res.status(400).send("Error al obtener datos del canal con el id: "+idChannel +' '+ err);
+                    res.status(400).send("Error al obtener datos del canal con el id: "+idChannel);
                 })
             }
                 
         })
         .catch(error =>{
-            res.status(404).send("No se encontró al usuario " + error)
+            res.status(404).send("No se encontró al usuario " )
         })
        
     },
@@ -173,11 +194,11 @@ const UserController = {
                 res.status(200).type("application/json").json(response);
             })
             .catch(error =>{
-                res.status(400).send('No se pudo agregar el mensaje al canal' + error);
+                res.status(400).send('No se pudo agregar el mensaje al canal');
             })
         })
         .catch(error =>{
-            res.status(400).send('No se pudo crear el mensaje' + error);
+            res.status(400).send('No se pudo crear el mensaje');
         })
     },
 
@@ -200,7 +221,6 @@ const UserController = {
                 //Borramos este canal
                 Channel.findByIdAndDelete(idChannel)
                 .then(channel => {
-                    console.log(channel);
                     //borrar los mensajes que contenía el chat
                     Message.deleteMany({_id:{$in: channel.arrMessages}})
                     .then(
@@ -217,21 +237,22 @@ const UserController = {
                 //quitamos los amigos de la lista y quitamos el id del canal del arreglo de mensajes directos
                 User.findByIdAndUpdate(idUser,{ $pull: { arrFriends: idFriend, arrDirectMessages:idChannel}},{new:true}) 
                 .then(user1 =>{
-                    User.findByIdAndUpdate(idFriend,{ $pull: { arrFriends: idUser, arrDirectMessages:idChannel}},{new:true}) 
+                    User.findByIdAndUpdate(idFriend,{ $pull: { arrFriends: idUser, arrDirectMessages:idChannel}},{new:true})
+                    .select('-password') 
                     .then(user2 =>{
                         res.status(200).type("application/json").json(user2);
                     })
                     .catch(error =>{
-                        res.status(400).send("No se pudo eliminar desde usuario 2 " + error)
+                        res.status(400).send("No se pudo eliminar desde usuario 2 ")
                     })
                 })
                 .catch(error =>{
-                    res.status(400).send("No se pudo eliminar desde usuario 1 " + error)
+                    res.status(400).send("No se pudo eliminar desde usuario 1 ")
                 })
             }
         })
         .catch(error =>{
-            res.status(404).send("No se encontró al usuario " + error)
+            res.status(404).send("No se encontró al usuario ")
         })
 
     }   

@@ -8,10 +8,12 @@ const ChannelController = {
 
     getMessages: (req,res)=>{
         let idChannel = req.params.idChannel;
+        let idUser = req.headers.user;
         Channel.findById(idChannel)
-            .populate("arrMembers")
-            .populate("arrMessages")
-            .then(channel => {
+        .populate("arrMembers","-password")
+        .populate("arrMessages")
+        .then(channel => {
+            if(channel.arrMembers.find(({_id}) => _id == idUser)){
                 //Cambiamos el sender de su id a su nombre para que se pueda desplegar en el mensaje
                 channel.arrMessages.map(msg => {
 
@@ -23,95 +25,127 @@ const ChannelController = {
                     }
                 })
                 res.status(200).type("application/json").json(channel);
-            })
-            .catch(err => {
-                res.status(404).send("Error al obtener datos del canal con el id: "+idChannel +' '+ err);
-            })
+
+            }else{
+                res.status(403).send("No formas parte de este canal");
+            }
+        })
+        .catch(err => {
+            res.status(404).send("Error al obtener datos del canal con el id: "+idChannel);
+        })
+
     },
 
     createChannel: (req,res)=>{
-        console.log(req.params)
         let idGroup = req.params.idGroup;
+        let idUser = req.headers.user;
 
         Group.findById(idGroup)
         .then(grupo =>{
-            //El canal automaticamente se crea con todos los miembros
-            Channel.create({arrMembers:grupo.arrUsers}).then(channel => {
-                //Intentamos asignar el _id del canal al arreglo de canales del grupo
-                Group.findByIdAndUpdate(idGroup, {$push:{arrChannels: channel._id}}, { new : true }).then(group => {
-                    res.status(200).type("application/json").json(channel);
+            if(grupo.arrAdmins.includes(idUser)){
+                //El canal automaticamente se crea con todos los miembros
+                Channel.create({arrMembers:grupo.arrUsers}).then(channel => {
+                    //Intentamos asignar el _id del canal al arreglo de canales del grupo
+                    Group.findByIdAndUpdate(idGroup, {$push:{arrChannels: channel._id}}, { new : true }).then(group => {
+                        res.status(200).type("application/json").json(channel);
+                    })
+                    .catch(err => {
+                        //Si no se puedo guardar al grupo el canal, hay que eliminarlo de la base de datos de canales
+                        Channel.findByIdAndDelete(channel._id);
+                        res.status(404).send("No se encontró el grupo con el id: "+ idGroup);
+                        
+                    });
                 })
-                .catch(err => {
-                    //Si no se puedo guardar al grupo el canal, hay que eliminarlo de la base de datos de canales
-                    Channel.findByIdAndDelete(channel._id);
-                    res.status(404).send("No se encontró el grupo con el id: "+ idGroup);
-                    
-                });
-            })
-            .catch(err =>{
-                res.status(500).send("Error en el servidor " + err);
-            })
+                .catch(err =>{
+                    res.status(500).send("Error en el servidor ");
+                })
+            }
+            else{
+                res.status(403).send('No eres administrador del grupo')
+            }
         }).catch(err=>{
-            res.status(404).send("Error al encontrar el grupo "+err)
+            res.status(404).send("Error al encontrar el grupo ")
         })
     },
 
     deleteChannel: (req,res)=>{
         let idGroup = req.params.idGroup;
         let idChannel = req.params.idChannel;
-        Group.findByIdAndUpdate(idGroup,{$pull:{arrChannels: idChannel}}).then(group => {
-            Channel.findByIdAndDelete(idChannel).then(channel => {
-                console.log(group);
-                console.log(channel);
-                //borrar los mensajes que contenía el chat
-                Message.deleteMany({_id:{$in: channel.arrMessages}})
-                .then(
-                    res.status(200).type("application/json").json(channel)
-                )
-                .catch(err=>{
-                    res.status(400).send('error al eliminar los mensajes del canal');
+        let idUser = req.headers.user;
+        Group.findById(idGroup)
+        .then(group=>{
+            if(group.arrAdmins.includes(idUser)){
+                index = group.arrChannels.indexOf(idChannel);
+                group.arrChannels.splice(index,1);
+                group.save()
+                .then(group => {
+                    Channel.findByIdAndDelete(idChannel).then(channel => {
+                        console.log(group);
+                        console.log(channel);
+                        //borrar los mensajes que contenía el chat
+                        Message.deleteMany({_id:{$in: channel.arrMessages}})
+                        .then(
+                            res.status(200).type("application/json").json(channel)
+                        )
+                        .catch(err=>{
+                            res.status(400).send('error al eliminar los mensajes del canal');
+                        })
+                    })
+                    .catch(err =>{
+                        res.status(404).send("No se encontró el canal con el id: "+ idChannel)});
                 })
-            })
-            .catch(err =>{
-                res.status(404).send("No se encontró el canal con el id: "+ idChannel)});
+                .catch(err => {
+                    res.status(404).send("No se encontró el grupo con el id: "+ idGroup);
+                })
+            }else{
+                res.status(403).send("No eres administrador de este grupo")
+            }
         })
-        .catch(err => {
-            res.status(404).send("No se encontró el grupo con el id: "+ idGroup);
+        .catch(err=>{
+            res.status(404).send("No se encontró el grupo con el id: "+ idGroup)
         })
+
     },
 
     addMemberToChannel: (req,res)=>{
         let email = req.body.email;
         let idChannel = req.params.idChannel;
         let idGroup = req.params.idGroup;
+        let idAdmin = req.headers.user;
         
         //Obtener id con el email
-        User.findOne({email: email})
+        User.findOne({email: email},"-password")
         .then(user=>{
             Group.findById(idGroup)
             .then(group=>{
                 //Validar que forme parte del grupo
-                if(!group.arrUsers.includes(user._id)){
-                    res.status(404).send('El usuario no forma parte del grupo');
+                if(group.arrAdmins.includes(idAdmin)){
+                    if(group.arrUsers.includes(user._id)){
+                        Channel.findById(idChannel)
+                        .then(channel=>{
+                            //Validar que no se duplique
+                            if(!channel.arrMembers.includes(user._id)){
+                                channel.arrMembers.push(user._id)
+                                channel.save()
+                                .then(channel=>{
+                                    res.status(200).type("application/json").json(user)
+                                })
+                                .catch(err=>{res.status(400).send("Error al añadir usuario al canal")})
+                            }
+                            else{
+                                res.status(400).send('Ya esta agregado el usuario al canal')
+                            }
+                        })
+                        .catch(err=>{res.status(404).send('No se encontró al canal con el id '+ idChannel)})
+                    }
+                    else{
+                        res.status(404).send('El usuario no forma parte del grupo');
+                    }
                 }
                 else{
-                    Channel.findById(idChannel)
-                    .then(channel=>{
-                        //Validar que no se duplique
-                        if(channel.arrMembers.includes(user._id)){
-                            res.status(400).send('Ya esta agregado el usuario al canal')
-                        }
-                        else{
-                            channel.arrMembers.push(user._id)
-                            channel.save()
-                            .then(channel=>{
-                                res.status(200).type("application/json").json(user)
-                            })
-                            .catch(err=>{res.status(400).send("Error al añadir usuario al canal")})
-                        }
-                    })
-                    .catch(err=>{res.status(404).send('No se encontró al canal con el id '+ idChannel)})
+                    res.status(403).send('No eres administrador del grupo')
                 }
+
             })
             .catch(err=>{res.status(404).send('No se encontro el grupo con el id '+ idGroup)})
 
@@ -126,19 +160,31 @@ const ChannelController = {
         let email = req.body.email;
         let idChannel = req.params.idChannel;
         let idGroup = req.params.idGroup;
-        console.log(email);
-        User.findOne({email: email})
-        .then(user=>{
-            Channel.findByIdAndUpdate(idChannel, {$pull:{arrMembers:user._id}}, { new : true })
-            .then(channel => {
-                res.status(200).type("application/json").json(user);
-            })
-            .catch(err => {
-                res.status(404).send("No se encontró el canal con el id: "+ idChannel + " "+ err);
-            });
+        let idAdmin = req.headers.user;
+
+        Group.findById(idGroup,"-password")
+        .then(group=>{
+            if(group.arrAdmins.includes(idAdmin)){
+                User.findOne({email: email})
+                .then(user=>{
+                    Channel.findByIdAndUpdate(idChannel, {$pull:{arrMembers:user._id}}, { new : true })
+                    .then(channel => {
+                        res.status(200).type("application/json").json(user);
+                    })
+                    .catch(err => {
+                        res.status(404).send("No se encontró el canal con el id: "+ idChannel);
+                    });
+                })
+                .catch(err =>{
+                    res.status(404).send("No se encontró el usuario con el email "+ email);
+                })
+            }
+            else{
+                res.status(403).send("No eres administrador del grupo")
+            }
         })
         .catch(err =>{
-            res.status(404).send("No se encontró el usuario con el email "+ email + " "+err );
+            res.status(404).send("No se encontró el grupo")
         })
     },
 
@@ -163,7 +209,7 @@ const ChannelController = {
                     })
             }
             else{
-                res.status(401).send('No tienes permisos para cambiar el nombre')
+                res.status(403).send('No tienes permisos para cambiar el nombre')
             }
         })
         .catch(error => {

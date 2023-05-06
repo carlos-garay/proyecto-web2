@@ -5,6 +5,7 @@ import { Message } from 'src/app/shared/interfaces/message';
 import { TextchannelPopulated } from 'src/app/shared/interfaces/textchannelpopulated';
 import { FriendsService } from 'src/app/shared/services/friends.service';
 import { TextchannelService } from 'src/app/shared/services/textchannel.service';
+import { UserService } from 'src/app/shared/services/user.service';
 
 @Component({
   selector: 'app-friendchat',
@@ -25,7 +26,7 @@ export class FriendchatComponent {
 
   
   constructor(private formBuilder:FormBuilder,private route: ActivatedRoute,
-     private friendsService: FriendsService,private router:Router,private txtChannelService: TextchannelService)
+     private friendsService: FriendsService,private router:Router,private txtChannelService: TextchannelService, private userService: UserService)
     { 
       this.formSendDM = formBuilder.group({ 
         message:''
@@ -53,6 +54,7 @@ export class FriendchatComponent {
       let message:string = this.formSendDM.value.message
       this.friendsService.sendDM(this.idChannel,message).subscribe((response:any)=>{
         this.inputValue=""
+        response.sender = this.userService.usuarioActual.name;
         this.channel.arrMessages.push(response)
     })
   }

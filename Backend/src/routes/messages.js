@@ -1,11 +1,12 @@
 const express = require('express')
 const router = express.Router({mergeParams: true})
 const messagesController = require('../controllers/messages')
+const auth = require('../middlewares/auth')
 
 //para estar aqui ya pase por groups/:idGroup/channels/:idChannel/messages
 
 //post
-router.post('/',express.json(),messagesController.crearMensaje)
+router.post('/',auth,express.json(),messagesController.crearMensaje)
 /**
  * @swagger
  * /groups/{idGroup}/channels/{idChannel}/messages:
@@ -25,6 +26,10 @@ router.post('/',express.json(),messagesController.crearMensaje)
  *        description: el id del canal de texto donde se insertara el mensaje
  *        schema:
  *          type: string
+ * 
+ *      - in: header
+ *        name: token
+ *        description: el token del usuario actual
  * 
  *      - in: body
  *        name: bodyInfo
@@ -55,6 +60,8 @@ router.post('/',express.json(),messagesController.crearMensaje)
  *                      "content": "23"
  *                  }
  *               }
+ *      401:
+ *        description: token invalido
  *      400: 
  *        description: no se pudo crear el mensaje 
  */

@@ -1,11 +1,13 @@
 const express = require('express')
 const router = express.Router({mergeParams: true})
 const requestsController = require('../controllers/requests')
+const auth = require('../middlewares/auth')
+
 
 //la ruta para llegar aqui es 
 //users/:idUser/requests
 
-router.post('/',express.json(),requestsController.crearRequest)
+router.post('/',express.json(),auth,requestsController.crearRequest)
 
 /**
  * @swagger
@@ -21,6 +23,10 @@ router.post('/',express.json(),requestsController.crearRequest)
  *        description: el id del usuario en cuya sesion estamos 
  *        schema:
  *          type: string
+ * 
+ *      - in: header
+ *        name: token
+ *        description: el token del usuario actual
  * 
  *      - in: body
  *        name: bodyInfo
@@ -44,11 +50,13 @@ router.post('/',express.json(),requestsController.crearRequest)
  *               }
  *      400: 
  *        description: no se pudo crear el request
+ *      401:
+ *        description: token invalido
  *      404: 
  *        description: no se encontro el usuario al que se manda 
  */
 
-router.get('/',requestsController.getRequests)
+router.get('/',auth,requestsController.getRequests)
 /**
  * @swagger
  * /users/{idUser}/requests:
@@ -62,6 +70,11 @@ router.get('/',requestsController.getRequests)
  *        description: el id del usuario en cuya sesion estamos 
  *        schema:
  *          type: string
+ * 
+ *      - in: header
+ *        name: token
+ *        description: el token del usuario actual
+ * 
  *    responses:
  *      200:
  *        description: se obtuvieron los arreglos de requests exitosamente
@@ -98,13 +111,15 @@ router.get('/',requestsController.getRequests)
  *                   }
  *               ]
  *               }
+ *      401:
+ *        description: token invalido
  *      404: 
  *        description: no se encontró al usuario o sus requests. 
  */
 
 
 
-router.put('/:reqId/accept',requestsController.acceptRequest)
+router.put('/:reqId/accept',auth,requestsController.acceptRequest)
 
 /**
  * @swagger
@@ -124,14 +139,21 @@ router.put('/:reqId/accept',requestsController.acceptRequest)
  *        description: el id del request que se quiere aceptar 
  *        schema:
  *          type: string
+ * 
+ *      - in: header
+ *        name: token
+ *        description: el token del usuario actual
+ * 
  *    responses:
  *      200:
  *        description: objeto del request aceptado
  *      400: 
  *        description: no se pudo aceptar correctamente la solicitud
+ *      401:
+ *        description: token invalido
  */
 
-router.put('/:reqId/decline',requestsController.declineRequest)
+router.put('/:reqId/decline',auth,requestsController.declineRequest)
 
 /**
  * @swagger
@@ -151,11 +173,18 @@ router.put('/:reqId/decline',requestsController.declineRequest)
  *        description: el id del request que se quiere rechazar
  *        schema:
  *          type: string
+ * 
+ *      - in: header
+ *        name: token
+ *        description: el token del usuario actual
+ * 
  *    responses:
  *      200:
  *        description: objeto del request rechazado
  *      400: 
  *        description: no se pudo rechazar correctamente la solicitud
+ *      401:
+ *        description: token invalido
  */
 
 module.exports = router

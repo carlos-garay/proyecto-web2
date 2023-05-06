@@ -1,4 +1,5 @@
 const {Schema, model} = require('mongoose')
+const bcrypt = require('bcrypt');
 
 const userSchema = new Schema({
     name: {
@@ -17,7 +18,7 @@ const userSchema = new Schema({
     token: { //A implementar en el futuro
         type: String, 
         required: true,
-        default: "undefined"
+        default: ""
     },
     //También contará con foto de perfil ya que se determine como se manejarán las imágenes
     image: {
@@ -66,6 +67,13 @@ const userSchema = new Schema({
         required: true
     }
 
+});
+
+
+
+userSchema.pre('save', function(next) {
+    this.password = bcrypt.hashSync(this.password, 10);
+    next();
 });
 
 

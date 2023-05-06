@@ -1,13 +1,14 @@
 const express = require('express')
 const router = express.Router({mergeParams: true})
 const channelsController = require('../controllers/channels')
+const auth = require('../middlewares/auth')
 
 //incluir rutas de mensajes
 const rutasMessages = require('./messages')
 
 router.use('/:idChannel/messages',rutasMessages);
 
-router.get('/:idChannel',channelsController.getMessages);
+router.get('/:idChannel',auth,channelsController.getMessages);
 /**
  * @swagger
  * /groups/{idGroup}/channels/{idChannel}:
@@ -27,6 +28,13 @@ router.get('/:idChannel',channelsController.getMessages);
  *        description: id del canal al cual mostrar los mensajes
  *        schema:
  *          type: string
+ *      - in: header
+ *        name: user
+ *        description: id del usuario que quiere realizar la acción
+ * 
+ *      - in: header
+ *        name: token
+ *        description: el token del usuario actual
  * 
  *    responses:
  *      200:
@@ -77,12 +85,15 @@ router.get('/:idChannel',channelsController.getMessages);
  *                      ],
  *                      "__v": 0
  *                  }
+ *      401:
+ *        description: token invalido
+ * 
  *      404:
  *        description: Error al obtener datos del canal con el id idChannel
  */
 
 
-router.post('/',express.json(),channelsController.createChannel);
+router.post('/',auth,express.json(),channelsController.createChannel);
 /**
  * @swagger
  * /groups/{idGroup}/channels:
@@ -97,10 +108,22 @@ router.post('/',express.json(),channelsController.createChannel);
  *        schema:
  *          type: string
  * 
+ *      - in: header
+ *        name: user
+ *        description: id del usuario que quiere realizar la acción 
+ * 
+ *      - in: header
+ *        name: token
+ *        description: el token del usuario actual 
  * 
  *    responses:
  *      200:
  *        description: objeto del canal creado
+ * 
+ *      401:
+ *        description: token invalido
+ *      403:
+ *        description: No eres administrador del grupo
  *      404:
  *        description: No se encontró el grupo con el id idGrupo
  *      500: 
@@ -108,9 +131,7 @@ router.post('/',express.json(),channelsController.createChannel);
  */
 
 
-
-
-router.put('/:idChannel/addMember',express.json(),channelsController.addMemberToChannel);
+router.put('/:idChannel/addMember',auth,express.json(),channelsController.addMemberToChannel);
 /**
  * @swagger
  * /groups/{idGroup}/channels/{idChannel}/addMember:
@@ -140,16 +161,29 @@ router.put('/:idChannel/addMember',express.json(),channelsController.addMemberTo
  *          example:
  *            { "email": "otro1@test.com"}
  * 
+ *      - in: header
+ *        name: user
+ *        description: id del usuario que quiere realizar al acción
+ * 
+ *      - in: header
+ *        name: token
+ *        description: el token del usuario actual
+ * 
  *    responses:
  *      200:
  *        description: objeto del usuario que se agrego al canal
+ * 
+ *      401:
+ *        description: token invalido
  *      404:
  *        description: No se encontró el canal con el id idChannel
+ *      403: 
+ *        description: No eres administrador del grupo
  */
 
 
 
-router.put('/:idChannel/removeMember',express.json(),channelsController.removeMemberFromChannel);
+router.put('/:idChannel/removeMember',auth,express.json(),channelsController.removeMemberFromChannel);
 /**
  * @swagger
  * /groups/{idGroup}/channels/{idChannel}/removeMember:
@@ -178,16 +212,29 @@ router.put('/:idChannel/removeMember',express.json(),channelsController.removeMe
  *          example:
  *            { "email": "otro1@test.com"}
  * 
+ *      - in: header
+ *        name: user
+ *        description: id del usuario que quiere realizar al acción
+ * 
+ *      - in: header
+ *        name: token
+ *        description: el token del usuario actual
+ * 
+ * 
  *    responses:
  *      200:
  *        description: objeto del usuario que se eliminó del canal
+ *      401:
+ *        description: token invalido
+ *      403:
+ *        description: no eres administrador del grupo
  *      404:
  *        description: No se encontró el canal con el id idChannel
  */
 
 
 
-router.delete('/:idChannel',channelsController.deleteChannel);
+router.delete('/:idChannel',auth,channelsController.deleteChannel);
 /**
  * @swagger
  * /groups/{idGroup}/channels/{idChannel}:
@@ -207,18 +254,29 @@ router.delete('/:idChannel',channelsController.deleteChannel);
  *        description: id del canal que se va a eliminar
  *        schema:
  *          type: string
+ * 
+ *      - in: header
+ *        name: user
+ *        description: id del usuario que quiere realizar la acción
  *          
+ *      - in: header
+ *        name: token
+ *        description: el token del usuario actual
  * 
  *    responses:
  *      200:
  *        description: objeto del canal que se eliminó
+ *      401:
+ *        description: token invalido
  *      404:
  *        description: No se encontró el canal con el id idChannel
+ *      403:
+ *        description: no eres administrador del grupo
  *      400:
  *        description: error al eliminar los mensajes del canal
  */
 
-router.put('/:idChannel/name',express.json(),channelsController.changeChannelName);
+router.put('/:idChannel/name',auth,express.json(),channelsController.changeChannelName);
 
 /**
  * @swagger
@@ -240,6 +298,10 @@ router.put('/:idChannel/name',express.json(),channelsController.changeChannelNam
  *        description: el id del canal al que queremos cambiar el nombre 
  *        schema:
  *          type: string
+ * 
+ *      - in: header
+ *        name: token
+ *        description: el token del usuario actual
  *
  *      - in: body
  *        name: bodyInfo
@@ -259,11 +321,14 @@ router.put('/:idChannel/name',express.json(),channelsController.changeChannelNam
  *    responses:
  *      200:
  *        description: objeto del canal que cambió de nombre
- *
+ * 
+ *      401:
+ *        description: token invalido
+ * 
  *      400: 
  *        description: no pudo cambiarse el nombre
  * 
- *      401: 
+ *      403: 
  *        description: no eres administrador por lo tanto no puedes cambiar el nombre
  *      
  *      404:
