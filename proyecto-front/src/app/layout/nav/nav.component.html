@@ -1,6 +1,6 @@
 <div class="nav">
 
-  <mat-list id="listTop">
+  <mat-list id="listTop" *ngIf="logedIn">
         <mat-list-item>
           <button mat-button class="mat-list-item" routerLink="/directMessages">FRIENDS</button>
         </mat-list-item>
@@ -12,7 +12,7 @@
   
       <mat-divider></mat-divider>
   
-      <mat-list id="listGroups">
+      <mat-list id="listGroups" *ngIf="logedIn">
   
         <mat-list-item *ngFor="let item of usuario.arrGroups">
           <button mat-button class="mat-list-item" (click)="goToGroup(item._id)">{{item.title}}</button>
@@ -23,8 +23,8 @@
       
       <mat-divider></mat-divider>
   
-      <mat-list id="listFixedButtons">
-        <mat-list-item>
+      <mat-list id="listFixedButtons" >
+        <mat-list-item *ngIf="logedIn">
           <!--al picarle al add se muestra un pop up con form de nombre del grupo -->
   
           <button mat-mini-fab color="primary" class="mat-list-item" (click)="openGroupDialog()">
@@ -47,16 +47,16 @@
       User: {{usuario.name}}
     </div>
     <button mat-menu-item [matMenuTriggerFor]="Sesion">Sesion</button>
-    <button mat-menu-item [matMenuTriggerFor]="Modificaciones">Modificaciones</button>
+    <button mat-menu-item [matMenuTriggerFor]="Modificaciones" *ngIf="logedIn">Modificaciones</button>
   </mat-menu>
   
   <mat-menu #Sesion="matMenu">
-    <button mat-menu-item routerLink="/login">Login</button>
-    <button mat-menu-item routerLink="/register">Register</button>
-    <button mat-menu-item (click)="logOut()">Cerrar Sesion</button>
+    <button mat-menu-item routerLink="/login" *ngIf="!logedIn">Login</button>
+    <button mat-menu-item routerLink="/register" *ngIf="!logedIn">Register</button>
+    <button mat-menu-item (click)="logOut()" *ngIf="logedIn">Cerrar Sesion</button>
   </mat-menu>
   
-  <mat-menu #Modificaciones="matMenu">
+  <mat-menu #Modificaciones="matMenu" >
     <button mat-menu-item routerLink="/changeName">Cambiar Usuario</button>
     <button mat-menu-item routerLink="/changePassword">Cambiar Contraseña</button>
   </mat-menu>

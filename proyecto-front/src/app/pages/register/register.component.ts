@@ -46,7 +46,7 @@ export class RegisterComponent {
       // })
       this.userService.registerUser(name,email,password).subscribe({
         next:(response:any)=>{
-          localStorage.setItem('idUser',response._id);
+          this.userService.setId(response._id)
           this.authService.setToken(response.token);
           this.userService.loadUser(response._id)
           this.router.navigate(['/'])

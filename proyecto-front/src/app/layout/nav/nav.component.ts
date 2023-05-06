@@ -7,6 +7,7 @@ import { Userpopulated } from 'src/app/shared/interfaces/userpopulated';
 
 import { MatDialog } from '@angular/material/dialog';
 import { NewGroupComponent } from 'src/app/modals/new-group/new-group.component';
+import { AuthService } from 'src/app/shared/services/auth.service';
 
 @Component({
   selector: 'app-nav',
@@ -14,14 +15,21 @@ import { NewGroupComponent } from 'src/app/modals/new-group/new-group.component'
   styleUrls: ['./nav.component.scss']
 })
 export class NavComponent implements OnInit {
-  public usuario:Userpopulated 
+  public usuario:Userpopulated; 
+  logedIn: boolean = false;
   //aqui llamamos al user controller y cargamos el valor 
-  constructor(private userService:UserService,private router: Router, private matDialog:MatDialog){ 
+  constructor(private userService:UserService,private router: Router, private matDialog:MatDialog, private authService: AuthService){ 
     this.usuario = userService.getUser();
     userService.observableUser.subscribe((user : Userpopulated)=>{
       this.usuario = user;
     })
+
+    this.authService.authStatus.subscribe((status: boolean)=>{
+      this.logedIn = status;
+    })
   }
+
+
 
   ngOnInit(): void {
     //traer el usuario 

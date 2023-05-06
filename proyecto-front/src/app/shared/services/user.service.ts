@@ -184,4 +184,9 @@ export class UserService {
     let url:string = environment.apiUrl+'users/'+idUser+'/name'
     return this.httpClient.put(url,body,{headers})
   }
+
+  setId(id:string){
+    localStorage.setItem('idUser',id);
+  }
+
 }

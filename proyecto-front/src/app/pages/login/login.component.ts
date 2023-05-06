@@ -44,7 +44,7 @@ export class LoginComponent {
     this.userService.loginUser(email,password).subscribe({
       next:(response:any)=>{
         console.log(response)
-        localStorage.setItem('idUser',response._id);
+        this.userService.setId(response._id)
         this.authService.setToken(response.token);
         this.userService.loadUser(response._id)
         //hacer que desde nav se ejecute la funcion getUser 
