@@ -16,12 +16,15 @@ import { Audiochannel } from 'src/app/shared/interfaces/audiochannel';
 import { Group } from 'src/app/shared/interfaces/group';
 import { ShowErrorService } from 'src/app/shared/services/show-error.service';
 
+import { io } from 'socket.io-client';
+import { environment } from 'src/environments/environment';
+
 @Component({
   selector: 'app-channellist',
   templateUrl: './channellist.component.html',
   styleUrls: ['./channellist.component.scss']
 })
-export class ChannellistComponent{
+export class ChannellistComponent implements OnInit{
   //grupo :grouppopulated
   //Eventos para canales de texto
   @Output() addChannelEvent = new EventEmitter<Textchannel>();
@@ -52,7 +55,12 @@ export class ChannellistComponent{
   @ViewChild('menuTrigger' , { read: MatMenuTrigger }) menuTrigger!: MatMenuTrigger; 
   @ViewChild('menuTrigger2', { read: MatMenuTrigger }) menuTrigger2!: MatMenuTrigger; 
   
-  
+  socket :any
+
+  ngOnInit(): void {
+    this.socket = io(environment.apiUrl)
+  }
+
   constructor(private route: ActivatedRoute,private router:Router, private groupService:GroupService, 
     public dialog: MatDialog, private userService: UserService,
     private showErrorService:ShowErrorService) {   } 
@@ -179,6 +187,14 @@ export class ChannellistComponent{
     this.groupService.addUserToGroup(this.grupo._id,email).subscribe({
       next:(response:any)=>{
         this.addUserEvent.emit(response)
+
+        //este objeto es el que mandaremos al controlador de sockets
+        let obj = {
+          group:this.grupo,
+          email:email
+        }
+        this.socket.emit('addUserToGroup',obj)
+
       },
       error: (err: HttpErrorResponse)=>{
         this.showErrorService.openError(err.error)
