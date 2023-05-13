@@ -44,8 +44,11 @@ export class GroupvoicechannelComponent implements OnDestroy, OnInit {
     //cuando llegue una toma de voz 
     this.socket.on('send',(data:any)=>{
       //mute en falso es que si uiere escuchar 
+      console.log('recibiendo evento de voz ')
+      //console.log(data)
       if(!this.userStatus.mute){ //si el usuario no tiene el canal silenciado
         var audio = new Audio(data)
+        //console.log(audio)
         audio.play()
       }
     })

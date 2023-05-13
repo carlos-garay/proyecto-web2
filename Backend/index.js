@@ -101,15 +101,15 @@ mongoose.connect(mongoUrl,{autoIndex: false})
       //necesitamos modificar el data que trae este carnal 
       socket.on('voice', (dataIn) =>{
         console.log('voiceman')
-        console.log(dataIn)
+        //console.log(dataIn)
         var data =dataIn.data
-        var idChannel = data.idChannel
+        var idChannel = dataIn.idChannel
         var newData = data.split(";");
         newData[0] = "data:audio/ogg;";
         newData = newData[0] + newData[1];
         //socket.broadcast.to(idChannel).emit("send", newData);
         socket.to(idChannel).emit('send',newData)
-
+        //console.log('enviando' + newData + ' a el canal ' + idChannel)
         //esta parte no se va a ocupar porque no voy a implementar socketStatus
         // for (const id in socketsStatus) {
     
