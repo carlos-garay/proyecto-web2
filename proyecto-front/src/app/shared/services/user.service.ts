@@ -18,6 +18,7 @@ export class UserService {
     email: '',
     password: '',
     token: '',
+    image: 'noimage',
     arrGroups: [],
     arrFriends: [],
     arrRequestsSent: [],
@@ -136,7 +137,6 @@ export class UserService {
     .set('user',this.usuarioActual._id )
     .set('token',this.usuarioActual.token);
     //body va a traer los valores recuperados del form 
-    //el id debe subirse al sessionman desde aqui cuando se obtiene, lo que se retorna sera el id 
     let url:string = environment.apiUrl+'users/login'
     return this.httpClient.post(url, body, { headers })
   }
@@ -151,6 +151,7 @@ export class UserService {
       name: '',
       email: '',
       token: '',
+      image: 'noimage',
       arrGroups: [],
       arrFriends: [],
       arrRequestsSent: [],
@@ -165,7 +166,7 @@ export class UserService {
     let body = {
       password: password
     }
-    let idUser:string = this.usuarioActual._id //Este men se va a traer del session storage
+    let idUser:string = this.usuarioActual._id 
     const headers = new HttpHeaders().set('Content-Type', 'application/json')
     .set('user',this.usuarioActual._id )
     .set('token',localStorage.getItem('token') || '');
@@ -177,7 +178,7 @@ export class UserService {
     let body = {
       name: name
     }
-    let idUser:string = this.usuarioActual._id //Este men se va a traer del session storage
+    let idUser:string = this.usuarioActual._id
     const headers = new HttpHeaders().set('Content-Type', 'application/json')
     .set('user',this.usuarioActual._id )
     .set('token',localStorage.getItem('token') || '');
@@ -187,6 +188,21 @@ export class UserService {
 
   setId(id:string){
     localStorage.setItem('idUser',id);
+  }
+
+  updateProfilePicture(formData:FormData, urlFile: any){
+    let idUser:string = this.usuarioActual._id 
+    const headers= new HttpHeaders()
+    .set('user',this.usuarioActual._id )
+    .set('token',localStorage.getItem('token') || '')
+    let url:string = environment.apiUrl+'users/'+idUser+'/image'
+
+
+    this.httpClient.post(url,formData,{headers}).subscribe((response:any)=>{
+      this.usuarioActual.image = urlFile;
+    })
+    
+  
   }
 
 }

@@ -6,13 +6,13 @@ export interface User {
     email:string,
     password?:string,
     token:string,
+    image:string,
     arrGroups:string[],
     arrFriends:string[],
     arrRequestsSent:string[],
     arrRequestsReceived:string[],
     arrDirectMessages:string[],
-    __v?:number,
-    image?:string
+    __v?:number
 }
 
 

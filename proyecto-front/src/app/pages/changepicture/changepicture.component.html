@@ -1,0 +1,21 @@
+CAMBIO FOTO DE PERFIL
+
+<input type="file" class="file-input" name="file"
+       (change)="onFileSelected($event)" #fileUpload>
+
+<div class="file-upload">
+
+   {{fileName || "No file uploaded yet."}}
+
+    <button mat-mini-fab color="primary" class="upload-btn"
+      (click)="fileUpload.click()">
+        <mat-icon>attach_file</mat-icon>
+    </button>
+</div>
+
+<img src="http://localhost:3000/Backend/uploads/pogwin.png_1683944633705.png">
+
+<mat-card class="example-card">
+  <div mat-card-avatar style="background-image: url('../../../../../Backend/uploads/pogwin.png_1683944633705.png'); background-size: cover;"></div>
+
+</mat-card>

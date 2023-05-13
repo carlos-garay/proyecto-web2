@@ -524,4 +524,40 @@ router.delete('/:idUser/friends/:idFriend/remove',auth,usersController.removeFri
  *        description: error al eliminar del arreglo de amigos o el chat 
  */
 
+
+
+//Carga de archivos 
+const multer = require('multer')
+
+
+const multerStorage = multer.diskStorage({
+  destination: (req,file,cb) =>{
+      cb(null,'./uploads')
+  }, //establece el nombre de la carpeta
+  filename: (req,file,cb) => {
+      let nombre = new Date().getTime();
+      nombre = file.originalname +'_'+nombre;
+      const extension = file.originalname.split('.').pop();
+      console.log(file.originalname)
+      cb(null,`${nombre}.${extension}`); // el nombre del archivo
+  }
+});
+
+const filtroArchivoImg = (req, file, cb) =>{
+  const flag = file.mimetype.startsWith('image');
+  cb(null, flag);
+}
+
+const filtroArchivoChat = (req,file,cb)=>{
+  const flag = file.mimetype.startsWith('image') || file.mimetype == 'application/pdf' || 
+  file.mimetype == 'application/vnd.openxmlformatsofficedocument.wordprocessingml.document';
+  cb(null,flag)
+}
+
+const upload = multer({storage:multerStorage, fileFilter: filtroArchivoImg});
+
+
+router.post('/:idUser/image',auth,upload.single('file'),usersController.uploadProfilePicture);
+
+
 module.exports = router

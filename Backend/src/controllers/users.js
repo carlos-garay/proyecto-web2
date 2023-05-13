@@ -16,8 +16,6 @@ const UserController = {
         objectUser['token']= 'placeholder'
         let user = User(objectUser);
         user.save().then((user) =>{
-            console.log(process.env.TOKEN_KEY)
-            console.log("still good")
             token = jwt.sign({email:req.body.email},process.env.TOKEN_KEY,{expiresIn: "5h"})
             let objUserId = {_id:user._id, token:token}
             res.status(201).type("application/json").json(objUserId);
@@ -37,7 +35,6 @@ const UserController = {
             // cuando concuerdan generamos el token que se guardará en el localstorage
             if (bcrypt.compareSync(password, user.password)) {
                 try{
-                    console.log(process.env.TOKEN_KEY)
                     token = jwt.sign({email:email},process.env.TOKEN_KEY,{expiresIn: "5h"})
                     let objUserId = {_id:user._id, token:token}
                     res.status(201).type("application/json").json(objUserId);
@@ -121,7 +118,6 @@ const UserController = {
     loadChannel: (req,res) => { 
         let idUser = req.params.idUser;
         let idFriend = req.params.idFriend;
-        console.log(idUser);
         //Obtenemos al usuario actual
         User.findById(idUser)
         .populate("arrDirectMessages")
@@ -255,7 +251,26 @@ const UserController = {
             res.status(404).send("No se encontró al usuario ")
         })
 
-    }   
+    },   
+
+    uploadProfilePicture: (req,res)=>{
+        let idUser = req.params.idUser;
+
+        let filename = req.file.filename;
+
+        
+        User.findByIdAndUpdate(idUser,{image: filename},{new:true}) 
+        .then(user =>{
+            res.status(200).send({image:filename});
+        })
+        .catch(error =>{
+            res.status(404).send("No se encontró al usuario");
+        })
+
+    }
+
+
+
 }
 
 module.exports = UserController
