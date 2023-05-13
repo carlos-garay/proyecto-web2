@@ -6,7 +6,7 @@ export interface User {
     email:string,
     password?:string,
     token:string,
-    image:string,
+    image:string | null | FormDataEntryValue,
     arrGroups:string[],
     arrFriends:string[],
     arrRequestsSent:string[],

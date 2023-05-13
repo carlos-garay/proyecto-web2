@@ -529,7 +529,6 @@ router.delete('/:idUser/friends/:idFriend/remove',auth,usersController.removeFri
 //Carga de archivos 
 const multer = require('multer')
 
-
 const multerStorage = multer.diskStorage({
   destination: (req,file,cb) =>{
       cb(null,'./uploads')
@@ -554,7 +553,7 @@ const filtroArchivoChat = (req,file,cb)=>{
   cb(null,flag)
 }
 
-const upload = multer({storage:multerStorage, fileFilter: filtroArchivoImg});
+const upload = multer({storage:multerStorage, fileFilter: filtroArchivoImg, limits: {fieldSize: 25*1024*1024}});
 
 
 router.post('/:idUser/image',auth,upload.single('file'),usersController.uploadProfilePicture);

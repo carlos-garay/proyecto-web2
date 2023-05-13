@@ -7,7 +7,7 @@ export interface Userpopulated {
     email:string,
     password?:string,
     token:string,
-    image:string,
+    image:string | null | FormDataEntryValue,
     arrGroups:Group[], //este es grupo en lugar de string
     arrFriends:string[],
     arrRequestsSent:string[],

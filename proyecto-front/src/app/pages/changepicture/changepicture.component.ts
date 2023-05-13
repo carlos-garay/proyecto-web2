@@ -1,5 +1,4 @@
 import { Component } from '@angular/core';
-import { DomSanitizer } from '@angular/platform-browser';
 import { UserService } from 'src/app/shared/services/user.service';
 
 @Component({
@@ -10,24 +9,30 @@ import { UserService } from 'src/app/shared/services/user.service';
 export class ChangepictureComponent {
   
   fileName: string = '';
-  constructor(private userService:UserService, private sanitizer: DomSanitizer){
-
+  url: any = '';
+  constructor(private userService:UserService){
+    this.url = userService.usuarioActual.image;
   }
+
+  
   onFileSelected(event:any) {
     const file:File = event.target.files[0];
 
     if (file) {
       this.fileName = file.name;
       console.log(file.name);
-      let url = this.sanitizer.bypassSecurityTrustUrl(
-        window.URL.createObjectURL(file)
-      )
-      const formData = new FormData();
-      formData.append("file", file);
-      console.log("La url")
-      console.log(url);
+      let reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = (_event)=>{
+        this.url = reader.result;
+        const formData = new FormData();
+        formData.append("file", file);
+        formData.append("imgUrl",this.url);
+        console.log(this.url)
+        this.userService.updateProfilePicture(formData)
+      }
       
-      this.userService.updateProfilePicture(formData, url)
+      
     }
   }
 

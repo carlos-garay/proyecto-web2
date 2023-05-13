@@ -190,7 +190,7 @@ export class UserService {
     localStorage.setItem('idUser',id);
   }
 
-  updateProfilePicture(formData:FormData, urlFile: any){
+  updateProfilePicture(formData:FormData){
     let idUser:string = this.usuarioActual._id 
     const headers= new HttpHeaders()
     .set('user',this.usuarioActual._id )
@@ -199,7 +199,7 @@ export class UserService {
 
 
     this.httpClient.post(url,formData,{headers}).subscribe((response:any)=>{
-      this.usuarioActual.image = urlFile;
+      this.usuarioActual.image = formData.get('imgUrl');
     })
     
   
