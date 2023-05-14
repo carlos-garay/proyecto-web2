@@ -71,17 +71,7 @@ const RequestController = {
                     usuario.arrRequestsReceived[index].sender = objSender.name 
                     usuario.arrRequestsReceived[index].image = objSender.image
                 }
-
-
-                usuario.arrRequestsReceived.map(request =>{
-                    request.receiver = usuario.name;
-                    request.image = usuario.image;
-                })    
-
-                usuario.arrRequestsSent.map(request =>{
-                    request.sender = usuario.name;
-                    request.image = usuario.image;
-                })
+                
 
                 for (let request of usuario.arrRequestsSent){
                     objReceiver = await User.findById(request.receiver)
