@@ -138,7 +138,16 @@ const UserController = {
                         .populate("arrMessages")
                         .then(newChannel =>{
                             //Cambiamos el sender de su id a su nombre para que se pueda desplegar en el mensaje
-                            newChannel.arrMessages.map(msg => msg.sender = newChannel.arrMembers.find(({_id}) => _id == msg.sender).name)
+                            newChannel.arrMessages.map(msg => {
+                                
+                                let foundSender = newChannel.arrMembers.find(({_id}) => _id == msg.sender)
+                                if(foundSender){
+                                    msg.sender = foundSender.name;
+                                    msg.image = foundSender.image;
+                                }else{
+                                    msg.sender = "Usuario eliminado";
+                                }
+                            })
                             res.status(200).type("application/json").json(newChannel);
                         })
                         .catch(err=>{
