@@ -73,7 +73,15 @@ export class ChannellistComponent implements OnInit{
   goVoiceChannel(id:string){
     this.menuTrigger2.closeMenu();
     let url:string = '/group/'+this.grupo._id+'/voice/'+id
-    this.router.navigate([url])
+
+    //current implementation
+    // this.router.navigate([url])
+
+    //fix para el cambio de voice chat a voice chat
+    this.router.navigateByUrl('/group/'+this.grupo._id,{skipLocationChange:true})
+    .then(()=>{
+      this.router.navigate([url])
+    })
   }
 
   deleteGroup(){
