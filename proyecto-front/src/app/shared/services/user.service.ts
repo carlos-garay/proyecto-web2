@@ -18,7 +18,7 @@ export class UserService {
     email: '',
     password: '',
     token: '',
-    image: 'noimage',
+    image: 'noimage.jpg',
     arrGroups: [],
     arrFriends: [],
     arrRequestsSent: [],
@@ -151,7 +151,7 @@ export class UserService {
       name: '',
       email: '',
       token: '',
-      image: 'noimage',
+      image: 'noimage.jpg',
       arrGroups: [],
       arrFriends: [],
       arrRequestsSent: [],
@@ -197,10 +197,12 @@ export class UserService {
     .set('token',localStorage.getItem('token') || '')
     let url:string = environment.apiUrl+'users/'+idUser+'/image'
 
-    this.httpClient.post(url,formData,{headers}).subscribe((response:any)=>{
-      this.usuarioActual.image = response.imgUrl;
-      console.log(this.usuarioActual.image);
-    })
+    return this.httpClient.post(url,formData,{headers})
+
+    // await this.httpClient.post(url,formData,{headers}).subscribe((response:any)=>{
+    //   this.usuarioActual.image = response.imgUrl;
+    //   console.log(this.usuarioActual.image);
+    // })
   }
 
 }

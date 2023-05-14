@@ -2,13 +2,31 @@
     display: none;
 }
 
-.example-header-image {
-    background-size: cover;
-  }
+.file-upload {
+    justify-content: center;
+    align-items: center;
+}
+
+img{
+    width: 250px;
+    height: 250px;
+}
 
 .pictureChange{
     height: 100%;
     display: flex;
     justify-content: center;
     align-items: center;
+}
+
+.avatarContainer{
+    align-content: center;
+}
+
+.mat-card-avatar{
+    transform: scale(2);
+}
+
+label{
+    font-size: large;
 }

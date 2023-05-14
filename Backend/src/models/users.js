@@ -23,7 +23,7 @@ const userSchema = new Schema({
     image: {
         type: String,
         required: true,
-        default: "noimage"
+        default: "noimage.jpg"
     },
     
     arrGroups: {

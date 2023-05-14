@@ -27,11 +27,11 @@ export class ChangepictureComponent {
       this.fileName = file.name;
       const formData = new FormData();
       formData.append("file", file);
-      this.userService.updateProfilePicture(formData)
-      setTimeout(() => {
-        this.url = environment.apiUrl+"image/"+this.userService.usuarioActual.image;
-      }, 1000);
-
+      (await this.userService.updateProfilePicture(formData)).subscribe((response:any)=>{
+        this.url = environment.apiUrl+"image/"+response.imgUrl;
+        this.userService.usuarioActual.image = response.imgUrl;
+      })
+        
     }
   }
 
