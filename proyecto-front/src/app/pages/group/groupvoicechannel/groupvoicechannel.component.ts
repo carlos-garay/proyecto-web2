@@ -36,9 +36,29 @@ export class GroupvoicechannelComponent implements OnDestroy, OnInit {
     this.socket.emit('joinVoice',{idChannel:this.idChannel})
 
     //estar en espera de la informacion de otros usuarios cuando se unan 
-    this.socket.on('getuserInfo',(data:any)=>{
-      
+    this.socket.on('getUserInfo',(data:any)=>{
+      let otherUserStatus = data
+      let id = otherUserStatus.userId
 
+      const hasObject = this.listUsers.some(obj => obj.userId === id);
+
+      if(hasObject){
+        //realizar comparacion si es igual a ver si tenemos qu ecambiar las cosas 
+
+        //falta implementar 
+      }
+      else{
+        this.listUsers.push(otherUserStatus)
+      }
+
+    })
+    this.socket.on('userLeft',(data:any)=>{
+      console.log(data)
+      console.log(this.listUsers)
+      let idUser = data
+      console.log('se salio '+idUser)
+      //sacar al usuario que se va a salir del arreglo
+      this.listUsers = this.listUsers.filter(obj => obj.userId !== idUser);
     })
 
     //cuando llegue una toma de voz 
@@ -55,17 +75,24 @@ export class GroupvoicechannelComponent implements OnDestroy, OnInit {
 
     this.mainFunction(1000); //llamarla con tiempo de 1000 ms 
 
-    //llamar la funcion que actualiza
-    setTimeout(()=>{
-      //this.sendUserInfo()
-    },3000)
   }
 
 
   ngOnDestroy(): void {
+    
     this.enabled = false
-    this.socket.emit('leaveVoice',{idChannel:this.idChannel})
+    
     //emitir que me saquen de la lista de usuarios conectados
+    setTimeout(()=>{
+      let obj = {
+        idChannel:this.idChannel,
+        idUser:this.userService.getUser()._id
+      }
+      this.socket.emit('leaveVoice',obj)
+    },1010)
+
+
+    console.log('destruyendo componente voiceChannel')
   }
 
   //funcion principal 
@@ -107,20 +134,27 @@ export class GroupvoicechannelComponent implements OnDestroy, OnInit {
         madiaRecorder.start();
   
         if(this.enabled==true){
-          setTimeout(function () {
+          setTimeout(() => {
             madiaRecorder.stop();
+            this.sendUserInfo(); //cada segundo vamos a mandar informacion actualizada de los miembros del canal de voz 
           }, time);
         }
         else{
           console.log('turbo loop ends :D')
+          let obj = {
+            idChannel:this.idChannel,
+            userStatus:this.userStatus
+          }
+          //this.socket.emit('leaveVoice',obj)
         }
 
       });
 
 
   
-      setTimeout(function () {
+      setTimeout(() => {
         madiaRecorder.stop();
+        this.sendUserInfo();
       }, time);
     });
   }
@@ -129,9 +163,9 @@ export class GroupvoicechannelComponent implements OnDestroy, OnInit {
   sendUserInfo(){
     let obj = {
       idChannel:this.idChannel,
-
+      userStatus:this.userStatus
     }
-    this.socket.emit('nombre',obj)
+    this.socket.emit('userInfo',obj)
   }
 
   toggleMicrophone(){ //togglear tu microfono para no hablar 

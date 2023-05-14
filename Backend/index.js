@@ -94,8 +94,11 @@ mongoose.connect(mongoUrl,{autoIndex: false})
 
       socket.on('leaveVoice',(data)=>{ //desconectarse del canal de voz 
         let idChannel = data.idChannel
+        let idUser = data.idUser
         console.log('se salieron de'+idChannel)
+        socket.to(idChannel).emit('userLeft',idUser)
         socket.leave(idChannel)
+        
       })
 
       //necesitamos modificar el data que trae este carnal 
@@ -120,10 +123,11 @@ mongoose.connect(mongoUrl,{autoIndex: false})
     
       });
 
-      //transmitir constantemente la lista de miembros
-      socket.on("userInformation", (data) => {
-
-        socket.to(idChannel).emit('getUserInfo',newData)
+      //transmitir constantemente la informacion de cada miembro 
+      socket.on("userInfo", (data) => {
+        idChannel = data.idChannel
+        userinfo = data.userStatus
+        socket.to(idChannel).emit('getUserInfo',userinfo)
       });
     })
 
