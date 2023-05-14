@@ -42,6 +42,12 @@ export class GroupService {
     return this.httpService.get(url)
   }
 
+  getAudioChannel(idGroup:string,idChannel:string){
+    //groups/:idGroup/channels/:idChannel
+    let url: string = environment.apiUrl+'groups/'+idGroup+'/audioChannels/'+idChannel
+    return this.httpService.get(url)
+  }
+
   sendMessage(idGroup:string, idChannel:string,content:string){
 
     let idUser:string = this.userService.getUser()._id

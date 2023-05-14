@@ -1,1 +1,44 @@
-<p>groupvoicechannel works!</p>
+<h2>{{channel.title}}</h2>
+
+<div class="listaUsuarios">
+    <ng-container *ngFor="let item of listUsers">
+        <mat-card class="cardUsuario">
+            <mat-card-content>
+                <div class="nombreUsuario">{{item.username}}</div>
+                <mat-icon *ngIf="item.microphone">mic</mat-icon>
+                <mat-icon *ngIf="!item.microphone">mic_off</mat-icon>
+                <mat-icon *ngIf="!item.mute">headset</mat-icon>
+                <mat-icon *ngIf="item.mute">volume_off</mat-icon>
+            </mat-card-content>
+        </mat-card>
+    </ng-container>
+    <!-- <mat-card class="cardUsuario">
+        <mat-card-content>
+            <div class="nombreUsuario">NombreEpic</div>
+            <mat-icon *ngIf="this.userStatus.microphone">mic</mat-icon>
+            <mat-icon *ngIf="!this.userStatus.microphone">mic_off</mat-icon>
+            <mat-icon *ngIf="!this.userStatus.mute">headset</mat-icon>
+            <mat-icon *ngIf="this.userStatus.mute">volume_off</mat-icon>
+        </mat-card-content>
+    </mat-card> -->
+   
+
+
+</div>
+<div class="controlbar">
+    <mat-card id="cardControles">
+        <mat-card-header>
+          <mat-card-title>Controlador Chat Voz</mat-card-title>
+        </mat-card-header>
+        <mat-card-actions>
+            <button mat-icon-button color="accent" (click)="toggleMicrophone()">
+                <mat-icon *ngIf="this.userStatus.microphone">mic</mat-icon>
+                <mat-icon *ngIf="!this.userStatus.microphone">mic_off</mat-icon>
+              </button>
+            <button mat-icon-button color="accent" (click)="toggleMute()">
+                <mat-icon *ngIf="!this.userStatus.mute">headset</mat-icon>
+                <mat-icon *ngIf="this.userStatus.mute">volume_off</mat-icon>
+            </button>
+        </mat-card-actions>
+      </mat-card>
+</div>

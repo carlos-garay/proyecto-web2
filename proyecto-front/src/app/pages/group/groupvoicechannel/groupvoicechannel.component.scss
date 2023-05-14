@@ -1,0 +1,24 @@
+.listaUsuarios{
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.cardUsuario{
+    margin-top: 10px;
+    margin: 5px;
+    flex-basis: 40%;
+}
+
+p{
+    width: 100%;
+    height: 20px;
+}
+
+.nombreUsuario{
+    font-size: larger;
+}
+
+mat-card-container{
+    display: flex;
+}
+

@@ -154,70 +154,16 @@ const audioChannelController = {
         })
     },
 
-    //Cambiar a conseguir el objeto del usuario
-    enterCall: (req,res)=>{
-        let idUser = req.body.idUser;
-        let idChannel = req.params.idChannel;
-        let idGroup = req.params.idGroup;
-    
-        Group.findById(idGroup)
-        .then(group=>{
-            //Validar que forme parte del grupo
-            if(group.arrUsers.includes(idUser)){
-                audioChannel.findById(idChannel)
-                .then(channel=>{
-                    if(channel.arrMembers.find(({_id}) => _id == idUser)){
-                        //Validar que no se duplique
-                        if(channel.arrInCall.includes(idUser)){
-                            res.status(400).send('Ya esta agregado el usuario a la llamada')
-                        }
-                        else{
-                            channel.arrInCall.push(idUser)
-                            channel.save()
-                            .then(channel=>{
-                                res.status(200).type("application/json").json(channel)
-                            })
-                            .catch(err=>{res.status(400).send("Error al añadir usuario a la llamada")})
-                        }
-                    }
-                    else{
-                        res.status(403).send("No formas parte de este canal");
-                    }
-                })
-                .catch(err=>{res.status(404).send('No se encontró al canal de audio con el id '+ idChannel)})
-            }
-            else{
-                res.status(404).send('El usuario no forma parte del grupo');
-
-            }
-        })
-        .catch(err=>{res.status(404).send('No se encontro el grupo con el id '+ idGroup)})
-
-    },
-
-    //Cambiar a conseguir el objeto del usuario
-    exitCall: (req,res)=>{
-        let idUser = req.body.idUser;
-        let idChannel = req.params.idChannel;
-        let idGroup = req.params.idGroup;
-    
+    getAudioChannel:(req,res) =>{
+        let idChannel = req.params.idChannel
         audioChannel.findById(idChannel)
-        .then(channel=>{
-            //Validar que este en la llamada
-            if(!channel.arrInCall.includes(idUser)){
-                res.status(400).send('El usuario no forma parte de la llamada')
-            }
-            else{
-                index = channel.arrInCall.indexOf(idUser);
-                channel.arrInCall.splice(index,1);
-                channel.save()
-                .then(channel=>{
-                    res.status(200).type("application/json").json(channel)
-                })
-                .catch(err=>{res.status(400).send("Error al sacar al usuario de la llamada")})
-            }
+        .then(canal =>{
+            res.status(200).type("application/json").json(canal)
         })
-        .catch(err=>{res.status(404).send('No se encontró al canal de audio con el id '+ idChannel)})
+        .catch(err=>{
+            res.status(404).send("No se encontró el canal de audio")
+        })
+
     },
 
 
