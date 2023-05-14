@@ -1,9 +1,12 @@
 import { Component,OnInit, OnDestroy } from '@angular/core';
-import { ActivatedRoute} from '@angular/router';
+import { ActivatedRoute, Route, Router} from '@angular/router';
 import { UserService } from 'src/app/shared/services/user.service';
 import { environment } from 'src/environments/environment';
 import { io } from 'socket.io-client';
 import { Audiouser } from 'src/app/shared/interfaces/audiouser';
+import { GroupService } from 'src/app/shared/services/group.service';
+import { ShowErrorService } from 'src/app/shared/services/show-error.service';
+import { Audiochannel } from 'src/app/shared/interfaces/audiochannel';
 
 @Component({
   selector: 'app-groupvoicechannel',
@@ -20,16 +23,39 @@ export class GroupvoicechannelComponent implements OnDestroy, OnInit {
     username: this.userService.getUser().name,
     userId: this.userService.getUser()._id
   }
+  idChannel: string = "";
+  idGroup: string = "";
+  channel:Audiochannel={
+    _id: '',
+    title: '',
+    arrMembers: [],
+    private: false
+  }
+
+  constructor(private route: ActivatedRoute, private userService:UserService, private groupService:GroupService,
+    private showErrorService:ShowErrorService, private router:Router){ }
   
-  constructor(private route: ActivatedRoute, private userService:UserService){ }
-  idChannel:string = ''
 
   //cargar componente / unirme canal 
   ngOnInit(): void {
     this.route.params.subscribe(params => {
       this.idChannel = params['idChannel']
+      this.idGroup = params['idGroup']
 
     })
+    this.groupService.getAudioChannel(this.idGroup,this.idChannel).subscribe((response:Audiochannel)=>{
+      let idCurrentUser= this.userService.getUser()._id
+
+      if(!response.arrMembers.includes(idCurrentUser)){
+        this.showErrorService.openError('No formas parte de este canal de audio')
+        let url:string = '/group/'+this.idGroup
+        this.router.navigate([url])
+      }
+
+      this.channel=response
+
+    })
+
     this.socket = io(environment.apiUrl)
 
     //unirme al room 

@@ -180,106 +180,12 @@ router.delete('/:idChannel',auth,audioChannelController.deleteAudioChannel);
  */
 
 
+//todo lo del chat de voz sera con los sockets y frontEnd 
+router.get('/:idChannel',audioChannelController.getAudioChannel)
 
-router.put('/:idChannel/enterCall',auth,express.json(),audioChannelController.enterCall);
-/**
- * @swagger
- * /groups/{idGroup}/audioChannels/{idChannel}/enterCall:
- *  put:
- *    tags:
- *      - audioChannels
- *    description: Añadimos un miembro a una llamada
- *    parameters:
- *      - in: path
- *        name: idGroup
- *        description: id del grupo al que pertenece el canal
- *        schema:
- *          type: string
- * 
- *      - in: path
- *        name: idChannel
- *        description: id del canal de audio al que se agrega un usuario a la llamada
- *        schema:
- *          type: string
- * 
- *      - in: header
- *        name: user
- *        description: id del usuario que quiere realizar la acción
- * 
- *      - in: header
- *        name: token
- *        description: el token del usuario actual
- * 
- *      - in: body
- *        name: idUser
- *        description: id del usuario a añadir a la llamada
- *        schema:
- *          type: object
- *          example:
- *            { "idUser": "643aed8b64f01a772cb50353"}
- * 
- * 
- *    responses:
- *      200:
- *        description: objeto del canal de audio
- *      401:
- *        description: token invalido
- *      404:
- *        description: No se encontró el canal con el id idChannel
- *      403: 
- *        description: no formas parte del canal
- * 
- */
+// router.put('/:idChannel/enterCall',auth,express.json(),audioChannelController.enterCall);
 
-
-router.put('/:idChannel/exitCall',auth,express.json(),audioChannelController.exitCall);
-/**
- * @swagger
- * /groups/{idGroup}/audioChannels/{idChannel}/exitCall:
- *  put:
- *    tags:
- *      - audioChannels
- *    description: Sacamos a un miembro de una llamada
- *    parameters:
- *      - in: path
- *        name: idGroup
- *        description: id del grupo al que pertenece el canal
- *        schema:
- *          type: string
- * 
- *      - in: path
- *        name: idChannel
- *        description: id del canal de audio al que se saca al usuario a la llamada
- *        schema:
- *          type: string
- * 
- *      - in: header
- *        name: user
- *        description: id del usuario que quiere realizar la acción
- * 
- *      - in: header
- *        name: token
- *        description: el token del usuario actual
- * 
- *      - in: body
- *        name: idUser
- *        description: id del usuario a sacar de la llamada
- *        schema:
- *          type: object
- *          example:
- *            { "idUser": "643aed8b64f01a772cb50353"}
- * 
- * 
- *    responses:
- *      200:
- *        description: objeto del canal de audio
- *      401:
- *        description: token invalido
- *      403:
- *        description: no formas parte del canal
- *      404:
- *        description: No se encontró el canal con el id idChannel
- */
+// router.put('/:idChannel/exitCall',auth,express.json(),audioChannelController.exitCall);
 
 
 router.put('/:idChannel/name',auth,express.json(),audioChannelController.changeChannelName);
