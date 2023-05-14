@@ -12,7 +12,7 @@ import { UserService} from 'src/app/shared/services/user.service'
 export class ChangenameComponent {
   formName: FormGroup
   constructor(private formBuilder:FormBuilder,private userService:UserService,private router: Router){
-    this.formName = formBuilder.group({ //lleva this el formBuilder?
+    this.formName = formBuilder.group({ 
       name:['',Validators.required]
     })
   }

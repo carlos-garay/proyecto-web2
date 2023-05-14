@@ -10,6 +10,7 @@ import { GroupvoicechannelComponent } from './pages/group/groupvoicechannel/grou
 import { DirectmessagesComponent } from './pages/directmessages/directmessages.component';
 import { ChangenameComponent } from './pages/changename/changename.component';
 import { ChangepasswordComponent } from './pages/changepassword/changepassword.component';
+import { ChangepictureComponent } from './pages/changepicture/changepicture.component';
 import { FriendchatComponent } from './pages/directmessages/friendchat/friendchat.component';
 import { AuthGuard } from './shared/guards/auth.guard';
 
@@ -24,6 +25,7 @@ const routes: Routes = [
     ]}, 
   {path: 'changeName', component:ChangenameComponent,canActivate: [AuthGuard]},
   {path: 'changePassword', component:ChangepasswordComponent,canActivate: [AuthGuard]},
+  {path: 'changePicture', component:ChangepictureComponent,canActivate: [AuthGuard]},
   {path: 'group/:idGroup',component:GroupComponent,canActivate: [AuthGuard],
     children:[
       {path:'text/:idChannel',component:GrouptextchannelComponent,canActivate: [AuthGuard]},

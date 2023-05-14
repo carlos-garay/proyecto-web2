@@ -2,6 +2,7 @@ const express = require('express')
 const router = express.Router()
 const usersController = require('../controllers/users')
 const auth = require('../middlewares/auth')
+const upload = require('../middlewares/uploadImg')
 
 //las rutas de los requests
 const rutasRequests = require('./requests')
@@ -523,5 +524,12 @@ router.delete('/:idUser/friends/:idFriend/remove',auth,usersController.removeFri
  *      400:
  *        description: error al eliminar del arreglo de amigos o el chat 
  */
+
+
+
+//Carga de archivos 
+
+router.post('/:idUser/image',auth,upload.single('file'),usersController.uploadProfilePicture);
+
 
 module.exports = router

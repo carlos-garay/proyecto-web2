@@ -11,7 +11,6 @@ export class RequestsService {
   constructor(private httpService:HttpService, private userService:UserService) { }
 
   getRequests(){
-    //let idUser:string = '643aed8b64f01a772cb50353' //se va a recuperar del session storage
 
     let idUser:string = this.userService.getUser()._id
     

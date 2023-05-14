@@ -7,6 +7,7 @@ import { User } from 'src/app/shared/interfaces/user';
 import { Group } from 'src/app/shared/interfaces/group';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ShowErrorService } from 'src/app/shared/services/show-error.service';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-listausuarios',
@@ -30,6 +31,7 @@ export class ListausuariosComponent {
   }
   selectedUserEmail:string= ''
   selectedUserId:string = ''
+  url: string = environment.apiUrl+"image/"
 
   constructor(private groupService : GroupService, private showErrorService:ShowErrorService){ }
 

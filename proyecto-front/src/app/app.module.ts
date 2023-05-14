@@ -27,6 +27,7 @@ import { NewGroupComponent } from './modals/new-group/new-group.component';
 import { NewRequestComponent } from './modals/new-request/new-request.component';
 import { GenericComponent } from './modals/generic/generic.component';
 import { ErrorDialogComponent } from './modals/error-dialog/error-dialog.component';
+import { ChangepictureComponent } from './pages/changepicture/changepicture.component';
 
 @NgModule({
   declarations: [
@@ -49,7 +50,8 @@ import { ErrorDialogComponent } from './modals/error-dialog/error-dialog.compone
     NewGroupComponent,
     NewRequestComponent,
     GenericComponent,
-    ErrorDialogComponent
+    ErrorDialogComponent,
+    ChangepictureComponent
   ],
   imports: [
     BrowserModule,

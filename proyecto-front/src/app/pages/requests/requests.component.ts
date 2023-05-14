@@ -4,6 +4,7 @@ import { RequestsService } from 'src/app/shared/services/requests.service';
 
 import { MatDialog } from '@angular/material/dialog';
 import { NewRequestComponent } from 'src/app/modals/new-request/new-request.component';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-requests',
@@ -13,6 +14,8 @@ import { NewRequestComponent } from 'src/app/modals/new-request/new-request.comp
 export class RequestsComponent implements OnInit{
   arrRequestsSent: Request[] = [];
   arrRequestsReceived: Request[] = [];
+  url: string = environment.apiUrl+"image/"
+
   constructor(private requestService: RequestsService, private matDialog:MatDialog){ }
 
   ngOnInit(){
@@ -24,7 +27,7 @@ export class RequestsComponent implements OnInit{
       //console.log(response)
       this.arrRequestsSent=response.ReqSent
       this.arrRequestsReceived=response.ReqReceived
-      
+      console.log(this.arrRequestsReceived);
     })
   }
 

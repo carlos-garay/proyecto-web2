@@ -5,7 +5,8 @@ const Channel = require('../models/channels');
 const Message = require('../models/messages');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-
+const fs = require('fs').promises;
+const path = require('path');
 
 const UserController = {
 
@@ -16,8 +17,6 @@ const UserController = {
         objectUser['token']= 'placeholder'
         let user = User(objectUser);
         user.save().then((user) =>{
-            console.log(process.env.TOKEN_KEY)
-            console.log("still good")
             token = jwt.sign({email:req.body.email},process.env.TOKEN_KEY,{expiresIn: "5h"})
             let objUserId = {_id:user._id, token:token}
             res.status(201).type("application/json").json(objUserId);
@@ -37,7 +36,6 @@ const UserController = {
             // cuando concuerdan generamos el token que se guardará en el localstorage
             if (bcrypt.compareSync(password, user.password)) {
                 try{
-                    console.log(process.env.TOKEN_KEY)
                     token = jwt.sign({email:email},process.env.TOKEN_KEY,{expiresIn: "5h"})
                     let objUserId = {_id:user._id, token:token}
                     res.status(201).type("application/json").json(objUserId);
@@ -121,7 +119,6 @@ const UserController = {
     loadChannel: (req,res) => { 
         let idUser = req.params.idUser;
         let idFriend = req.params.idFriend;
-        console.log(idUser);
         //Obtenemos al usuario actual
         User.findById(idUser)
         .populate("arrDirectMessages")
@@ -141,7 +138,16 @@ const UserController = {
                         .populate("arrMessages")
                         .then(newChannel =>{
                             //Cambiamos el sender de su id a su nombre para que se pueda desplegar en el mensaje
-                            newChannel.arrMessages.map(msg => msg.sender = newChannel.arrMembers.find(({_id}) => _id == msg.sender).name)
+                            newChannel.arrMessages.map(msg => {
+                                
+                                let foundSender = newChannel.arrMembers.find(({_id}) => _id == msg.sender)
+                                if(foundSender){
+                                    msg.sender = foundSender.name;
+                                    msg.image = foundSender.image;
+                                }else{
+                                    msg.sender = "Usuario eliminado";
+                                }
+                            })
                             res.status(200).type("application/json").json(newChannel);
                         })
                         .catch(err=>{
@@ -255,7 +261,30 @@ const UserController = {
             res.status(404).send("No se encontró al usuario ")
         })
 
-    }   
+    },   
+
+    uploadProfilePicture: (req,res)=>{
+        let idUser = req.params.idUser;
+        let filename = req.file.filename;        
+        
+        User.findByIdAndUpdate(idUser,{image: filename}) 
+        .then(user =>{
+            //Si la imagen anterior no es la default elimínala
+            if(user.image != "noimage.jpg"){
+                console.log(user.image)
+                let imagePath = path.join(__dirname, '../../uploads/',user.image)
+                fs.unlink(imagePath);
+            }
+            res.status(200).send({imgUrl:filename});
+        })
+        .catch(error =>{
+            res.status(404).send("No se encontró al usuario");
+        })
+
+    }
+
+
+
 }
 
 module.exports = UserController

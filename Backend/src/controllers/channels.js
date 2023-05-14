@@ -20,10 +20,12 @@ const ChannelController = {
                     let foundSender =  channel.arrMembers.find(({_id}) => _id == msg.sender)
                     if(foundSender){
                         msg.sender = foundSender.name
+                        msg.image = foundSender.image
                     }else{
                         msg.sender = "Usuario eliminado"
                     }
                 })
+                console.log(channel.arrMessages);
                 res.status(200).type("application/json").json(channel);
 
             }else{
