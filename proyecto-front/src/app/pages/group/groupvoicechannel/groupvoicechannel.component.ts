@@ -44,7 +44,10 @@ export class GroupvoicechannelComponent implements OnDestroy, OnInit {
 
       if(hasObject){
         //realizar comparacion si es igual a ver si tenemos qu ecambiar las cosas 
-
+        let index = this.listUsers.findIndex(obj => obj.userId === id);
+        if (index !== -1) {
+          this.listUsers[index] = otherUserStatus;
+        }
         //falta implementar 
       }
       else{
