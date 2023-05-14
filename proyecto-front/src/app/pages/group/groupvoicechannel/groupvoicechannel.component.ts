@@ -3,7 +3,7 @@ import { ActivatedRoute} from '@angular/router';
 import { UserService } from 'src/app/shared/services/user.service';
 import { environment } from 'src/environments/environment';
 import { io } from 'socket.io-client';
-
+import { Audiouser } from 'src/app/shared/interfaces/audiouser';
 
 @Component({
   selector: 'app-groupvoicechannel',
@@ -13,7 +13,7 @@ import { io } from 'socket.io-client';
 export class GroupvoicechannelComponent implements OnDestroy, OnInit {
   enabled:boolean = true //si queremos que el chat este funcionando 
   socket: any; 
-  listUsers:string[] = []; // aqui se van a agregar los usuarios 
+  listUsers:Audiouser[] = []; // aqui se van a agregar los usuarios 
   userStatus={
     microphone: true, //si esta en 1, significa que si estamos mandando voz
     mute :false, //si mute esta en 1, es porque no queremos escuchar 
@@ -81,13 +81,9 @@ export class GroupvoicechannelComponent implements OnDestroy, OnInit {
         audioChunks.push(event.data);
       });
   
+      //necesito hacer que este carnal se deje de ejecutar 
       madiaRecorder.addEventListener("stop", () => {
-        // if(this.enabled == false){
-        //   console.log('not anymore')
-        //   madiaRecorder.pause
-        //   madiaRecorder = new MediaRecorder(stream); //epic
-        //   return;
-        // } 
+
         var audioBlob = new Blob(audioChunks);
   
         audioChunks = [];
@@ -96,7 +92,7 @@ export class GroupvoicechannelComponent implements OnDestroy, OnInit {
         fileReader.readAsDataURL(audioBlob);
         //console.log('llego aqui d')
         fileReader.onloadend = () => { //cambiando de function() a => para quedarme con el this 
-          if (!this.userStatus.microphone) return; //si tiene microfono apagado no se hace nada
+          if (!this.userStatus.microphone || this.enabled==false) return; //si tiene microfono apagado no se hace nada
           //console.log('llego aqui e')
           var base64String = fileReader.result; //el clip de voz de 1 segundo 
           let data = {
@@ -110,10 +106,15 @@ export class GroupvoicechannelComponent implements OnDestroy, OnInit {
   
         madiaRecorder.start();
   
-        //ya que se acabo una vez, resetealo 
-        setTimeout(function () {
-          madiaRecorder.stop();
-        }, time);
+        if(this.enabled==true){
+          setTimeout(function () {
+            madiaRecorder.stop();
+          }, time);
+        }
+        else{
+          console.log('turbo loop ends :D')
+        }
+
       });
 
 
@@ -126,9 +127,19 @@ export class GroupvoicechannelComponent implements OnDestroy, OnInit {
 
   //esta funcion va a estar dentro del setInterval 
   sendUserInfo(){
-    let obj = {}
+    let obj = {
+      idChannel:this.idChannel,
+
+    }
     this.socket.emit('nombre',obj)
   }
 
-  
+  toggleMicrophone(){ //togglear tu microfono para no hablar 
+    console.log('toggleMic')
+    this.userStatus.microphone = !this.userStatus.microphone
+  }
+  toggleMute(){ //togglear silenciacion de otros para no escuchar 
+    console.log('togglemute')
+    this.userStatus.mute = !this.userStatus.mute
+  }
 }
