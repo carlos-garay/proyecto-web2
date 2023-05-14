@@ -19,6 +19,7 @@ export class FriendchatComponent implements OnInit, OnDestroy {
   formSendDM: FormGroup;
   inputValue: string = "";
   idChannel: string = "";
+  url: string = environment.apiUrl+"image/"
   channel:TextchannelPopulated={
     _id: '',
     title: '',
@@ -75,6 +76,7 @@ export class FriendchatComponent implements OnInit, OnDestroy {
       this.friendsService.sendDM(this.idChannel,message).subscribe((response:any)=>{
         this.inputValue=""
         response.sender = this.userService.usuarioActual.name;
+        response.image = this.userService.usuarioActual.image;
         this.channel.arrMessages.push(response)
 
         //generar el evento 

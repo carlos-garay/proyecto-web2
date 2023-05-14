@@ -6,8 +6,8 @@
 
             <mat-card class="example-card">
                 <mat-card-header>
-                <div mat-card-avatar class="example-header-image"></div>
-                <mat-card-title>{{item.sender}}</mat-card-title>
+                  <img mat-card-avatar src ="{{url + item.image}}">
+                  <mat-card-title>{{item.sender}}</mat-card-title>
                 <mat-card-subtitle>{{item.dateTime}}</mat-card-subtitle>
                 </mat-card-header>
                 <mat-card-content>{{item.content}}</mat-card-content>
@@ -22,9 +22,6 @@
     <mat-form-field appearance="fill" [style.width.%]=95>
       <mat-label>Escribe tu mensaje</mat-label>
       <textarea type="text" matInput class="sendInput" formControlName="message" required  [(ngModel)]="inputValue" (keydown.enter)="onEnter($event)"></textarea>
-      <button matPrefix mat-mini-fab color="primary" class="mat-list-item">
-        <mat-icon>upload</mat-icon>
-      </button>
       <button [disabled]="formSendDM.invalid" matSuffix mat-mini-fab color="primary" class="mat-list-item" (click)="sendMessage()">
         <mat-icon>send</mat-icon>
       </button>

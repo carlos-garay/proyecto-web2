@@ -11,20 +11,19 @@ const userSchema = new Schema({
         unique: true,
         required: true
     },
-    password: { //Recordar encriptar en el futuro
+    password: { 
         type: String,
         required: true
     },
-    token: { //A implementar en el futuro
+    token: { 
         type: String, 
         required: true,
         default: ""
     },
-    //También contará con foto de perfil ya que se determine como se manejarán las imágenes
     image: {
         type: String,
         required: true,
-        default: "noimage"
+        default: "noimage.jpg"
     },
     
     arrGroups: {

@@ -5,5 +5,6 @@ export interface Request {
     sender:string,
     receiver:string,
     status:number,
+    image?: string,
     __v?:number
 }

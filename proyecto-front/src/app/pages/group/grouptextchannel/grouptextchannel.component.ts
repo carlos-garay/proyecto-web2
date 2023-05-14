@@ -19,6 +19,9 @@ export class GrouptextchannelComponent implements OnInit, OnDestroy{
   inputValue: string = "";
   idChannel: string = "";
   idGroup: string = "";
+  url: string = environment.apiUrl+"image/"
+
+
   channel:TextchannelPopulated={
     _id: '',
     title: '',
@@ -95,6 +98,7 @@ export class GrouptextchannelComponent implements OnInit, OnDestroy{
       this.groupService.sendMessage(this.idGroup,this.idChannel,message).subscribe((response:any)=>{
         this.inputValue=""
         response.sender = this.userService.usuarioActual.name;
+        response.image = this.userService.usuarioActual.image;
         this.channel.arrMessages.push(response)
 
         let obj = {

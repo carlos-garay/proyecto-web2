@@ -5,6 +5,7 @@ import { Router } from '@angular/router';
 import { FriendsService } from 'src/app/shared/services/friends.service';
 import { TextchannelPopulated } from 'src/app/shared/interfaces/textchannelpopulated';
 import { TextchannelService } from 'src/app/shared/services/textchannel.service';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-friendlist',
@@ -14,6 +15,7 @@ import { TextchannelService } from 'src/app/shared/services/textchannel.service'
 export class FriendlistComponent {
 
   arrFriends: User[] = []
+  url: string = environment.apiUrl+"image/"
   constructor(private friendsService: FriendsService,private router:Router, private txtChannelService: TextchannelService ){ }
 
   ngOnInit(){
