@@ -5,7 +5,8 @@ const Channel = require('../models/channels');
 const Message = require('../models/messages');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-
+const fs = require('fs').promises;
+const path = require('path');
 
 const UserController = {
 
@@ -255,12 +256,16 @@ const UserController = {
 
     uploadProfilePicture: (req,res)=>{
         let idUser = req.params.idUser;
-        let filename = req.file.filename;
-        console.log(filename);
+        let filename = req.file.filename;        
         
-        
-        User.findByIdAndUpdate(idUser,{image: filename},{new:true}) 
+        User.findByIdAndUpdate(idUser,{image: filename}) 
         .then(user =>{
+            //Si la imagen anterior no es la default elimínala
+            if(user.image != "noimage.jpg"){
+                console.log(user.image)
+                let imagePath = path.join(__dirname, '../../uploads/',user.image)
+                fs.unlink(imagePath);
+            }
             res.status(200).send({imgUrl:filename});
         })
         .catch(error =>{
