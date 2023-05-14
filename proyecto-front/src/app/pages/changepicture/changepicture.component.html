@@ -1,19 +1,18 @@
 CAMBIO FOTO DE PERFIL
+<div class="pictureChange">
+  <input type="file" class="file-input" name="file"
+        (change)="onFileSelected($event)" #fileUpload>
 
-<input type="file" class="file-input" name="file"
-       (change)="onFileSelected($event)" #fileUpload>
+  <div class="file-upload">
+    
+    <div align-items: center><img [src]= url mat-card-avatar></div>
 
-<div class="file-upload">
+    {{fileName || "Selecciona la foto que quieras usar"}}
 
-   {{fileName || "No file uploaded yet."}}
-
-    <button mat-mini-fab color="primary" class="upload-btn"
-      (click)="fileUpload.click()">
-        <mat-icon>attach_file</mat-icon>
-    </button>
+      <button mat-mini-fab color="primary" class="upload-btn"
+        (click)="fileUpload.click()">
+          <mat-icon>upload</mat-icon>
+      </button>
+  </div>
 </div>
-
-<mat-card class="example-card">
-  <div mat-card-avatar  class="example-header-image" [style.background-image]="'url(' + url + ')'"></div>
-
-</mat-card>
+<label>{{url}}</label>

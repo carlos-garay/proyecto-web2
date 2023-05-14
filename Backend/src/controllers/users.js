@@ -255,14 +255,13 @@ const UserController = {
 
     uploadProfilePicture: (req,res)=>{
         let idUser = req.params.idUser;
-        let imgUrl = req.body.imgUrl
-        console.log(imgUrl)
         let filename = req.file.filename;
-
+        console.log(filename);
         
-        User.findByIdAndUpdate(idUser,{image: imgUrl},{new:true}) 
+        
+        User.findByIdAndUpdate(idUser,{image: filename},{new:true}) 
         .then(user =>{
-            res.status(200).send({image:imgUrl});
+            res.status(200).send({imgUrl:filename});
         })
         .catch(error =>{
             res.status(404).send("No se encontró al usuario");

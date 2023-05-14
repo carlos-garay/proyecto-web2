@@ -1,5 +1,8 @@
-import { Component } from '@angular/core';
+import { Component,OnInit } from '@angular/core';
 import { UserService } from 'src/app/shared/services/user.service';
+import { DomSanitizer } from '@angular/platform-browser';
+import { Router } from '@angular/router';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-changepicture',
@@ -10,29 +13,25 @@ export class ChangepictureComponent {
   
   fileName: string = '';
   url: any = '';
-  constructor(private userService:UserService){
-    this.url = userService.usuarioActual.image;
+  constructor(private userService:UserService, private sanitizer: DomSanitizer,private router:Router){}
+
+  ngOnInit(){
+    let url = environment.apiUrl+"image/"+this.userService.usuarioActual.image;
+    this.url = this.sanitizer.bypassSecurityTrustUrl(url);
   }
 
-  
-  onFileSelected(event:any) {
+  async onFileSelected(event:any) {
     const file:File = event.target.files[0];
 
     if (file) {
       this.fileName = file.name;
-      console.log(file.name);
-      let reader = new FileReader();
-      reader.readAsDataURL(file);
-      reader.onload = (_event)=>{
-        this.url = reader.result;
-        const formData = new FormData();
-        formData.append("file", file);
-        formData.append("imgUrl",this.url);
-        console.log(this.url)
-        this.userService.updateProfilePicture(formData)
-      }
-      
-      
+      const formData = new FormData();
+      formData.append("file", file);
+      this.userService.updateProfilePicture(formData)
+      setTimeout(() => {
+        this.url = environment.apiUrl+"image/"+this.userService.usuarioActual.image;
+      }, 1000);
+
     }
   }
 

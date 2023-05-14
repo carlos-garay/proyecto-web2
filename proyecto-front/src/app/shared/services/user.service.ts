@@ -190,19 +190,17 @@ export class UserService {
     localStorage.setItem('idUser',id);
   }
 
-  updateProfilePicture(formData:FormData){
+  async updateProfilePicture(formData:FormData){
     let idUser:string = this.usuarioActual._id 
     const headers= new HttpHeaders()
     .set('user',this.usuarioActual._id )
     .set('token',localStorage.getItem('token') || '')
     let url:string = environment.apiUrl+'users/'+idUser+'/image'
 
-
     this.httpClient.post(url,formData,{headers}).subscribe((response:any)=>{
-      this.usuarioActual.image = formData.get('imgUrl');
+      this.usuarioActual.image = response.imgUrl;
+      console.log(this.usuarioActual.image);
     })
-    
-  
   }
 
 }
