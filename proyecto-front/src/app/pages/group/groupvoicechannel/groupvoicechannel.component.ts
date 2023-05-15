@@ -82,8 +82,8 @@ export class GroupvoicechannelComponent implements OnDestroy, OnInit {
 
     })
     this.socket.on('userLeft',(data:any)=>{
-      console.log(data)
-      console.log(this.listUsers)
+      // console.log(data)
+      // console.log(this.listUsers)
       let idUser = data
       console.log('se salio '+idUser)
       //sacar al usuario que se va a salir del arreglo
@@ -126,11 +126,9 @@ export class GroupvoicechannelComponent implements OnDestroy, OnInit {
 
   //funcion principal 
   mainFunction(time:number){
-    console.log('llego aqui a')
     navigator.mediaDevices.getUserMedia({ audio: true }).then((stream) => {
       var madiaRecorder = new MediaRecorder(stream);
       madiaRecorder.start();
-      console.log('llego aqui b')
       var audioChunks:any = [];
       
       madiaRecorder.addEventListener("dataavailable", function (event) {
@@ -146,10 +144,8 @@ export class GroupvoicechannelComponent implements OnDestroy, OnInit {
   
         var fileReader = new FileReader();
         fileReader.readAsDataURL(audioBlob);
-        //console.log('llego aqui d')
         fileReader.onloadend = () => { //cambiando de function() a => para quedarme con el this 
           if (!this.userStatus.microphone || this.enabled==false) return; //si tiene microfono apagado no se hace nada
-          //console.log('llego aqui e')
           var base64String = fileReader.result; //el clip de voz de 1 segundo 
           let data = {
             idChannel: this.idChannel,
