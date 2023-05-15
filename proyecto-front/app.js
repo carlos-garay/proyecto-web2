@@ -4,10 +4,10 @@ const path = require('path');
 const app = express();
 
 
-app.use(express.static(path.join(__dirname,'dist','proyecto-web2')));
+app.use(express.static(path.join(__dirname,'dist','proyecto-front')));
 
 app.get('',(req,res)=>{
-    const url = path.join(__dirname, 'dist', 'proyecto-web2','index.html');
+    const url = path.join(__dirname, 'dist', 'proyecto-front','index.html');
     res.sendFile(url);
 });
 
