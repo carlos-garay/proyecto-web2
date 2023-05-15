@@ -67,10 +67,7 @@ export class GrouptextchannelComponent implements OnInit, OnDestroy{
   }
 
   loadChannel(){
-    // this.groupService.getTextChannel(this.idGroup,this.idChannel).subscribe((response:any)=>{
-    //   console.log(response)
-    //   this.channel = response
-    // })
+
     this.groupService.getTextChannel(this.idGroup,this.idChannel).subscribe({
       next:(response:any)=>{
         console.log(response)

@@ -78,6 +78,10 @@ mongoose.connect(mongoUrl,{autoIndex: false})
         io.emit('addedToGroup',data)
       })
       
+      socket.on('deleteGroup',(data)=>{
+        io.emit('removeGroup',data)
+      })
+
       //cuando se eliina un grupo, borrarlo de todos los usuarios, falta por implementar
 
       //VOICE CHAT BOOGALOO
@@ -103,7 +107,7 @@ mongoose.connect(mongoUrl,{autoIndex: false})
 
       //necesitamos modificar el data que trae este carnal 
       socket.on('voice', (dataIn) =>{
-        console.log('voiceman')
+        //console.log('voiceman')
         //console.log(dataIn)
         var data =dataIn.data
         var idChannel = dataIn.idChannel
@@ -113,13 +117,6 @@ mongoose.connect(mongoUrl,{autoIndex: false})
         //socket.broadcast.to(idChannel).emit("send", newData);
         socket.to(idChannel).emit('send',newData)
         //console.log('enviando' + newData + ' a el canal ' + idChannel)
-        //esta parte no se va a ocupar porque no voy a implementar socketStatus
-        // for (const id in socketsStatus) {
-    
-        //   if (id != socketId && !socketsStatus[id].mute && socketsStatus[id].online)
-        //     socket.broadcast.to(id).emit("send", newData);
-        //     socket.to(idChannel).emit('newMessageGroup',message)
-        // }
     
       });
 
