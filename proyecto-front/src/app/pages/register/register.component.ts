@@ -36,14 +36,7 @@ export class RegisterComponent {
     let password: string=valores.password
     let confirm: string=valores.confirm
     if(password == confirm){
-      // this.userService.registerUser(name,email,password).subscribe((response:any)=>{ //al hacer login nos regresa el id del nuevo usuario
-      //   localStorage.setItem('idUser',response._id);
-      //   this.authService.setToken(response.token);
 
-      //   //si se registro correcto te lleva a la pagina del login 
-      //   this.userService.loadUser(response._id)
-      //   this.router.navigate(['/'])
-      // })
       this.userService.registerUser(name,email,password).subscribe({
         next:(response:any)=>{
           this.userService.setId(response._id)

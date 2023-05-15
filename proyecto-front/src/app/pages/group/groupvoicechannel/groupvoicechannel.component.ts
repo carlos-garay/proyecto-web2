@@ -74,7 +74,6 @@ export class GroupvoicechannelComponent implements OnDestroy, OnInit {
         if (index !== -1) {
           this.listUsers[index] = otherUserStatus;
         }
-        //falta implementar 
       }
       else{
         this.listUsers.push(otherUserStatus)

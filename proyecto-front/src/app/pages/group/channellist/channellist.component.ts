@@ -88,15 +88,6 @@ export class ChannellistComponent implements OnInit{
     this.groupService.deleteGroup(this.grupo._id).subscribe({
       next: (response:any)=>{
 
-        //esto se reemplazara por los sockets, posiblemente mismo codigo pero en nav
-        // let arrGroups = this.userService.usuarioActual.arrGroups
-        // let foundGroup = arrGroups.find(({_id}) => _id == this.grupo._id)
-        // if(foundGroup){
-        //   let index = arrGroups.indexOf(foundGroup);
-        //   arrGroups.splice(index,1);
-        //   this.router.navigate(['/'])
-        // }
-
         let arrUsers = response.arrUsers
         let obj = {
           arrUsers:arrUsers,
@@ -150,10 +141,7 @@ export class ChannellistComponent implements OnInit{
   }
 
   addTextChannel(){
-    //Como respuesta tiene el nuevo canal creado
-    // this.groupService.addTextChannel(this.grupo._id).subscribe((response:any)=>{
-    //   this.addChannelEvent.emit(response);
-    // })
+
     this.groupService.addTextChannel(this.grupo._id).subscribe({
       next:(response:any)=>{
         this.addChannelEvent.emit(response);
@@ -164,9 +152,7 @@ export class ChannellistComponent implements OnInit{
     })
   }
   addVoiceChannel(){
-    // this.groupService.addVoiceChannel(this.grupo._id).subscribe((response:any)=>{
-    //   this.addAudioChannelEvent.emit(response);
-    // })
+
     this.groupService.addVoiceChannel(this.grupo._id).subscribe({
       next:(response:any)=>{
         this.addAudioChannelEvent.emit(response);
@@ -199,9 +185,7 @@ export class ChannellistComponent implements OnInit{
   }
   addUser(email:string){
     //la llamada al servicio de grupo
-    // this.groupService.addUserToGroup(this.grupo._id,email).subscribe((response:any)=>{
-    //   this.addUserEvent.emit(response)
-    // })
+
     this.groupService.addUserToGroup(this.grupo._id,email).subscribe({
       next:(response:any)=>{
         this.addUserEvent.emit(response)
@@ -221,10 +205,7 @@ export class ChannellistComponent implements OnInit{
   }
 
   removeTextChannel(){
-    // this.groupService.removeTextChannel(this.grupo._id,this.selectedChannel).subscribe((response:any)=>{
-    //   console.log(response);
-    //   this.removeChannelEvent.emit(response);
-    // })
+
     this.groupService.removeTextChannel(this.grupo._id,this.selectedChannel).subscribe({
       next:(response:any)=>{
         this.removeChannelEvent.emit(response);
@@ -235,9 +216,7 @@ export class ChannellistComponent implements OnInit{
     })
   }
   removeAudioChannel(){
-    // this.groupService.removeAudioChannel(this.grupo._id,this.selectedAudioChannel).subscribe((response:any)=>{
-    //   this.removeAudioChannelEvent.emit(response);
-    // })
+
     this.groupService.removeAudioChannel(this.grupo._id,this.selectedAudioChannel).subscribe({
       next:(response:any)=>{
         this.removeAudioChannelEvent.emit(response);
@@ -267,9 +246,7 @@ export class ChannellistComponent implements OnInit{
     });
   }
   addUserToTextChannel(email:string){
-    // this.groupService.addUserTextChannel(this.grupo._id, this.selectedChannel,email).subscribe((response:any)=>{
-      
-    // })
+
     this.groupService.addUserTextChannel(this.grupo._id, this.selectedChannel,email).subscribe({
       next:(response:any)=>{
         
@@ -300,9 +277,7 @@ export class ChannellistComponent implements OnInit{
   }
   addUserToAudioChannel(email:string){
     //la llamada al servicio de grupo
-    // this.groupService.addUserAudioChannel(this.grupo._id, this.selectedAudioChannel,email).subscribe((response:any)=>{
-      
-    // })
+
     this.groupService.addUserAudioChannel(this.grupo._id, this.selectedAudioChannel,email).subscribe({
       next:(response:any)=>{
         
@@ -333,9 +308,7 @@ export class ChannellistComponent implements OnInit{
   }
   removeUserFromTextChannel(email:string){
     //la llamada al servicio de grupo
-    // this.groupService.removeUserTextChannel(this.grupo._id, this.selectedChannel,email).subscribe((response:any)=>{
-      
-    // })
+
     this.groupService.removeUserTextChannel(this.grupo._id, this.selectedChannel,email).subscribe({
       next:(response:any)=>{
         
@@ -366,9 +339,7 @@ export class ChannellistComponent implements OnInit{
   }
   removeUserFromAudioChannel(email:string){
     //la llamada al servicio de grupo
-    // this.groupService.removeUserAudioChannel(this.grupo._id, this.selectedAudioChannel,email).subscribe((response:any)=>{
-      
-    // })
+
     this.groupService.removeUserAudioChannel(this.grupo._id, this.selectedAudioChannel,email).subscribe({
       next:(response:any)=>{
         
@@ -400,9 +371,7 @@ export class ChannellistComponent implements OnInit{
   
   changeTextChannelName(name:string){
     //la llamada al servicio de grupo
-    // this.groupService.changeNameTextChannel(this.grupo._id,this.selectedChannel,name).subscribe((response:any)=>{
-    //   this.changeChannelNameEvent.emit(response)
-    // })
+ 
     this.groupService.changeNameTextChannel(this.grupo._id,this.selectedChannel,name).subscribe({
       next:(response:any)=>{
         this.changeChannelNameEvent.emit(response)
@@ -433,9 +402,7 @@ export class ChannellistComponent implements OnInit{
   }
   changeAudioChannelName(name:string){
     //la llamada al servicio de grupo
-    // this.groupService.changeNameAudioChannel(this.grupo._id,this.selectedAudioChannel,name).subscribe((response:any)=>{
-    //   this.changeAudioChannelNameEvent.emit(response)
-    // })
+
     this.groupService.changeNameAudioChannel(this.grupo._id,this.selectedAudioChannel,name).subscribe({
       next:(response:any)=>{
         this.changeAudioChannelNameEvent.emit(response)
