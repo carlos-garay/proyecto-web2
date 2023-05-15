@@ -278,7 +278,7 @@ const UserController = {
             res.status(200).send({imgUrl:filename});
         })
         .catch(error =>{
-            res.status(404).send("No se encontró al usuario");
+            res.status(404).send("Error al subir la foto de perfil");
         })
 
     }

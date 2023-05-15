@@ -14,8 +14,7 @@ export class NewGroupComponent {
   formNewGroup: FormGroup
   constructor(private formBuilder:FormBuilder,private router: Router, private groupService:GroupService, private userService:UserService){
     this.formNewGroup = formBuilder.group({ //lleva this el formBuilder?
-      nombreGrupo:['',Validators.required],
-      imagenGrupo:['',[Validators.required]]
+      nombreGrupo:['',Validators.required]
     })
   }
 
