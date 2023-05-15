@@ -68,6 +68,24 @@ export class NavComponent implements OnInit{
         this.usuario.arrGroups.push(tempGroup)
       }
     })
+
+    //cuando sea eliminado un grupo
+    this.socket.on('removeGroup',(data:any)=>{
+      let arrUsers = data.arrUsers 
+      let idGroup = data.idGroup
+
+      //checar si soy parte de ese grupo
+      let currentUser = this.userService.getUser()
+
+      const hasObject = currentUser.arrGroups.some(obj => obj._id === idGroup);
+
+      if(hasObject){ //si soy miembro del grupo borrado
+        //eliminar ese del arreglo
+        currentUser.arrGroups = currentUser.arrGroups.filter(obj => obj._id !== idGroup);
+      }
+    })
+
+    
   }
 
   traerUsuario(){

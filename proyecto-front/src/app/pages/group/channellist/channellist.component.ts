@@ -87,13 +87,23 @@ export class ChannellistComponent implements OnInit{
   deleteGroup(){
     this.groupService.deleteGroup(this.grupo._id).subscribe({
       next: (response:any)=>{
-        let arrGroups = this.userService.usuarioActual.arrGroups
-        let foundGroup = arrGroups.find(({_id}) => _id == this.grupo._id)
-        if(foundGroup){
-          let index = arrGroups.indexOf(foundGroup);
-          arrGroups.splice(index,1);
-          this.router.navigate(['/'])
+
+        //esto se reemplazara por los sockets, posiblemente mismo codigo pero en nav
+        // let arrGroups = this.userService.usuarioActual.arrGroups
+        // let foundGroup = arrGroups.find(({_id}) => _id == this.grupo._id)
+        // if(foundGroup){
+        //   let index = arrGroups.indexOf(foundGroup);
+        //   arrGroups.splice(index,1);
+        //   this.router.navigate(['/'])
+        // }
+
+        let arrUsers = response.arrUsers
+        let obj = {
+          arrUsers:arrUsers,
+          idGroup:this.grupo._id
         }
+
+        this.socket.emit('deleteGroup',obj)
 
     },
       error: (err:HttpErrorResponse)=>{
