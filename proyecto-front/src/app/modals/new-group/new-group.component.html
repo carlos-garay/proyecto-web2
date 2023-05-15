@@ -7,10 +7,7 @@
                 <input matInput placeholder="nombre" formControlName="nombreGrupo" required>
             </mat-form-field>
             <br>
-            <mat-form-field appearance="fill">
-                <mat-label>Imagen: </mat-label>
-                <input matInput placeholder="img" formControlName="imagenGrupo">
-            </mat-form-field>
+
         </div>
         <div mat-dialog-actions>
             <button align="end" [disabled]="formNewGroup.invalid" mat-raised-button color="accent" mat-dialog-close (click)="crearNuevoGrupo()">Crear </button>
